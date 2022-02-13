@@ -6,11 +6,9 @@ const TopNavBar = ({handleToggleMenu}) => {
             <Fragment>
             <header id="header" className="header fixed-top d-flex align-items-center">
                 <div className="d-flex align-items-center justify-content-between">
-                    <a href="index.html" className="logo d-flex align-items-center">
-
-                        {/*<img src="assets/img/logo.png" alt="">*/}
-                        {/*    <span className="d-none d-lg-block">NiceAdmin</span>*/}
-                        {/*</img>*/}
+                    <a className="logo d-flex align-items-center">
+                        <img src={process.env.PUBLIC_URL + "/favicon.ico"} alt=""/>
+                        <span className="d-none d-lg-block">Mebam</span>
                     </a>
                     <i className="bi bi-list toggle-sidebar-btn" onClick={handleToggleMenu}></i>
                 </div>
