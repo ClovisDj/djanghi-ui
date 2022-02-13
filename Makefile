@@ -14,5 +14,11 @@ lock:
 install:
 	$(user-shell) sh -c "npm install"
 
+audit:
+	$(user-shell) sh -c "npm audit fix --force"
+
+fund:
+	$(user-shell) sh -c "npm fund"
+
 runserver:
 	docker-compose up --force-recreate djanghi-ui
