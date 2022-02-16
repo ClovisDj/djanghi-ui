@@ -6,6 +6,7 @@ import TokenManager from "../utils/authToken";
 
 
 const Login = () => {
+    const [loginError, setLoginError] = useState('');
     const tokenManager = new TokenManager();
     let [loginData, setLoginData] = useState({
         association: "",
@@ -14,6 +15,12 @@ const Login = () => {
     });
     let navigate = useNavigate();
     let location = useLocation();
+
+    const clearLoginError = () => {
+      if (loginError) {
+            setLoginError('');
+        }
+    }
 
     useEffect(() => {
         if (tokenManager.isAuthenticated()) {
@@ -30,6 +37,7 @@ const Login = () => {
             navigate("/", { replace: true});
 
         }).catch((error) => {
+            setLoginError('No account found, please verify your credentials');
             console.log(error);
         });
     };
@@ -37,16 +45,19 @@ const Login = () => {
     const handleAssociationChange = (event) => {
         let data = {...loginData, association: event.target.value}
         setLoginData(data);
+        clearLoginError();
     }
 
     const handleEmailChange = (event) => {
         let data = {...loginData, email: event.target.value}
         setLoginData(data);
+        clearLoginError();
     }
 
     const handlePasswordChange = (event) => {
         let data = {...loginData, password: event.target.value}
         setLoginData(data);
+        clearLoginError();
     }
 
     return (
@@ -108,6 +119,9 @@ const Login = () => {
                                                 </div>
                                                 <div className="col-12">
                                                     <input className="btn btn-primary w-100" type="submit" value="Login" />
+                                                </div>
+                                                <div className="col-12 error-display">
+                                                    {loginError}
                                                 </div>
                                             </form>
 
