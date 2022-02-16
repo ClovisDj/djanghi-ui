@@ -1,0 +1,134 @@
+import React, {Fragment, useEffect, useState} from "react";
+import {useLocation, useNavigate} from "react-router-dom";
+
+import axiosInstance from "../utils/apiConfiguration";
+import TokenManager from "../utils/authToken";
+
+
+const Login = () => {
+    const tokenManager = new TokenManager();
+    let [loginData, setLoginData] = useState({
+        association: "",
+        email: "",
+        password: ""
+    });
+    let navigate = useNavigate();
+    let location = useLocation();
+
+    useEffect(() => {
+        if (tokenManager.isAuthenticated()) {
+            navigate('/', { replace: true});
+        }
+    }, [location]);
+
+    const handleSubmit = (event) => {
+        event.preventDefault();
+
+        axiosInstance.post("obtain_token", loginData).then((data) => {
+            const responseData = data.data.data;
+            tokenManager.storeTokens(responseData);
+            navigate("/", { replace: true});
+
+        }).catch((error) => {
+            console.log(error);
+        });
+    };
+
+    const handleAssociationChange = (event) => {
+        let data = {...loginData, association: event.target.value}
+        setLoginData(data);
+    }
+
+    const handleEmailChange = (event) => {
+        let data = {...loginData, email: event.target.value}
+        setLoginData(data);
+    }
+
+    const handlePasswordChange = (event) => {
+        let data = {...loginData, password: event.target.value}
+        setLoginData(data);
+    }
+
+    return (
+        <Fragment>
+            <main>
+                <div className="container">
+
+                    <section
+                        className="section register min-vh-100 d-flex flex-column align-items-center justify-content-center py-4">
+                        <div className="container">
+                            <div className="row justify-content-center">
+                                <div className="col-xl-3 col-lg-4 col-md-6 d-flex flex-column align-items-center justify-content-center">
+
+                                    <div className="d-flex justify-content-center py-4">
+                                        <a className="logo d-flex align-items-center w-auto">
+                                            <img src={process.env.PUBLIC_URL + "/favicon.ico"} alt=""></img>
+                                                <span className="d-none d-lg-block">Djanghi</span>
+                                        </a>
+                                    </div>
+
+                                    <div className="card mb-3">
+                                        <div className="card-body">
+                                            <div className="pt-4 pb-2">
+                                                <h3 className="card-title text-center pb-0 fs-4">Login to Your
+                                                    Account</h3>
+                                            </div>
+
+                                            <form className="row g-3 needs-validation" onSubmit={handleSubmit}>
+
+                                                <div className="col-12">
+                                                    <div className="input-group has-validation">
+                                                        <input type="text" name="association" className="form-control"
+                                                               id="associationLabel" value={loginData.association}
+                                                               placeholder="Your Association"
+                                                               onChange={handleAssociationChange} required />
+                                                        <div className="invalid-feedback">Please enter your association name.
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div className="col-12">
+                                                    <div className="input-group has-validation">
+                                                        <input type="text" name="username" className="form-control"
+                                                               id="yourUsername" value={loginData.email} placeholder="Your email"
+                                                               onChange={handleEmailChange} required />
+                                                        <div className="invalid-feedback">Please enter your
+                                                            username.
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div className="col-12">
+                                                    <input type="password" name="password" className="form-control"
+                                                           id="yourPassword" required value={loginData.password}
+                                                           placeholder="Your Password"
+                                                           onChange={handlePasswordChange} />
+                                                    <div className="invalid-feedback">Please enter your password!
+                                                    </div>
+                                                </div>
+                                                <div className="col-12">
+                                                    <input className="btn btn-primary w-100" type="submit" value="Login" />
+                                                </div>
+                                            </form>
+
+                                        </div>
+                                    </div>
+
+                                    <div className="credits">
+                                        <div className="copyright">
+                                            &copy; Copyright <strong><span>Djanghi</span></strong>.
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                </div>
+            </main>
+        </Fragment>
+    );
+};
+
+export default Login;
