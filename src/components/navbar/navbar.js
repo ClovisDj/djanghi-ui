@@ -6,7 +6,7 @@ import TokenManager from "../../utils/authToken";
 import {useNavigate} from "react-router-dom";
 
 
-const NavBar = () => {
+const NavBar = ({user, association}) => {
     const tokenManager = new TokenManager();
     let navigate = useNavigate();
     const toggleMenuClass = 'toggle-sidebar';
@@ -29,8 +29,13 @@ const NavBar = () => {
                 <TopNavBar
                     handleToggleMenu={handleToggleMenuClick}
                     handleLogOut={handleLogOut}
+                    user={user}
+                    association={association}
                 />
-                <SideNavBar/>
+                <SideNavBar
+                    user={user}
+                    association={association}
+                />
             </div>
         </Fragment>
     );

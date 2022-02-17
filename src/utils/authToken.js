@@ -10,77 +10,82 @@ class TokenManager {
         this.#refreshTokenKey = "djanghiRefreshToken";
     }
 
-    storeToken(tokenKey, token) {
+    storeToken = (tokenKey, token) => {
         localStorage.setItem(tokenKey, token);
     }
 
-    storeAuthToken(token) {
+    storeAuthToken = (token) => {
         this.storeToken(this.#authTokenKey, token);
     }
 
-    removeStoredToken(tokenKey) {
+    removeStoredToken = (tokenKey) => {
         localStorage.removeItem(tokenKey);
     }
 
-    removeAuthToken() {
+    removeAuthToken = () => {
         this.removeStoredToken(this.#authTokenKey)
     }
 
-    removeRefreshToken() {
+    removeRefreshToken = () => {
         this.removeStoredToken(this.#refreshTokenKey)
     }
 
-    storeRefreshToken(token) {
+    storeRefreshToken = (token) => {
         this.storeToken(this.#refreshTokenKey, token);
     }
 
-    getStoredAuthToken() {
+    getStoredAuthToken = () => {
         return localStorage.getItem(this.#authTokenKey);
     }
 
-    getStoredRefreshToken() {
+    getStoredRefreshToken = () => {
         return localStorage.getItem(this.#refreshTokenKey);
     }
 
-    decodeToken(token) {
+    decodeToken = (token) => {
         return jwt_decode(token);
     }
 
-    tokenExpirationDate(token) {
+    tokenExpirationDate = (token) => {
         const decodedToken = this.decodeToken(token);
         // Multiplied by 1000 since exp is in epoch seconds
         return new Date(decodedToken.exp * 1000);
     }
 
-    authTokenExpirationDate() {
+    authTokenExpirationDate = () => {
         const storedAuthToken = this.getStoredAuthToken();
         return storedAuthToken ? this.tokenExpirationDate(storedAuthToken) : null;
     }
 
-    tokenIsExpired(token) {
+    tokenIsExpired = (token) => {
         return this.tokenExpirationDate(token) <= new Date();
     }
 
-    canRefreshAuthToken() {
+    canRefreshAuthToken = () => {
         return this.getStoredRefreshToken() && !this.tokenIsExpired(this.getStoredRefreshToken());
     }
 
-    shouldRefreshAuthToken() {
+    shouldRefreshAuthToken = () => {
         const authExpirationDate = this.authTokenExpirationDate();
-        return authExpirationDate && Math.abs(new Date() - authExpirationDate) * 1000 <= 60;
+        return authExpirationDate && Math.abs(new Date() - authExpirationDate) / 1000 <= 60;
     }
 
-    storeTokens(responseData) {
+    storeTokens = (responseData) => {
         this.storeAuthToken(responseData.access);
         this.storeRefreshToken(responseData.refresh);
     }
 
-    logOut() {
+    getUserId = () => {
+        const decoded = this.decodeToken(this.getStoredAuthToken());
+        return decoded.user_id;
+    }
+
+    logOut = () => {
         this.removeAuthToken();
         this.removeRefreshToken();
     }
 
-    isAuthenticated() {
+    isAuthenticated = () => {
         return this.getStoredAuthToken() && !this.tokenIsExpired(this.getStoredAuthToken());
     }
 }

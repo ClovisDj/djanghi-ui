@@ -3,7 +3,10 @@ import {useLocation, useNavigate} from "react-router-dom";
 
 import axiosInstance from "../utils/apiConfiguration";
 import TokenManager from "../utils/authToken";
+import ApiClient from "../utils/apiConfiguration";
 
+
+const apiClient = new ApiClient();
 
 const Login = () => {
     const [loginError, setLoginError] = useState('');
@@ -28,18 +31,16 @@ const Login = () => {
         }
     }, [location]);
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
 
-        axiosInstance.post("obtain_token", loginData).then((data) => {
-            const responseData = data.data.data;
-            tokenManager.storeTokens(responseData);
+        const data = await apiClient.post("obtain_token", loginData);
+        if (data) {
+            tokenManager.storeTokens(data.data);
             navigate("/", { replace: true});
-
-        }).catch((error) => {
+        } else {
             setLoginError('No account found, please verify your credentials');
-            console.log(error);
-        });
+        }
     };
 
     const handleAssociationChange = (event) => {

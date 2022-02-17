@@ -1,14 +1,19 @@
 import React, {Fragment} from 'react';
 
 
-const TopNavBar = ({handleToggleMenu, handleLogOut}) => {
+const TopNavBar = ({handleToggleMenu, handleLogOut, user, association}) => {
+    const lastName = user ? user.attributes.last_name.split(" ")[0] : "";
+    const firstName = user ? user.attributes.first_name.split(" ")[0] : "";
+
     return (
             <Fragment>
             <header id="header" className="header fixed-top d-flex align-items-center">
                 <div className="d-flex align-items-center justify-content-between">
                     <a className="logo d-flex align-items-center">
                         <img src={process.env.PUBLIC_URL + "/favicon.ico"} alt=""/>
-                        <span className="d-none d-lg-block">Mebam</span>
+                        {association &&
+                            <span className="d-none d-lg-block">{association.attributes.label}</span>
+                        }
                     </a>
                     <i className="bi bi-list toggle-sidebar-btn" onClick={handleToggleMenu}></i>
                 </div>
@@ -26,13 +31,20 @@ const TopNavBar = ({handleToggleMenu, handleLogOut}) => {
                             <a className="nav-link nav-profile d-flex align-items-center pe-0" href="#"
                                data-bs-toggle="dropdown">
                                 <img src="https://img.icons8.com/pastel-glyph/64/000000/person-male--v1.png"/>
-                                <span className="d-none d-md-block dropdown-toggle ps-2">K. Anderson</span>
+                                {user &&
+                                    <span className="d-none d-md-block dropdown-toggle ps-2">
+                                        {firstName} {lastName}
+                                    </span>
+                                }
                             </a>
 
                             <ul className="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
                                 <li className="dropdown-header">
-                                    <h6>Kevin Anderson</h6>
-                                    <span>Web Designer</span>
+                                    { user &&
+                                        <h6>
+                                            {firstName} {lastName}
+                                        </h6>
+                                    }
                                 </li>
                                 <li>
                                     <hr className="dropdown-divider"></hr>
@@ -49,7 +61,7 @@ const TopNavBar = ({handleToggleMenu, handleLogOut}) => {
                                 </li>
 
                                 <li>
-                                    <a className="dropdown-item d-flex align-items-center" href="users-profile.html">
+                                    <a className="dropdown-item d-flex align-items-center">
                                         <i className="bi bi-gear"></i>
                                         <span>Account Settings</span>
                                     </a>
@@ -58,12 +70,6 @@ const TopNavBar = ({handleToggleMenu, handleLogOut}) => {
                                     <hr className="dropdown-divider"></hr>
                                 </li>
 
-                                <li>
-                                    <a className="dropdown-item d-flex align-items-center" href="pages-faq.html">
-                                        <i className="bi bi-question-circle"></i>
-                                        <span>Need Help?</span>
-                                    </a>
-                                </li>
                                 <li>
                                     <hr className="dropdown-divider"></hr>
                                 </li>
