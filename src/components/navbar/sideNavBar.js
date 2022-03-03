@@ -8,7 +8,7 @@ const SideNavBar = ({user, association}) => {
     const associationFieldLiElements = (
         associationFields.map((field, index) => (
             <li key={index}>
-                <a><i className="bi bi-circle"></i><span>{field.name}</span></a>
+                <a><i className="bi bi-circle"></i><span className="text-capitalize">{field.name}</span></a>
             </li>
             )
         )
@@ -32,10 +32,9 @@ const SideNavBar = ({user, association}) => {
             <aside id="sidebar" className="sidebar">
 
                 <ul className="sidebar-nav" id="sidebar-nav">
-
-                    <li className="nav-item">
-                        <a className="nav-link " href="index.html">
-                            <i className="bi bi-grid"></i>
+                    <li className="nav-item" style={{cursor: "pointer"}}>
+                        <a className="nav-link">
+                            <i className="bi bi-grid"/>
                             <span>Dashboard</span>
                         </a>
                     </li>
@@ -46,7 +45,7 @@ const SideNavBar = ({user, association}) => {
 
                     <li className="nav-item" style={{cursor: "pointer"}}>
                         <a className="nav-link collapsed">
-                            <i className="bi bi-person"></i>
+                            <i className="bi bi-person"/>
                             <span>Profile</span>
                         </a>
                     </li>

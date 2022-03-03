@@ -22,7 +22,7 @@ const Dashboard = () => {
             const data = await apiClient.get(`users/${tokenManager.getUserId()}`);
             if (data) {
                 await setUser(data.data);
-            await setAssociation(data.included[0]);
+                await setAssociation(data.included[0]);
             }
         }
     }, [location]);
