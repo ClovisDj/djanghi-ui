@@ -1,28 +1,28 @@
-import {Fragment} from "react";
+import {Fragment, useState} from "react";
 
 
 const SideNavBar = ({user, association}) => {
     const userIsAdmin = (user && user.attributes.hasOwnProperty("is_admin")) ? user.attributes.is_admin : false;
-    const associationFields = association ? association.attributes.member_contribution_fields : [];
+    let [mainLiActiveKey, setMainLiActiveKey] = useState("M1");
+    const sideActiveClass = "side-active";
 
-    const associationFieldLiElements = (
-        associationFields.map((field, index) => (
-            <li key={index}>
-                <a><i className="bi bi-circle"></i><span className="text-capitalize">{field.name}</span></a>
-            </li>
-            )
-        )
-    );
+    const handleSideNavClick = (liKey) => {
+      setMainLiActiveKey(liKey);
+    }
+
 
     const associationMenu = (userIsAdmin &&
-        <li className="nav-item" style={{cursor: "pointer"}}>
-            <a className="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse">
+        <li className="nav-item" style={{cursor: "pointer"}} key="M3">
+            <a className={"nav-link collapsed " + (mainLiActiveKey === "M3"? sideActiveClass: "")}
+               data-bs-target="#components-nav" data-bs-toggle="collapse" onClick={() => handleSideNavClick("M3")}>
                 <i className="bi bi-menu-button-wide"></i><span>Association Menu</span><i
                 className="bi bi-chevron-down ms-auto"></i>
             </a>
 
             <ul id="components-nav" className="nav-content collapse " data-bs-parent="#sidebar-nav">
-                {associationFieldLiElements}
+                <li>
+                    <a><i className="bi bi-circle"></i><span className="text-capitalize">MemberShip Payments</span></a>
+                </li>
             </ul>
         </li>
     );
@@ -30,28 +30,26 @@ const SideNavBar = ({user, association}) => {
     return (
         <Fragment>
             <aside id="sidebar" className="sidebar">
-
                 <ul className="sidebar-nav" id="sidebar-nav">
-                    <li className="nav-item" style={{cursor: "pointer"}}>
-                        <a className="nav-link">
+                    <li className="nav-item" style={{cursor: "pointer"}} key="M1">
+                        <a className={"nav-link " + (mainLiActiveKey === "M1"? sideActiveClass: "")}
+                           onClick={() => handleSideNavClick("M1")}>
                             <i className="bi bi-grid"/>
                             <span>Dashboard</span>
                         </a>
                     </li>
 
-                    {associationMenu}
-
-                    <li className="nav-heading">Pages</li>
-
-                    <li className="nav-item" style={{cursor: "pointer"}}>
-                        <a className="nav-link collapsed">
+                    <li className="nav-item" style={{cursor: "pointer"}} key="M2">
+                        <a className={"nav-link collapsed " + (mainLiActiveKey === "M2"? sideActiveClass: "")}
+                           onClick={() => handleSideNavClick("M2")}>
                             <i className="bi bi-person"/>
                             <span>Profile</span>
                         </a>
                     </li>
 
-                </ul>
+                    {associationMenu}
 
+                </ul>
             </aside>
         </Fragment>
     );
