@@ -29,8 +29,8 @@ h1, h2, h3, h4, h5, h6 {
 # Main
 --------------------------------------------------------------*/
 #main {
-  margin-top: 60px;
-  padding: 20px 30px;
+  margin-top: 80px;
+  padding: 20px 150px;
   transition: all 0.3s;
 }
 @media (max-width: 1199px) {
@@ -209,7 +209,78 @@ h1, h2, h3, h4, h5, h6 {
   margin-bottom: 30px;
   border: none;
   border-radius: 5px;
-  box-shadow: 0px 0 30px rgba(1, 41, 112, 0.1);
+  box-shadow: 0 0 30px rgba(1, 41, 112, 0.1);
+}
+
+.card-chart {
+  margin-bottom: 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: #ffffff;
+  height: 450px;
+  box-shadow: 0 0 30px rgba(1, 41, 112, 0.1);
+}
+
+.card-detail {
+  margin-bottom: 30px;
+  border: none;
+  border-radius: 5px;
+  background-color: #ffffff;
+  height: 450px;
+  box-shadow: 0 0 30px rgba(1, 41, 112, 0.1);
+}
+
+.title-card {
+  background-color: #ffffff;
+  border: none;
+  border-radius: 5px;
+  box-shadow: 0 0 30px rgba(1, 41, 112, 0.1);
+  height: 50px;
+}
+
+.payment-title-row {
+  margin-bottom: 10px;
+}
+
+.card-title-text {
+  padding-top: 13px !important;
+  font-size: 21px !important;
+  margin-bottom: 0 !important;
+  height: 100%;
+}
+
+.amount-detail {
+  font-size: 25px;
+  /*font-family: "Droid Sans";*/
+  color: rgb(253,82,116);
+}
+
+/*.paid-amount {*/
+/*  font-size: 25px;*/
+/*  font-family: "Droid Sans";*/
+/*  color: rgb(54, 162, 235);*/
+/*}*/
+.underline{
+  background-color: rgb(231, 233, 232);
+  height: 1px;
+  width: 100%;
+  margin: 0 0 5px 0;
+}
+
+.without-min-amount {
+  /*color: rgb(253,82,116);*/
+  height: 350px;
+  font-family: "Droid Sans";
+  font-size: 50px;
+  padding: 170px 0 0 0;
+}
+
+.need-more-payment {
+  color: rgb(253,82,116);
+}
+
+.no-payment-due {
+  color: rgb(54, 162, 235);
 }
 
 .card-header, .card-footer {
@@ -220,11 +291,19 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .card-title {
-  padding: 20px 0 15px 0;
   font-size: 18px;
-  font-weight: 500;
+  font-weight: 600;
   color: #012970;
   font-family: "Poppins", sans-serif;
+}
+
+.card-title h5{
+  padding: 20px 0 0 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #012970;
+  font-family: "Poppins", sans-serif;
+  margin-bottom: 0;
 }
 .card-title span {
   color: #899bbd;
@@ -555,7 +634,7 @@ h1, h2, h3, h4, h5, h6 {
 
 @media (min-width: 1200px) {
   #main, #footer {
-    margin-left: 300px;
+    margin-left: 300px !important;
   }
 }
 @media (max-width: 1199px) {

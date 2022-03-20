@@ -1,4 +1,5 @@
 import React, {Fragment} from 'react';
+import {isMobile} from "react-device-detect";
 
 
 const TopNavBar = ({handleToggleMenu, handleLogOut, user, association}) => {
@@ -15,17 +16,14 @@ const TopNavBar = ({handleToggleMenu, handleLogOut, user, association}) => {
                             <span className="d-none d-lg-block">{association.attributes.label}</span>
                         }
                     </a>
-                    <i className="bi bi-list toggle-sidebar-btn" onClick={handleToggleMenu}></i>
+                    {isMobile &&
+                        <i className="bi bi-list toggle-sidebar-btn" onClick={handleToggleMenu} />
+                    }
+
                 </div>
 
                 <nav className="header-nav ms-auto">
                     <ul className="d-flex align-items-center">
-
-                        <li className="nav-item d-block d-lg-none">
-                            <a className="nav-link nav-icon search-bar-toggle " href="#">
-                                <i className="bi bi-search"></i>
-                            </a>
-                        </li>
 
                         <li className="nav-item dropdown pe-3">
                             <a className="nav-link nav-profile d-flex align-items-center pe-0" href="#"
@@ -47,37 +45,37 @@ const TopNavBar = ({handleToggleMenu, handleLogOut, user, association}) => {
                                     }
                                 </li>
                                 <li>
-                                    <hr className="dropdown-divider"></hr>
-                                </li>
-
-                                <li>
-                                    <a className="dropdown-item d-flex align-items-center" href="users-profile.html">
-                                        <i className="bi bi-person"></i>
-                                        <span>My Profile</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <hr className="dropdown-divider"></hr>
+                                    <hr className="dropdown-divider" />
                                 </li>
 
                                 <li>
                                     <a className="dropdown-item d-flex align-items-center">
-                                        <i className="bi bi-gear"></i>
+                                        <i className="bi bi-person" />
+                                        <span>My Profile</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <hr className="dropdown-divider" />
+                                </li>
+
+                                <li>
+                                    <a className="dropdown-item d-flex align-items-center">
+                                        <i className="bi bi-gear" />
                                         <span>Account Settings</span>
                                     </a>
                                 </li>
                                 <li>
-                                    <hr className="dropdown-divider"></hr>
+                                    <hr className="dropdown-divider" />
                                 </li>
 
                                 <li>
-                                    <hr className="dropdown-divider"></hr>
+                                    <hr className="dropdown-divider" />
                                 </li>
 
                                 <li>
                                     <a className="dropdown-item d-flex align-items-center"
                                        onClick={handleLogOut} style={{cursor: "pointer"}}>
-                                        <i className="bi bi-box-arrow-right"></i>
+                                        <i className="bi bi-box-arrow-right" />
                                         <span>Sign Out</span>
                                     </a>
                                 </li>

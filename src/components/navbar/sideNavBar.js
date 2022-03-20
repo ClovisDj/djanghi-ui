@@ -10,18 +10,16 @@ const SideNavBar = ({user, association}) => {
       setMainLiActiveKey(liKey);
     }
 
-
     const associationMenu = (userIsAdmin &&
         <li className="nav-item" style={{cursor: "pointer"}} key="M3">
             <a className={"nav-link collapsed " + (mainLiActiveKey === "M3"? sideActiveClass: "")}
                data-bs-target="#components-nav" data-bs-toggle="collapse" onClick={() => handleSideNavClick("M3")}>
-                <i className="bi bi-menu-button-wide"></i><span>Association Menu</span><i
-                className="bi bi-chevron-down ms-auto"></i>
+                <i className="bi bi-menu-button-wide" /><span>Association Menu</span><i className="bi bi-chevron-down ms-auto" />
             </a>
 
             <ul id="components-nav" className="nav-content collapse " data-bs-parent="#sidebar-nav">
                 <li>
-                    <a><i className="bi bi-circle"></i><span className="text-capitalize">MemberShip Payments</span></a>
+                    <a><i className="bi bi-circle" /><span className="text-capitalize">MemberShip Payments</span></a>
                 </li>
             </ul>
         </li>
