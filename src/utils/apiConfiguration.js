@@ -65,7 +65,7 @@ class ApiClient {
 
         let responseData;
         try {
-            responseData = await this.axios.get(url, params);
+            responseData = await this.axios.get(url, {params: params});
         }
         catch (error) {
             console.log(error);

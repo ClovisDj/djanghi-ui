@@ -30,7 +30,7 @@ const TopNavBar = ({handleToggleMenu, handleLogOut, user, association}) => {
                                data-bs-toggle="dropdown">
                                 <img src="https://img.icons8.com/pastel-glyph/64/000000/person-male--v1.png"/>
                                 {user &&
-                                    <span className="d-none d-md-block dropdown-toggle ps-2">
+                                    <span className="d-none d-md-block ps-2">
                                         {firstName} {lastName}
                                     </span>
                                 }
