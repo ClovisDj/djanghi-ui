@@ -1,13 +1,20 @@
 import {Fragment, useState} from "react";
+import {useNavigate} from "react-router-dom";
 
 
 const SideNavBar = ({user, association}) => {
+    let navigate = useNavigate();
     const userIsAdmin = (user && user.attributes.hasOwnProperty("is_admin")) ? user.attributes.is_admin : false;
     let [mainLiActiveKey, setMainLiActiveKey] = useState("M1");
     const sideActiveClass = "side-active";
-
+    const actionsMap = {
+        M1: () => {navigate('/dashboard', { replace: true})},
+        M2: () => {navigate('/profile', { replace: true})},
+        M3: () => {},
+    };
     const handleSideNavClick = (liKey) => {
       setMainLiActiveKey(liKey);
+      actionsMap[liKey]();
     }
 
     const associationMenu = (userIsAdmin &&

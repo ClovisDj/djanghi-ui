@@ -279,11 +279,13 @@ h1, h2, h3, h4, h5, h6 {
 .need-more-payment {
   font-size: 20px;
   color: rgb(253,82,116)!important;
+  font-weight: 300;
 }
 
 .no-payment-due {
   font-size: 20px;
   color: rgb(54, 162, 235);
+  font-weight: 300;
 }
 
 .card-header, .card-footer {
@@ -317,6 +319,10 @@ h1, h2, h3, h4, h5, h6 {
   margin-bottom: 10px;
 }
 
+.more-payment {
+  /*width: 50%;*/
+  margin: 20px 0;
+}
 .payment-detail-row {
   padding-bottom: 10px;
   padding-top: 10px;

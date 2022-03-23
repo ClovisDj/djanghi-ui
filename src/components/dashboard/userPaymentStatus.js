@@ -166,13 +166,13 @@ const SinglePaymentStatus = ({paymentData}) => {
                                     {requiredAmount > 0 &&
                                         <Fragment>
                                             <div className={"col-6 text-center payment-detail"}>
-                                                <p className={"text-center no-payment-due"}>
+                                                <p className={"text-center"}>
                                                    <AnimatedNumber value={displayCurrentAmount} formatValue={formatValue} className="no-payment-due"/>
                                                 </p>
                                             </div>
                                             <div className={"col-6 text-center payment-detail"}>
-                                                <p className={"text-center need-more-payment"}>
-                                                    <AnimatedNumber value={unpaidValue} formatValue={formatValue}/>
+                                                <p className={"text-center"}>
+                                                    <AnimatedNumber value={unpaidValue} formatValue={formatValue} className="need-more-payment"/>
                                                 </p>
                                             </div>
                                         </Fragment>
@@ -228,7 +228,14 @@ const SinglePaymentStatus = ({paymentData}) => {
                                                 </div>
                                             </div>
                                         </div>
+
                                         <div className="underline" />
+
+                                        <div className="row more-payment">
+                                            <div className="text-center">
+                                                <button type="button" className="btn btn-secondary">More Payments</button>
+                                            </div>
+                                        </div>
                                     </Fragment>
                                 }
 
