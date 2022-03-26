@@ -1,0 +1,29 @@
+
+.payments-modal-body {
+    position: relative;
+    flex: 1 1 auto;
+    padding: 0 1rem;
+    overflow-y: auto;
+    background: #f6f9ff;
+}
+
+.payment-modal-header {
+    background-color: #ffffff;
+    border: none;
+    z-index: 100;
+    font-weight: 500;
+    color: #012970;
+    font-family: "Poppins", sans-serif;
+    box-shadow: 0 0 30px rgba(1, 41, 112, 0.1);
+}
+
+.custom-modal-header {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 15px;
+    border-bottom: 1px solid #dee2e6;
+    border-top-left-radius: calc(.3rem - 1px);
+    border-top-right-radius: calc(.3rem - 1px);
+}
