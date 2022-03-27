@@ -247,7 +247,7 @@ const PaymentSummary = ({requiredAmount, contributionId, currentValue, paymentNa
                                             <table className="table table-borderless latest-payment-table">
                                                 <tbody>
                                                     <tr>
-                                                        <th scope="row" className="card-title">Required</th>
+                                                        <th scope="row" className="payment-info-text">Required</th>
                                                         <td className="text-end">
                                                             <AnimatedNumber value={requiredAmount}
                                                                             formatValue={formatValue}
@@ -256,7 +256,7 @@ const PaymentSummary = ({requiredAmount, contributionId, currentValue, paymentNa
                                                         </td>
                                                     </tr>
                                                     <tr>
-                                                        <th scope="row" className="card-title">Paid</th>
+                                                        <th scope="row" className="payment-info-text">Paid</th>
                                                         <td className="text-end">
                                                             <AnimatedNumber value={displayCurrentAmount}
                                                                             formatValue={formatValue}
@@ -265,7 +265,7 @@ const PaymentSummary = ({requiredAmount, contributionId, currentValue, paymentNa
                                                         </td>
                                                     </tr>
                                                     <tr>
-                                                        <th scope="row" className="card-title">Unpaid</th>
+                                                        <th scope="row" className="payment-info-text">Unpaid</th>
                                                         <td className="text-end">
                                                             <AnimatedNumber value={unpaidValue}
                                                                             formatValue={formatValue}
@@ -284,7 +284,7 @@ const PaymentSummary = ({requiredAmount, contributionId, currentValue, paymentNa
                                             <table className="table table-borderless latest-payment-table">
                                                 <tbody>
                                                     <tr>
-                                                        <th scope="row" className="card-title">
+                                                        <th scope="row" className="payment-info-text">
                                                             {displayCurrentAmount >= 0 ? "Paid" : "Unpaid"}
                                                         </th>
                                                         <td className="text-end">
@@ -309,7 +309,7 @@ const PaymentSummary = ({requiredAmount, contributionId, currentValue, paymentNa
 
                         <div className="latest-payment-info">
                             <div className="card-title text-center">
-                                <h5 className="">Last Transaction Info</h5>
+                                <h5 className="">Latest Transaction Info</h5>
                             </div>
 
                             <div className="underline" />
@@ -320,7 +320,7 @@ const PaymentSummary = ({requiredAmount, contributionId, currentValue, paymentNa
                                             <table className="table table-borderless latest-payment-table">
                                                 <tbody>
                                                     <tr>
-                                                        <th scope="row" className="card-title">Amount</th>
+                                                        <th scope="row" className="payment-info-text">Amount</th>
                                                         <td className="text-end">
                                                             <AnimatedNumber value={latestAmountDisplay}
                                                                             formatValue={formatValue}
@@ -329,20 +329,20 @@ const PaymentSummary = ({requiredAmount, contributionId, currentValue, paymentNa
                                                         </td>
                                                     </tr>
                                                     <tr>
-                                                        <th scope="row" className="card-title">Type</th>
-                                                        <td className="text-end latest-payment-info">
+                                                        <th scope="row" className="payment-info-text">Type</th>
+                                                        <td className="text-end payment-info-text">
                                                             {transactionType}
                                                         </td>
                                                     </tr>
                                                     <tr>
-                                                        <th scope="row" className="card-title">Date</th>
-                                                        <td className="text-end latest-payment-info">
+                                                        <th scope="row" className="payment-info-text">Date</th>
+                                                        <td className="text-end payment-info-text">
                                                             {transactionDate}
                                                         </td>
                                                     </tr>
                                                     <tr>
-                                                        <th scope="row" className="card-title">Note</th>
-                                                        <td className="text-end latest-payment-info">
+                                                        <th scope="row" className="payment-info-text">Note</th>
+                                                        <td className="text-end payment-info-text">
                                                             {transactionDate}
                                                         </td>
                                                     </tr>

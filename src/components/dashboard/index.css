@@ -78,9 +78,9 @@
   padding: .3rem 0;
 }
 
-.latest-payment-info {
+.payment-info-text {
   font-size: 18px;
-  font-weight: 600;
+  font-weight: 400;
   color: #012970;
   font-family: "Poppins", sans-serif;
   margin-bottom: 0!important;
