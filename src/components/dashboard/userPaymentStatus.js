@@ -207,7 +207,6 @@ const PaymentSummary = ({requiredAmount, contributionId, currentValue, paymentNa
     const [transactionType, setTransactionType] = useState("Debit");
     const [transactionDate, setTransactionDate] = useState(null);
     const [showMorePayments, setShowMorePayments] = useState(false);
-    const [paymentsData, setPaymentsData] = useState(null);
 
     useEffect(async () => {
         const paymentData = await apiClient.get(
@@ -219,7 +218,6 @@ const PaymentSummary = ({requiredAmount, contributionId, currentValue, paymentNa
         if (paymentData) {
             const dataParser = await new DataParser(paymentData);
             if (dataParser.data && dataParser.data.data.length > 0) {
-                setPaymentsData(dataParser.data);
                 const latestPaymentAmount = dataParser.data.data[0].attributes.amount;
                 const transType = dataParser.data.data[0].attributes.payment_type;
                 const transDate = dataParser.data.data[0].attributes.created_at;
@@ -242,67 +240,72 @@ const PaymentSummary = ({requiredAmount, contributionId, currentValue, paymentNa
                             <h5>Summary</h5>
                         </div>
                         <div className="underline" />
-                        <div>
                             <div className="row">
                                 {requiredAmount > 0 &&
                                     <Fragment>
-                                        <div className="col text-center">
-                                            <div className="card-title text-center">
-                                                <h5>Paid</h5>
-                                            </div>
-                                        </div>
-                                        <div className="col text-center">
-                                            <div className="card-title text-center">
-                                                <h5>Unpaid</h5>
-                                            </div>
+                                        <div className="table-responsive payments-table">
+                                            <table className="table table-borderless latest-payment-table">
+                                                <tbody>
+                                                    <tr>
+                                                        <th scope="row" className="card-title">Required</th>
+                                                        <td className="text-end">
+                                                            <AnimatedNumber value={requiredAmount}
+                                                                            formatValue={formatValue}
+                                                                            className="no-payment-due"
+                                                            />
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th scope="row" className="card-title">Paid</th>
+                                                        <td className="text-end">
+                                                            <AnimatedNumber value={displayCurrentAmount}
+                                                                            formatValue={formatValue}
+                                                                            className="no-payment-due"
+                                                            />
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th scope="row" className="card-title">Unpaid</th>
+                                                        <td className="text-end">
+                                                            <AnimatedNumber value={unpaidValue}
+                                                                            formatValue={formatValue}
+                                                                            className="need-more-payment"
+                                                            />
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
                                         </div>
                                     </Fragment>
                                 }
                                 {requiredAmount <= 0 &&
                                     <Fragment>
-                                        <div className="col text-center">
-                                            <div className="card-title text-center">
-                                                <h5>{requiredAmount <= 0 ? "Unpaid": "Paid"}</h5>
-                                            </div>
+                                        <div className="table-responsive payments-table">
+                                            <table className="table table-borderless latest-payment-table">
+                                                <tbody>
+                                                    <tr>
+                                                        <th scope="row" className="card-title">
+                                                            {displayCurrentAmount >= 0 ? "Paid" : "Unpaid"}
+                                                        </th>
+                                                        <td className="text-end">
+                                                            <AnimatedNumber value={displayCurrentAmount}
+                                                                            formatValue={formatValue}
+                                                                            className={displayCurrentAmount >= 0 ? "no-payment-due" : "need-more-payment"}
+                                                            />
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th scope="row" className="card-title"> &nbsp;</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th scope="row" className="card-title"> &nbsp;</th>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
                                         </div>
                                     </Fragment>
                                 }
                             </div>
-                            <div className="row">
-                                {requiredAmount > 0 &&
-                                    <Fragment>
-                                        <div className={"col-6 text-center payment-detail"}>
-                                            <p className={"text-center"}>
-                                               <AnimatedNumber value={displayCurrentAmount}
-                                                               formatValue={formatValue}
-                                                               className="no-payment-due"
-                                               />
-                                            </p>
-                                        </div>
-                                        <div className={"col-6 text-center payment-detail"}>
-                                            <p className={"text-center"}>
-                                                <AnimatedNumber value={unpaidValue}
-                                                                formatValue={formatValue}
-                                                                className="need-more-payment"
-                                                />
-                                            </p>
-                                        </div>
-                                    </Fragment>
-                                }
-                                {requiredAmount <= 0 &&
-                                    <Fragment>
-                                        <div className={"col text-center payment-detail"}>
-                                            <p className={"text-center " + nonRequiredMinPaymentClass}>
-                                                <AnimatedNumber value={displayCurrentAmount}
-                                                                formatValue={formatValue}
-                                                                className={nonRequiredMinPaymentClass}
-                                                />
-                                            </p>
-                                        </div>
-                                    </Fragment>
-                                }
-                            </div>
-                        </div>
 
                         <div className="latest-payment-info">
                             <div className="card-title text-center">
@@ -313,37 +316,38 @@ const PaymentSummary = ({requiredAmount, contributionId, currentValue, paymentNa
                             {hasAtLeastOnePayment &&
                                 <Fragment>
                                     <div className="row payment-detail-row">
-                                        <div className="col-6">
-                                            <div className="payment-detail">
-                                                <p className="text-center">Amount</p>
-                                            </div>
-                                            <div className="payment-detail">
-                                                <p className="text-center">Type</p>
-                                            </div>
-                                            <div className="payment-detail">
-                                                <p className="text-center">Date</p>
-                                            </div>
-                                        </div>
-
-                                        <div className="col-2 vertical-separator"/>
-
-                                        <div className="col-4">
-                                            <div className={"payment-detail"}>
-                                                <p className={"text-center"}>
-                                                    <AnimatedNumber value={latestAmountDisplay}
-                                                                    formatValue={formatValue}
-                                                                    className={latestPaymentDisplayClass}
-                                                    />
-                                                </p>
-
-                                            </div>
-                                            <div className="payment-detail">
-                                                <p className="text-center">{transactionType}</p>
-                                            </div>
-
-                                            <div className="payment-detail">
-                                                <p className="text-center">{transactionDate}</p>
-                                            </div>
+                                        <div className="table-responsive payments-table">
+                                            <table className="table table-borderless latest-payment-table">
+                                                <tbody>
+                                                    <tr>
+                                                        <th scope="row" className="card-title">Amount</th>
+                                                        <td className="text-end">
+                                                            <AnimatedNumber value={latestAmountDisplay}
+                                                                            formatValue={formatValue}
+                                                                            className={latestAmountDisplay >= 0 ? "no-payment-due" : "need-more-payment"}
+                                                            />
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th scope="row" className="card-title">Type</th>
+                                                        <td className="text-end latest-payment-info">
+                                                            {transactionType}
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th scope="row" className="card-title">Date</th>
+                                                        <td className="text-end latest-payment-info">
+                                                            {transactionDate}
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th scope="row" className="card-title">Note</th>
+                                                        <td className="text-end latest-payment-info">
+                                                            {transactionDate}
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
                                         </div>
                                     </div>
 

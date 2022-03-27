@@ -69,3 +69,23 @@
     height: 50% !important;
     overflow-y: scroll !important;
 }
+
+.latest-payment-table {
+    margin-bottom: 0;
+}
+
+.payment-detail-row {
+  padding: .3rem 0;
+}
+
+.latest-payment-info {
+  font-size: 18px;
+  font-weight: 600;
+  color: #012970;
+  font-family: "Poppins", sans-serif;
+  margin-bottom: 0!important;
+}
+
+th, td {
+    padding: .3rem !important;
+}
