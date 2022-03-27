@@ -7,6 +7,7 @@ import TokenManager from "../../utils/authToken";
 import {useLocation} from "react-router-dom";
 import DataParser, {formatValue, toTitle} from "../../utils/dataParser";
 import {Button, Modal} from "react-bootstrap";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 
 const apiClient = new ApiClient();
@@ -89,6 +90,122 @@ const PaymentChart = ({paymentData}) => {
     )
 };
 
+const PaymentRow = ({singlePaymentData}) => {
+    const transactionType = singlePaymentData.attributes.payment_type === "PAYMENT" ? "Credit" : "Debit";
+    const transactionDate = new Date(singlePaymentData.attributes.created_at).toLocaleDateString()
+    const amount = singlePaymentData.attributes.amount;
+    const note = singlePaymentData.attributes.note;
+
+    return (
+        <Fragment>
+            <div className="row payment-row">
+                <div className="col text-center overflowX">
+                    {transactionDate}
+                </div>
+                <div className="col text-center overflowX">
+                    {formatValue(amount)}
+                </div>
+                <div className="col text-center overflowX">
+                    {transactionType}
+                </div>
+                <div className="col text-center overflowX">
+                    {note}
+                </div>
+            </div>
+       </Fragment>
+    )};
+
+const MoreTransactionsModal = ({paymentName, showMorePayments, setShowMorePayments, contributionId}) => {
+    const [data, setData] = useState([]);
+    const [currentPage, setCurrentPage] = useState(0);
+    const [hasMorePayments, setHasMorePayments] = useState(true);
+
+    const fetchMorePayments = async () => {
+        let currentData = data;
+        const paymentData = await apiClient.get(
+            `users/${tokenManager.getUserId()}/membership_payments`,
+            {
+                contribution_id: contributionId,
+                page: currentPage + 1
+            }
+        );
+        if (paymentData) {
+            setData(currentData.concat(paymentData.data));
+            setCurrentPage(paymentData.meta.pagination.page);
+            setHasMorePayments(paymentData.meta.pagination.page < paymentData.meta.pagination.pages);
+        }
+    };
+
+    useEffect(async () => {
+        await fetchMorePayments();
+    }, []);
+
+    return (
+        <Fragment>
+            <Modal
+                className="payment-details-modal"
+                size="lg"
+                show={showMorePayments}
+                onHide={() => setShowMorePayments(false)}
+                scrollable={true}
+                aria-labelledby="example-modal-sizes-title-sm"
+            >
+                    <Modal.Header bsPrefix={"custom-modal-header"} closeButton>
+                        <Modal.Title id="user-payments-list">
+                            <div className="card-title">
+                                {toTitle(paymentName)} Payments
+                            </div>
+                          </Modal.Title>
+                        </Modal.Header>
+                    <Modal.Body bsPrefix={"payments-modal-body"} id={"payments-modal-body"}>
+                        <div className="row payment-modal-header sticky-top">
+                            <div className="col">
+                                <p className="text-center">Date</p>
+                            </div>
+                            <div className="col">
+                                <p className="text-center">Amount</p>
+                            </div>
+                            <div className="col">
+                                <p className="text-center">Type</p>
+                            </div>
+                            <div className="col">
+                                <p className="text-center">Note</p>
+                            </div>
+                        </div>
+
+                        <InfiniteScroll
+                          dataLength={data.length}
+                          next={fetchMorePayments}
+                          hasMore={hasMorePayments}
+                          pullDownToRefresh={true}
+                          refreshFunction={fetchMorePayments}
+                          scrollableTarget={"payments-modal-body"}
+                          loader={<p>Loading...</p>}
+                        >
+                            {
+                                data.map((payment) => (
+                                    <Fragment key={payment.id}>
+                                      <PaymentRow key={payment.id} singlePaymentData={payment} />
+                                    </Fragment>
+                                ))
+                            }
+                        </InfiniteScroll>
+
+                    </Modal.Body>
+                    <Modal.Footer bsPrefix="custom-modal-footer">
+                        <Button
+                            className="btn btn-secondary btn-sm"
+                            onClick={() => setShowMorePayments(false)}
+                        >
+                            Close
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+        </Fragment>
+    );
+};
+
+
 const PaymentSummary = ({requiredAmount, contributionId, currentValue, paymentName}) => {
     const unpaidValue = requiredAmount ? - (requiredAmount - currentValue ): 0;
     const nonRequiredMinPaymentClass = currentValue < 0 ? "need-more-payment" : "no-payment-due";
@@ -99,7 +216,7 @@ const PaymentSummary = ({requiredAmount, contributionId, currentValue, paymentNa
     const [transactionType, setTransactionType] = useState("Debit");
     const [transactionDate, setTransactionDate] = useState(null);
     const [showMorePayments, setShowMorePayments] = useState(false);
-    const [paymentsData, setPaymentsData] = useState(false);
+    const [paymentsData, setPaymentsData] = useState(null);
 
     useEffect(async () => {
         const paymentData = await apiClient.get(
@@ -198,7 +315,7 @@ const PaymentSummary = ({requiredAmount, contributionId, currentValue, paymentNa
 
                         <div className="latest-payment-info">
                             <div className="card-title text-center">
-                                <h5 className="">Last Payment Info</h5>
+                                <h5 className="">Last Transaction Info</h5>
                             </div>
 
                             <div className="underline" />
@@ -247,49 +364,16 @@ const PaymentSummary = ({requiredAmount, contributionId, currentValue, paymentNa
                                                     className="btn btn-secondary"
                                                     onClick={() => setShowMorePayments(true)}
                                             >
-                                                More Payments
+                                                More Transactions
                                             </button>
                                         </div>
                                     </div>
-
-                                        <Modal
-                                            size="lg"
-                                            show={showMorePayments}
-                                            onHide={() => setShowMorePayments(false)}
-                                            scrollable={true}
-                                            aria-labelledby="example-modal-sizes-title-sm"
-                                        >
-                                            <Modal.Header bsPrefix={"custom-modal-header"} closeButton>
-                                                <Modal.Title id="user-payments-list">
-                                                    <div className="card-title">
-                                                        {toTitle(paymentName)} Payments
-
-                                                    </div>
-                                                  </Modal.Title>
-                                                </Modal.Header>
-                                            <Modal.Body bsPrefix={"payments-modal-body"}>
-                                                <div className="row payment-modal-header">
-                                                    <div className="col">
-                                                        <p className="text-center">Date</p>
-                                                    </div>
-                                                    <div className="col">
-                                                        <p className="text-center">Amount</p>
-                                                    </div>
-                                                    <div className="col">
-                                                        <p className="text-center">Type</p>
-                                                    </div>
-                                                </div>
-                                                ...
-                                            </Modal.Body>
-                                            <Modal.Footer>
-                                                <Button
-                                                    className="btn btn-secondary btn-sm"
-                                                    onClick={() => setShowMorePayments(false)}
-                                                >
-                                                    Close
-                                                </Button>
-                                            </Modal.Footer>
-                                        </Modal>
+                                    <MoreTransactionsModal
+                                        paymentName={paymentName}
+                                        contributionId={contributionId}
+                                        showMorePayments={showMorePayments}
+                                        setShowMorePayments={setShowMorePayments}
+                                    />
                                 </Fragment>
                             }
 
@@ -330,9 +414,7 @@ const SinglePaymentStatus = ({paymentData}) => {
 
     return (
         <Fragment>
-
             <PaymentTitleHeader paymentName={paymentName}/>
-
             <div className="row">
                 <PaymentChart paymentData={paymentData}/>
                 <PaymentSummary
