@@ -4,7 +4,7 @@
     flex: 1 1 auto;
     padding: 0 1rem;
     overflow-y: auto;
-    background: #f6f9ff;
+    background: white;
 }
 
 .payment-modal-header {
@@ -17,6 +17,16 @@
     box-shadow: 0 0 30px rgba(1, 41, 112, 0.1);
     padding-right: 0;
     margin-right: 0;
+}
+
+.credit-payment {
+    color: white;
+    background: rgb(54, 162, 235);
+}
+
+.debit-payment {
+    color: white;
+    background: rgb(253,82,116);
 }
 
 .custom-modal-header {
@@ -41,9 +51,18 @@
     border-bottom-right-radius: calc(.3rem - 1px);
     border-bottom-left-radius: calc(.3rem - 1px);
 }
-.overflowX {
-    overflow-x: scroll;
-    /*overflow-y: scroll;*/
+
+.table thead th{
+    background: white;
+}
+
+.table thead th {
+    padding: 5px;
+    font-size: 16px;
+    font-weight: 500;
+    color: #012970;
+    font-family: "Poppins", sans-serif;
+    margin-bottom: 0
 }
 
 .payment-details-modal {

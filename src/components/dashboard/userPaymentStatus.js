@@ -13,7 +13,6 @@ import InfiniteScroll from "react-infinite-scroll-component";
 const apiClient = new ApiClient();
 const tokenManager = new TokenManager();
 
-
 const PaymentChart = ({paymentData}) => {
     const requiredAmount = paymentData.relationships.membership_payment_type.attributes.required_amount;
     const currentValue = paymentData.attributes.current_value;
@@ -95,23 +94,16 @@ const PaymentRow = ({singlePaymentData}) => {
     const transactionDate = new Date(singlePaymentData.attributes.created_at).toLocaleDateString()
     const amount = singlePaymentData.attributes.amount;
     const note = singlePaymentData.attributes.note;
+    const rowClass = transactionType === "Credit" ? "credit-payment" : "debit-payment";
 
     return (
         <Fragment>
-            <div className="row payment-row">
-                <div className="col text-center overflowX">
-                    {transactionDate}
-                </div>
-                <div className="col text-center overflowX">
-                    {formatValue(amount)}
-                </div>
-                <div className="col text-center overflowX">
-                    {transactionType}
-                </div>
-                <div className="col text-center overflowX">
-                    {note}
-                </div>
-            </div>
+            <tr className={rowClass}>
+                <td>{transactionDate}</td>
+                <td>{formatValue(amount)}</td>
+                <td>{transactionType}</td>
+                <td>{note}</td>
+            </tr>
        </Fragment>
     )};
 
@@ -158,21 +150,6 @@ const MoreTransactionsModal = ({paymentName, showMorePayments, setShowMorePaymen
                           </Modal.Title>
                         </Modal.Header>
                     <Modal.Body bsPrefix={"payments-modal-body"} id={"payments-modal-body"}>
-                        <div className="row payment-modal-header sticky-top">
-                            <div className="col">
-                                <p className="text-center">Date</p>
-                            </div>
-                            <div className="col">
-                                <p className="text-center">Amount</p>
-                            </div>
-                            <div className="col">
-                                <p className="text-center">Type</p>
-                            </div>
-                            <div className="col">
-                                <p className="text-center">Note</p>
-                            </div>
-                        </div>
-
                         <InfiniteScroll
                           dataLength={data.length}
                           next={fetchMorePayments}
@@ -180,15 +157,29 @@ const MoreTransactionsModal = ({paymentName, showMorePayments, setShowMorePaymen
                           pullDownToRefresh={true}
                           refreshFunction={fetchMorePayments}
                           scrollableTarget={"payments-modal-body"}
-                          loader={<p>Loading...</p>}
+                          loader={<h4>Loading...</h4>}
                         >
-                            {
-                                data.map((payment) => (
-                                    <Fragment key={payment.id}>
-                                      <PaymentRow key={payment.id} singlePaymentData={payment} />
-                                    </Fragment>
-                                ))
-                            }
+                            <div className="table-responsive payments-table">
+                                <table className="table">
+                                   <thead>
+                                        <tr>
+                                          <th scope="col">Date</th>
+                                          <th scope="col">Amount</th>
+                                          <th scope="col">Type</th>
+                                          <th scope="col">Note</th>
+                                        </tr>
+                                   </thead>
+                                    <tbody>
+                                        {
+                                            data.map((payment) => (
+                                                <Fragment key={payment.id}>
+                                                  <PaymentRow key={payment.id} singlePaymentData={payment} />
+                                                </Fragment>
+                                            ))
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
                         </InfiniteScroll>
 
                     </Modal.Body>
