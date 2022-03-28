@@ -3,8 +3,8 @@ import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 
 import history from "../browserHistory"
 import Login from "../components/login";
-import Dashboard from "../components/dashboard/dashboard"
 import NotFoundPage from "../components/404";
+import Dashboard from "../components/dashboard";
 
 const DjanghiRoutes = () => (
   <BrowserRouter history={history}>
@@ -13,7 +13,7 @@ const DjanghiRoutes = () => (
         <Route path="/login" element={<Login/>} />
         <Route path="/" element={<Navigate replace to="/dashboard"/>} />
         <Route path="*" element={<NotFoundPage />} />
-    </Routes>
+      </Routes>
   </BrowserRouter>
 );
 
