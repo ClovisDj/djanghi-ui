@@ -89,3 +89,13 @@
 th, td {
     padding: .3rem !important;
 }
+
+.custom-tooltip {
+ font-size: 15px !important;
+ pointer-events: auto !important;
+}
+
+.custom-tooltip :hover {
+    visibility: visible !important;
+    opacity: 1 !important;
+}

@@ -8,6 +8,7 @@ import {useLocation} from "react-router-dom";
 import DataParser, {formatValue, toTitle} from "../../utils/dataParser";
 import {Button, Modal} from "react-bootstrap";
 import InfiniteScroll from "react-infinite-scroll-component";
+import ReactTooltip from "react-tooltip";
 
 
 const apiClient = new ApiClient();
@@ -102,7 +103,18 @@ const PaymentRow = ({singlePaymentData}) => {
                 <td>{transactionDate}</td>
                 <td>{formatValue(amount)}</td>
                 <td>{transactionType}</td>
-                <td>{note}</td>
+                <td>
+                    {note && note.length > 0 &&
+                        <a data-tip={note}>
+                            <ReactTooltip />
+                            <button type="button"
+                                    className="btn btn-sm btn-secondary"
+                            >
+                                Click Here!
+                            </button>
+                        </a>
+                    }
+                </td>
             </tr>
        </Fragment>
     )};
@@ -199,14 +211,13 @@ const MoreTransactionsModal = ({paymentName, showMorePayments, setShowMorePaymen
 
 const PaymentSummary = ({requiredAmount, contributionId, currentValue, paymentName}) => {
     const unpaidValue = requiredAmount ? - (requiredAmount - currentValue ): 0;
-    const nonRequiredMinPaymentClass = currentValue < 0 ? "need-more-payment" : "no-payment-due";
     const displayCurrentAmount = currentValue;
-    const [latestPaymentDisplayClass, setLatestPaymentDisplayClass] = useState("no-payment-due");
     const [latestAmountDisplay, setLatestAmountDisplay] = useState(0);
     const [hasAtLeastOnePayment, setHasAtLeastOnePayment] = useState(true);
     const [transactionType, setTransactionType] = useState("Debit");
     const [transactionDate, setTransactionDate] = useState(null);
     const [showMorePayments, setShowMorePayments] = useState(false);
+    const [paymentNote, setPaymentNote] = useState("");
 
     useEffect(async () => {
         const paymentData = await apiClient.get(
@@ -221,10 +232,11 @@ const PaymentSummary = ({requiredAmount, contributionId, currentValue, paymentNa
                 const latestPaymentAmount = dataParser.data.data[0].attributes.amount;
                 const transType = dataParser.data.data[0].attributes.payment_type;
                 const transDate = dataParser.data.data[0].attributes.created_at;
-                setLatestPaymentDisplayClass(latestPaymentAmount < 0 ? "need-more-payment" : "no-payment-due");
+                const note = dataParser.data.data[0].attributes.note;
                 setLatestAmountDisplay(latestPaymentAmount);
                 setTransactionType(transType === "PAYMENT" ? "Credit" : "Debit");
                 setTransactionDate(new Date(transDate).toLocaleDateString());
+                setPaymentNote(note && note.length > 0 ? note : "");
             } else {
                 setHasAtLeastOnePayment(false);
             }
@@ -343,7 +355,16 @@ const PaymentSummary = ({requiredAmount, contributionId, currentValue, paymentNa
                                                     <tr>
                                                         <th scope="row" className="payment-info-text">Note</th>
                                                         <td className="text-end payment-info-text">
-                                                            {transactionDate}
+                                                            {paymentNote.length > 0 &&
+                                                                <a data-tip={paymentNote}>
+                                                                    <ReactTooltip />
+                                                                    <button type="button"
+                                                                            className="btn btn-sm btn-secondary"
+                                                                    >
+                                                                        Click Here!
+                                                                    </button>
+                                                                </a>
+                                                            }
                                                         </td>
                                                     </tr>
                                                 </tbody>
