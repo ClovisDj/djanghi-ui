@@ -6,9 +6,8 @@ import TokenManager from "../../utils/authToken";
 import ApiClient from "../../utils/apiConfiguration";
 
 
-const apiClient = new ApiClient();
-
-const Dashboard = () => {
+const BaseDashboard = ({ ComponentToRender }) => {
+    const apiClient = new ApiClient();
     const [user, setUser] = useState(null);
     const [association, setAssociation] = useState(null);
     const tokenManager = new TokenManager();
@@ -22,7 +21,9 @@ const Dashboard = () => {
             const data = await apiClient.get(`users/${tokenManager.getUserId()}`);
             if (data) {
                 await setUser(data.data);
-            await setAssociation(data.included[0]);
+                await setAssociation(data.included[0]);
+            } else {
+                navigate('/login', { replace: true});
             }
         }
     }, [location]);
@@ -33,8 +34,13 @@ const Dashboard = () => {
                 user={user}
                 association={association}
             />
+            <main id="main" className="main">
+                <section className="section">
+                    { <ComponentToRender /> }
+                </section>
+            </main>
         </Fragment>
     );
 };
 
-export default Dashboard;
+export default BaseDashboard;

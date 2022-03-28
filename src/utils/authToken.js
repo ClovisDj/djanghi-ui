@@ -67,7 +67,7 @@ class TokenManager {
 
     shouldRefreshAuthToken = () => {
         const authExpirationDate = this.authTokenExpirationDate();
-        return authExpirationDate && Math.abs(new Date() - authExpirationDate) / 1000 <= 60;
+        return authExpirationDate && authExpirationDate <= new Date();
     }
 
     storeTokens = (responseData) => {
@@ -86,7 +86,7 @@ class TokenManager {
     }
 
     isAuthenticated = () => {
-        return this.getStoredAuthToken() && !this.tokenIsExpired(this.getStoredAuthToken());
+        return this.getStoredAuthToken() && !this.tokenIsExpired(this.getStoredAuthToken()) || this.canRefreshAuthToken();
     }
 }
 

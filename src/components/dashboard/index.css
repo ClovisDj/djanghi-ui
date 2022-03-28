@@ -1,0 +1,101 @@
+
+.payments-modal-body {
+    position: relative;
+    flex: 1 1 auto;
+    padding: 0 1rem;
+    overflow-y: auto;
+    background: white;
+}
+
+.payment-modal-header {
+    background-color: #ffffff;
+    border: none;
+    z-index: 100;
+    font-weight: 500;
+    color: #012970;
+    font-family: "Poppins", sans-serif;
+    box-shadow: 0 0 30px rgba(1, 41, 112, 0.1);
+    padding-right: 0;
+    margin-right: 0;
+}
+
+.credit-payment {
+    color: white;
+    background: rgb(54, 162, 235);
+}
+
+.debit-payment {
+    color: white;
+    background: rgb(253,82,116);
+}
+
+.custom-modal-header {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: space-between;
+    padding: .5rem .7rem;
+    border-bottom: 1px solid #dee2e6;
+    border-top-left-radius: calc(.3rem - 1px);
+    border-top-right-radius: calc(.3rem - 1px);
+}
+
+.custom-modal-footer {
+    display: flex;
+    flex-wrap: wrap;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: flex-end;
+    padding: .35rem;
+    border-top: 1px solid #dee2e6;
+    border-bottom-right-radius: calc(.3rem - 1px);
+    border-bottom-left-radius: calc(.3rem - 1px);
+}
+
+.table thead th{
+    background: white;
+}
+
+.table thead th {
+    padding: 5px;
+    font-size: 16px;
+    font-weight: 500;
+    color: #012970;
+    font-family: "Poppins", sans-serif;
+    margin-bottom: 0
+}
+
+.payment-details-modal {
+    height: 50% !important;
+    overflow-y: scroll !important;
+}
+
+.latest-payment-table {
+    margin-bottom: 0;
+}
+
+.payment-detail-row {
+  padding: .3rem 0;
+}
+
+.payment-info-text {
+  font-size: 18px;
+  font-weight: 400;
+  color: #012970;
+  font-family: "Poppins", sans-serif;
+  margin-bottom: 0!important;
+}
+
+th, td {
+    padding: .3rem !important;
+}
+
+.custom-tooltip {
+ font-size: 15px !important;
+ pointer-events: auto !important;
+}
+
+.custom-tooltip :hover {
+    visibility: visible !important;
+    opacity: 1 !important;
+}
