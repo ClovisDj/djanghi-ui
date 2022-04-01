@@ -5,10 +5,11 @@ import AnimatedNumber from "animated-number-react";
 import ApiClient from "../../utils/apiConfiguration";
 import TokenManager from "../../utils/authToken";
 import {useLocation} from "react-router-dom";
-import DataParser, {formatValue, toTitle} from "../../utils/dataParser";
+import DataParser from "../../utils/dataParser";
 import {Button, Modal} from "react-bootstrap";
 import InfiniteScroll from "react-infinite-scroll-component";
 import ReactTooltip from "react-tooltip";
+import {formatValue, toTitle} from "../../utils/utils";
 
 
 const apiClient = new ApiClient();

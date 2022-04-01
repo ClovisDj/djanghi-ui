@@ -1,6 +1,6 @@
 import React, {Fragment} from 'react';
 import {isMobile} from "react-device-detect";
-import {toTitle} from "../../utils/dataParser";
+import {toTitle} from "../../utils/utils";
 
 
 const TopNavBar = ({handleToggleMenu, handleLogOut, user, association}) => {
