@@ -4,10 +4,12 @@ import jwt_decode from "jwt-decode";
 class TokenManager {
     #authTokenKey;
     #refreshTokenKey;
+    #authUser;
 
     constructor() {
         this.#authTokenKey = "djanghiAuthToken";
         this.#refreshTokenKey = "djanghiRefreshToken";
+        this.#authUser = "djanghiAuthUser";
     }
 
     storeToken = (tokenKey, token) => {
@@ -16,6 +18,10 @@ class TokenManager {
 
     storeAuthToken = (token) => {
         this.storeToken(this.#authTokenKey, token);
+    }
+
+    storeAuthUser = (userData) => {
+        this.storeToken(this.#authUser, JSON.stringify(userData));
     }
 
     removeStoredToken = (tokenKey) => {
@@ -40,6 +46,11 @@ class TokenManager {
 
     getStoredRefreshToken = () => {
         return localStorage.getItem(this.#refreshTokenKey);
+    }
+
+    getAuthUser = () => {
+        // Don't know why but this object needs to be deserialized twice
+        return JSON.parse(JSON.parse(localStorage.getItem(this.#authUser)));
     }
 
     decodeToken = (token) => {

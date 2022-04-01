@@ -1,7 +1,6 @@
 import React, {Fragment, useEffect, useState} from "react";
 import {useLocation, useNavigate} from "react-router-dom";
 
-import axiosInstance from "../utils/apiConfiguration";
 import TokenManager from "../utils/authToken";
 import ApiClient from "../utils/apiConfiguration";
 
@@ -37,7 +36,9 @@ const Login = () => {
         const data = await apiClient.post("obtain_token", loginData);
         if (data) {
             tokenManager.storeTokens(data.data);
-            navigate("/", { replace: true});
+            const userData = await apiClient.get(`users/${tokenManager.getUserId()}`);
+            await tokenManager.storeAuthUser(JSON.stringify(userData));
+            navigate("/dashboard", { replace: true});
         } else {
             setLoginError('No account found, please verify your credentials');
         }

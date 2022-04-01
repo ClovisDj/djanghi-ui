@@ -1,34 +1,80 @@
-import {Fragment, useState} from "react";
-import {useNavigate} from "react-router-dom";
+import {Fragment, useEffect, useState} from "react";
+import {useLocation, useNavigate} from "react-router-dom";
 
 
-const SideNavBar = ({user, association}) => {
+const SideNavBar = ({user}) => {
     let navigate = useNavigate();
     const userIsAdmin = (user && user.attributes.hasOwnProperty("is_admin")) ? user.attributes.is_admin : false;
-    let [mainLiActiveKey, setMainLiActiveKey] = useState("M1");
+    const userIsFullAdmin = (user && user.attributes.hasOwnProperty("is_full_admin")) ? user.attributes.is_full_admin : false;
+    const userIsPaymentAdmin = (user && user.attributes.hasOwnProperty("is_payment_manager")) ? user.attributes.is_payment_manager : false;
+    const [mainLiActiveKey, setMainLiActiveKey] = useState("M1");
+    const [associationMenuShowClass, setAssociationMenuShowClass] = useState("");
     const sideActiveClass = "side-active";
     const actionsMap = {
-        M1: () => {navigate('/dashboard', { replace: true})},
-        M2: () => {navigate('/profile', { replace: true})},
+        M1: () => {navigate('/dashboard')},
+        M2: () => {navigate('/profile')},
         M3: () => {},
+        M4: () => {
+            const state = {
+                        mainLiActiveKey: mainLiActiveKey,
+                        associationMenuShowClass: associationMenuShowClass
+                    };
+            navigate('/membership-fields',
+                {
+                    state: {
+                        mainLiActiveKey: "M4",
+                        associationMenuShowClass: associationMenuShowClass
+                    }
+                }
+            )
+        },
+        M5: () => {navigate('/membership-payments')},
     };
-    const handleSideNavClick = (liKey) => {
-      setMainLiActiveKey(liKey);
-      actionsMap[liKey]();
+    const handleSideNavClick = async (liKey) => {
+      await setMainLiActiveKey(liKey);
+      await actionsMap[liKey]();
+
+      if (liKey === "M3") {
+          setAssociationMenuShowClass(associationMenuShowClass ? "" : "show");
+      }
     }
+
+    const location = useLocation();
+
+    useEffect(async () => {
+        if (location.state) {
+            setMainLiActiveKey(location.state.mainLiActiveKey);
+            setAssociationMenuShowClass(location.state.associationMenuShowClass);
+        }
+    }, [location]);
 
     const associationMenu = (userIsAdmin &&
         <li className="nav-item" style={{cursor: "pointer"}} key="M3">
-            <a className={"nav-link collapsed " + (mainLiActiveKey === "M3"? sideActiveClass: "")}
+            <a className={"nav-link collapsed " + (mainLiActiveKey === "M3" ? sideActiveClass : "")}
                data-bs-target="#components-nav" data-bs-toggle="collapse" onClick={() => handleSideNavClick("M3")}>
                 <i className="bi bi-menu-button-wide" /><span>Association Menu</span><i className="bi bi-chevron-down ms-auto" />
             </a>
 
-            <ul id="components-nav" className="nav-content collapse " data-bs-parent="#sidebar-nav">
-                <li>
-                    <a><i className="bi bi-circle" /><span className="text-capitalize">MemberShip Payments</span></a>
-                </li>
-            </ul>
+                <ul id="components-nav" className={"nav-content collapse " + associationMenuShowClass} data-bs-parent="#sidebar-nav">
+                    {userIsFullAdmin &&
+                        <li key="M4">
+                            <a className={mainLiActiveKey === "M4"? sideActiveClass: ""}
+                               onClick={() => handleSideNavClick("M4")}>
+                                <i className={"bi bi-circle "} />
+                                <span className="text-capitalize">MemberShip Fields</span>
+                            </a>
+                        </li>
+                    }
+                    {(userIsFullAdmin || userIsPaymentAdmin) &&
+                        <li key="M5">
+                            <a onClick={() => handleSideNavClick("M5")}>
+                                <i className={"bi bi-circle " + (mainLiActiveKey === "M4"? sideActiveClass: "")} />
+                                <span className="text-capitalize">MemberShip Payments</span>
+                            </a>
+                        </li>
+                    }
+                </ul>
+
         </li>
     );
 

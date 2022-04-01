@@ -1,5 +1,6 @@
 import React, {Fragment} from 'react';
 import {isMobile} from "react-device-detect";
+import {toTitle} from "../../utils/dataParser";
 
 
 const TopNavBar = ({handleToggleMenu, handleLogOut, user, association}) => {
@@ -13,7 +14,7 @@ const TopNavBar = ({handleToggleMenu, handleLogOut, user, association}) => {
                     <a className="logo d-flex align-items-center">
                         <img src={process.env.PUBLIC_URL + "/favicon.ico"} alt=""/>
                         {association &&
-                            <span className="d-none d-lg-block">{association.attributes.label}</span>
+                            <span className="d-none d-lg-block">{toTitle(association.attributes.label)}</span>
                         }
                     </a>
                     {isMobile &&
@@ -31,7 +32,7 @@ const TopNavBar = ({handleToggleMenu, handleLogOut, user, association}) => {
                                 <img src="https://img.icons8.com/pastel-glyph/64/000000/person-male--v1.png"/>
                                 {user &&
                                     <span className="d-none d-md-block ps-2">
-                                        {firstName} {lastName}
+                                        {toTitle(firstName)} {toTitle(lastName)}
                                     </span>
                                 }
                             </a>
@@ -40,7 +41,7 @@ const TopNavBar = ({handleToggleMenu, handleLogOut, user, association}) => {
                                 <li className="dropdown-header">
                                     { user &&
                                         <h6>
-                                            {firstName} {lastName}
+                                            {toTitle(firstName)} {toTitle(lastName)}
                                         </h6>
                                     }
                                 </li>
