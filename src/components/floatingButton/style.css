@@ -1,0 +1,28 @@
+.floating-button {
+    position: fixed;
+    right: 2.1875rem;
+    bottom: 2.1875rem;
+    z-index: 1030;
+    display: flex;
+    flex-flow: column-reverse nowrap;
+    align-items: center;
+    padding: .9375rem 20px 20px;
+    margin-bottom: 0;
+    height: auto;
+    overflow: hidden;
+}
+
+#floating-button-plus a {
+    background-color: rgb(253,82,116);
+    position: relative;
+    transform: scale(1.2);
+    z-index: 10;
+}
+
+#floating-button-plus a i {
+  transform: scale(1.8);
+}
+
+.hidden {
+    display: none;
+}

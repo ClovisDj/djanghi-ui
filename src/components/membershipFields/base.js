@@ -5,6 +5,7 @@ import TokenManager from "../../utils/authToken";
 import AnimatedNumber from "animated-number-react";
 import {formatValue} from "../../utils/utils";
 import ReactTooltip from "react-tooltip";
+import FloatingButton from "../floatingButton/floatingButton";
 
 const apiClient = new ApiClient();
 const tokenManager = new TokenManager();
@@ -110,10 +111,18 @@ const BaseMembershipFields = () => {
          return renderedListOfElements;
      };
 
+     const handlePlusButtonClick = () => {
+        // To Do: add create modal
+     };
+
 
     return(
         <Fragment>
             {elements()}
+            <FloatingButton buttonType={"plus"}
+                            handleClick={handlePlusButtonClick}
+                            shouldStatus={true} tooltipText={"Add more fields!"}
+            />
         </Fragment>
     );
 };

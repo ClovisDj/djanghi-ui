@@ -29,3 +29,8 @@
   font-family: "Poppins", sans-serif;
   margin-bottom: 0;
 }
+
+.btn-secondary {
+  color: #fff;
+  background-color: #606060 !important;
+}
