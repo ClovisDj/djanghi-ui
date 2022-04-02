@@ -15,10 +15,6 @@ const SideNavBar = ({user}) => {
         M2: () => {navigate('/profile')},
         M3: () => {},
         M4: () => {
-            const state = {
-                        mainLiActiveKey: mainLiActiveKey,
-                        associationMenuShowClass: associationMenuShowClass
-                    };
             navigate('/membership-fields',
                 {
                     state: {

@@ -65,13 +65,13 @@
 .need-more-payment {
   font-size: 1.2rem;
   color: rgb(253,82,116)!important;
-  font-weight: 300;
+  font-weight: 450;
 }
 
 .no-payment-due {
   font-size: 1.2rem;
   color: rgb(54, 162, 235);
-  font-weight: 300;
+  font-weight: 500;
 }
 
 .card-title {
