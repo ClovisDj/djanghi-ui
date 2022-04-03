@@ -1,12 +1,16 @@
 
 .contrib-card {
   margin-bottom: 30px;
-  padding: 0 .5rem;
+  padding: .7rem;
   border: none;
   border-radius: 5px;
   background-color: #ffffff;
-  height: 300px;
+  height: auto;
   box-shadow: 0 0 30px rgba(1, 41, 112, 0.1);
+}
+
+.contrib-table-div {
+  height: 16rem;
 }
 
 .no-payment-due h5 {
@@ -33,4 +37,13 @@
 .btn-secondary {
   color: #fff;
   background-color: #606060 !important;
+}
+
+.btn-danger {
+  color: #fff;
+  background-color: rgb(253,82,116) !important;
+}
+
+.mr-auto {
+  margin-right: auto;
 }

@@ -12,8 +12,7 @@ const FloatingButton = ({ buttonType, handleClick, shouldStatus, tooltipText}) =
 
     const handleOnclick = (event) => {
         event.preventDefault();
-        setDisplayStatus(false);
-        handleClick()
+        handleClick();
     };
 
     return (

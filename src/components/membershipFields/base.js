@@ -2,6 +2,7 @@ import {Fragment, useEffect, useState} from "react";
 
 import FloatingButton from "../floatingButton/floatingButton";
 import SingleContributionDisplay from "./contribCard";
+import CreateEditModal from "./createEditModal";
 
 import DataParser from "../../utils/dataParser";
 import ApiClient from "../../utils/apiConfiguration";
@@ -22,13 +23,18 @@ const RowOfThreeContributions = ({ threeContributions }) => {
 
 const BaseMembershipFields = () => {
     const [contributionFields, setContributionFields] = useState({data: []});
+    const [showModal, setShowModal] = useState(false);
 
-     useEffect(async () => {
+    const fetchContribFieldsData = async () => {
         const data = await apiClient.get("contribution_fields");
         if (data) {
             const dataParser = await new DataParser(data);
             setContributionFields(dataParser.data);
         }
+    };
+
+     useEffect(async () => {
+        await fetchContribFieldsData();
     }, []);
 
      const elements = () => {
@@ -43,17 +49,23 @@ const BaseMembershipFields = () => {
          return renderedListOfElements;
      };
 
-     const handlePlusButtonClick = () => {
-        // To Do: add create modal
+     const handlePlusButtonClick = async () => {
+        await setShowModal(true);
      };
 
 
     return(
         <Fragment>
             {elements()}
+            <CreateEditModal modalType={"Create Contribution Field"}
+                             showModal={showModal}
+                             setShowModal={setShowModal}
+                             contribData={null}
+            />
             <FloatingButton buttonType={"plus"}
                             handleClick={handlePlusButtonClick}
-                            shouldStatus={true} tooltipText={"Add more fields!"}
+                            shouldStatus={true}
+                            tooltipText={"Add more fields!"}
             />
         </Fragment>
     );

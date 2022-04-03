@@ -1,5 +1,7 @@
 import {Fragment, useEffect, useState} from "react";
 import {formatValue} from "../../utils/utils";
+import {Button} from "react-bootstrap";
+import CreateEditModal from "./createEditModal";
 
 
 const SingleContributionDisplay = ({ contribution }) => {
@@ -7,6 +9,7 @@ const SingleContributionDisplay = ({ contribution }) => {
     const [isRequired, setIsRequired] = useState(true);
     const [canOptIn, setCanOptIn] = useState(true);
     const [requiredAmount, setRequiredAmount] = useState(0);
+    const [showEditModal, setShowEditModal] = useState(false);
 
     useEffect(async () => {
         setName(contribution.attributes.name);
@@ -17,12 +20,20 @@ const SingleContributionDisplay = ({ contribution }) => {
         }
     }, []);
 
+    const openEditModal = () => {
+        setShowEditModal(true);
+    };
+
+    const handleClickArchive = () => {
+        // setShowEditModal(true);
+    };
+
     return (
         <Fragment>
             <div className="col-lg-3">
                 <div className="contrib-card">
-                    <div className="table-responsive payments-table">
-                        <table id="contrib-card" className="table table-borderless latest-payment-table">
+                    <div className="table-responsive contrib-table-div">
+                        <table id="contrib-card" className="table table-borderless">
                             <tbody>
                                 <tr>
                                     <th scope="row" className="card-title text-start">Name:</th>
@@ -61,8 +72,41 @@ const SingleContributionDisplay = ({ contribution }) => {
                             </tbody>
                         </table>
                     </div>
+                    <div className="table-responsive payments-table">
+                        <table id="contrib-card" className="table table-borderless latest-payment-table">
+                            <tbody>
+                                <tr>
+                                    <th scope="row" className="card-title text-start">
+                                        <Button type="button"
+                                                className="btn-sm btn-danger"
+                                                onClick={() => handleClickArchive()}
+                                        >
+                                            Archive
+                                        </Button>
+                                    </th>
+                                    <td className="text-end">
+                                        <Button
+                                            className="btn btn-secondary btn-sm"
+                                            onClick={() => openEditModal()}
+                                        >
+                                            Edit
+                                        </Button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
+
+            {showEditModal &&
+                <CreateEditModal modalType={"Edit Contribution Field"}
+                                 showModal={showEditModal}
+                                 setShowModal={setShowEditModal}
+                                 contribData={contribution}
+                />
+            }
+
         </Fragment>
     );
 };
