@@ -1,19 +1,44 @@
 import {Fragment, useState} from "react";
 import {Button, Modal} from "react-bootstrap";
+import { v4 as uuidv4 } from 'uuid';
 
+import ApiClient from "../../utils/apiConfiguration";
 
-const CreateEditModal = ({ modalType, showModal, setShowModal, contribData }) => {
+const apiClient = new ApiClient();
+
+const CreateEditModal = ({ modalType, showModal, setShowModal, contribData, shouldRefreshData, setShouldRefreshData }) => {
     const attributes = contribData ? contribData.attributes : null;
     const [name, setName] = useState(Boolean(attributes) ? attributes.name : "");
     const [requiredAmount, setRequiredAmount] = useState(Boolean(attributes) ? attributes.required_amount : 0);
     const [isRequired, setIsRequired] = useState(Boolean(attributes) ? attributes.is_required : true);
     const [canOptIn, setCanOptIn] = useState(Boolean(attributes) ? attributes.member_can_opt_in : false);
+    const [errorToDisplay, setErrorToDisplay] = useState("");
 
-    const handleHideModal = async () => {
+    const handleSave = async () => {
+        const endpoint = contribData ? `contribution_fields/${contribData.id}` : "contribution_fields";
+        const httpMethod = contribData ? "patch" : "post";
+        const requestData = {
+            name: name,
+            is_required: isRequired,
+            required_amount: requiredAmount,
+            member_can_opt_in: canOptIn
+        };
+
+        const data = await apiClient[httpMethod](endpoint, requestData);
+        if (data.hasOwnProperty("errors")) {
+            setErrorToDisplay(data.errors[0].detail);
+        } else {
+            setShowModal(false);
+            setShouldRefreshData(uuidv4());
+        }
+    };
+
+    const handleHideModal = () => {
         setShowModal(false);
     };
 
     const handleNameChange = (event) => {
+        setErrorToDisplay("");
         setName(event.target.value);
     };
 
@@ -58,10 +83,16 @@ const CreateEditModal = ({ modalType, showModal, setShowModal, contribData }) =>
                                             <td className="text-start">
                                                 <input className="form-control"
                                                        type="text"
-                                                       maxLength={25}
+                                                       maxLength={30}
                                                        value={name}
                                                        onChange={handleNameChange}
+                                                       required={true}
                                                 />
+                                                {errorToDisplay &&
+                                                        <div className="error-display">
+                                                            {errorToDisplay}
+                                                        </div>
+                                                    }
                                             </td>
                                         </tr>
                                         <tr>
@@ -88,12 +119,13 @@ const CreateEditModal = ({ modalType, showModal, setShowModal, contribData }) =>
                                             </td>
                                         </tr>
                                         <tr>
-                                            <th scope="row" className="card-title text-end">Can Opt-In:</th>
+                                            <th scope="row" className="card-title text-end">Members can Opt-In:</th>
                                             <td className="text-start">
                                                 <div className="form-check form-switch">
                                                     <input className="form-check-input"
                                                            type="checkbox"
                                                            value={canOptIn}
+                                                           checked={canOptIn}
                                                            onChange={handleOptInChange}
                                                     />
                                                 </div>
@@ -115,7 +147,7 @@ const CreateEditModal = ({ modalType, showModal, setShowModal, contribData }) =>
                         </Button>
                         <Button
                             className="btn btn-danger btn-sm"
-                            onClick={() => handleHideModal()}
+                            onClick={() => handleSave()}
                         >
                             Save
                         </Button>

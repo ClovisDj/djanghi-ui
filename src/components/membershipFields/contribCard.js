@@ -4,10 +4,10 @@ import {Button} from "react-bootstrap";
 import CreateEditModal from "./createEditModal";
 
 
-const SingleContributionDisplay = ({ contribution }) => {
+const SingleContributionDisplay = ({ contribution, shouldRefreshData, setShouldRefreshData }) => {
     const [name, setName] = useState("");
     const [isRequired, setIsRequired] = useState(true);
-    const [canOptIn, setCanOptIn] = useState(true);
+    const [canOptIn, setCanOptIn] = useState(false);
     const [requiredAmount, setRequiredAmount] = useState(0);
     const [showEditModal, setShowEditModal] = useState(false);
 
@@ -30,7 +30,7 @@ const SingleContributionDisplay = ({ contribution }) => {
 
     return (
         <Fragment>
-            <div className="col-lg-3">
+            <div className="col-lg-4">
                 <div className="contrib-card">
                     <div className="table-responsive contrib-table-div">
                         <table id="contrib-card" className="table table-borderless">
@@ -104,6 +104,8 @@ const SingleContributionDisplay = ({ contribution }) => {
                                  showModal={showEditModal}
                                  setShowModal={setShowEditModal}
                                  contribData={contribution}
+                                 shouldRefreshData={shouldRefreshData}
+                                 setShouldRefreshData={setShouldRefreshData}
                 />
             }
 

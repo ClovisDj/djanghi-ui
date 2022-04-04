@@ -43,7 +43,11 @@ class ApiClient {
             responseData = await this.axios[method](url, data);
         }
         catch (error) {
-            console.log(error);
+            if (400 <= error.response.status < 500) {
+                responseData = error.response;
+            } else {
+                console.log(error.response);
+            }
         }
         return responseData ? responseData.data : null;
     }

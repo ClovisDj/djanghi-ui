@@ -13,6 +13,10 @@
   height: 16rem;
 }
 
+.contrib-table-div .table-borderless {
+  margin-bottom: 0;
+}
+
 .no-payment-due h5 {
   margin: 0;
 }
