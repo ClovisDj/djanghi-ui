@@ -9,7 +9,7 @@ const apiClient = new ApiClient();
 const CreateEditModal = ({ modalType, showModal, setShowModal, contribData, shouldRefreshData, setShouldRefreshData }) => {
     const attributes = contribData ? contribData.attributes : null;
     const [name, setName] = useState(Boolean(attributes) ? attributes.name : "");
-    const [requiredAmount, setRequiredAmount] = useState(Boolean(attributes) ? attributes.required_amount : 0);
+    const [requiredAmount, setRequiredAmount] = useState(Boolean(attributes) ? attributes.required_amount : null);
     const [isRequired, setIsRequired] = useState(Boolean(attributes) ? attributes.is_required : true);
     const [canOptIn, setCanOptIn] = useState(Boolean(attributes) ? attributes.member_can_opt_in : false);
     const [errorToDisplay, setErrorToDisplay] = useState("");

@@ -17,7 +17,7 @@ const PaymentSummary = ({requiredAmount, contributionId, currentValue, paymentNa
     const unpaidValue = requiredAmount ? - (requiredAmount - currentValue ): 0;
     const displayCurrentAmount = currentValue;
     const [latestAmountDisplay, setLatestAmountDisplay] = useState(0);
-    const [hasAtLeastOnePayment, setHasAtLeastOnePayment] = useState(true);
+    const [hasAtLeastOnePayment, setHasAtLeastOnePayment] = useState(false);
     const [transactionType, setTransactionType] = useState("Debit");
     const [transactionDate, setTransactionDate] = useState(null);
     const [showMorePayments, setShowMorePayments] = useState(false);
@@ -199,8 +199,8 @@ const PaymentSummary = ({requiredAmount, contributionId, currentValue, paymentNa
                             }
 
                             {!hasAtLeastOnePayment &&
-                                <div className="row">
-                                    <div className="no-payment">
+                                <div className="row no-payment">
+                                    <div className="col payment-info-text text-center">
                                         No Payment To Display!
                                     </div>
                                 </div>

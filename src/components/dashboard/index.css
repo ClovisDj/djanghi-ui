@@ -205,3 +205,7 @@ th, td {
     visibility: visible !important;
     opacity: 1 !important;
 }
+
+.no-payment {
+    margin-top: 5rem;
+}
