@@ -37,6 +37,7 @@ const PaymentSummary = ({requiredAmount, contributionId, currentValue, paymentNa
                 const transType = dataParser.data.data[0].attributes.payment_type;
                 const transDate = dataParser.data.data[0].attributes.created_at;
                 const note = dataParser.data.data[0].attributes.note;
+                setHasAtLeastOnePayment(true);
                 setLatestAmountDisplay(latestPaymentAmount);
                 setTransactionType(transType === "PAYMENT" ? "Credit" : "Debit");
                 setTransactionDate(new Date(transDate).toLocaleDateString());

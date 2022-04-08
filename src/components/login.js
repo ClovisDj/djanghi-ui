@@ -34,7 +34,7 @@ const Login = () => {
         event.preventDefault();
 
         const data = await apiClient.post("obtain_token", loginData);
-        if (data) {
+        if (data.data) {
             tokenManager.storeTokens(data.data);
             const userData = await apiClient.get(`users/${tokenManager.getUserId()}`);
             await tokenManager.storeAuthUser(JSON.stringify(userData));

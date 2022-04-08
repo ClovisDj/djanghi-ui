@@ -209,3 +209,14 @@ th, td {
 .no-payment {
     margin-top: 5rem;
 }
+
+.required-payment-tooltip {
+    font-size: 12px !important;
+    pointer-events: auto !important;
+    /*font-family: "Droid Sans" !important;*/
+}
+
+.required-payment-tooltip :hover {
+    visibility: visible !important;
+    opacity: 1 !important;
+}

@@ -3,7 +3,7 @@ export default class DataParser {
     #parsedData;
     constructor(rawData) {
         this.rawData = rawData;
-        this.data = this.parse();
+        this.data = this.parse() || [];
     }
 
     getRelationshipId = (relationshipObject) => {

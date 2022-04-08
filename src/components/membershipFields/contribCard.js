@@ -6,8 +6,8 @@ import CreateEditModal from "./createEditModal";
 
 const SingleContributionDisplay = ({ contribution, shouldRefreshData, setShouldRefreshData }) => {
     const [name, setName] = useState("");
-    const [isRequired, setIsRequired] = useState(true);
-    const [canOptIn, setCanOptIn] = useState(false);
+    const [isRequired, setIsRequired] = useState(contribution ? contribution.attributes.is_required : true);
+    const [canOptIn, setCanOptIn] = useState(contribution ? contribution.attributes.member_can_opt_in : false);
     const [requiredAmount, setRequiredAmount] = useState(0);
     const [showEditModal, setShowEditModal] = useState(false);
 

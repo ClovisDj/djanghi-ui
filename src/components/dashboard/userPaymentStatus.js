@@ -9,18 +9,28 @@ import ApiClient from "../../utils/apiConfiguration";
 import TokenManager from "../../utils/authToken";
 import DataParser from "../../utils/dataParser";
 import {arrayDifference, getIdsFromArray, getObjectById, toTitle} from "../../utils/utils";
+import ReactTooltip from "react-tooltip";
 
 const apiClient = new ApiClient();
 const tokenManager = new TokenManager();
 
 
-const PaymentTitleHeader = ({paymentName}) => {
+const PaymentTitleHeader = ({ paymentName, isRequired }) => {
+    const dataTipMessage = "This field is required for your good standing membership!";
     return (
         <Fragment>
             <div className="row payment-title-row">
                 <div className="col">
                     <div className="title-card align-bottom">
-                        <h5 className="card-title card-title-text text-center align-bottom">{toTitle(paymentName)}</h5>
+                        <h5 className="card-title card-title-text text-center align-bottom">
+                            {toTitle(paymentName)}
+                            &nbsp;
+                            {isRequired &&
+                                <i className="fas fa-info-circle" data-tip={dataTipMessage}>
+                                    <ReactTooltip className="required-payment-tooltip" />
+                                </i>
+                            }
+                        </h5>
                     </div>
                 </div>
             </div>
@@ -33,12 +43,13 @@ const SinglePaymentStatus = ({paymentData}) => {
     const requiredAmount = paymentData.relationships.membership_payment_type.attributes.required_amount;
     const contributionId = paymentData.relationships.membership_payment_type.id;
     const currentValue = paymentData.attributes.current_value;
+    const isRequired = paymentData.relationships.membership_payment_type.attributes.is_required;
 
     return (
         <Fragment>
-            <PaymentTitleHeader paymentName={paymentName}/>
+            <PaymentTitleHeader paymentName={paymentName} isRequired={isRequired} />
             <div className="row">
-                <PaymentChart paymentData={paymentData}/>
+                <PaymentChart paymentData={paymentData} />
                 <PaymentSummary
                     contributionId={contributionId}
                     currentValue={currentValue}
@@ -76,7 +87,7 @@ const UserPaymentStatus = () => {
             const dataParser = new DataParser(paymentData);
             paymentData = dataParser.data;
             const contribIds = getIdsFromArray(contribData.data);
-            const includedContribIds = getIdsFromArray(dataParser.data.included);
+            const includedContribIds = getIdsFromArray(paymentData.included || []);
             const idsWithoutPaymentsStatus = arrayDifference(contribIds, includedContribIds);
 
             if (idsWithoutPaymentsStatus.length > 0) {

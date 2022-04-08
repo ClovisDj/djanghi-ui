@@ -9,10 +9,12 @@ const apiClient = new ApiClient();
 const CreateEditModal = ({ modalType, showModal, setShowModal, contribData, shouldRefreshData, setShouldRefreshData }) => {
     const attributes = contribData ? contribData.attributes : null;
     const [name, setName] = useState(Boolean(attributes) ? attributes.name : "");
-    const [requiredAmount, setRequiredAmount] = useState(Boolean(attributes) ? attributes.required_amount : null);
+    const [requiredAmount, setRequiredAmount] = useState(Boolean(attributes) ? attributes.required_amount : 0);
     const [isRequired, setIsRequired] = useState(Boolean(attributes) ? attributes.is_required : true);
     const [canOptIn, setCanOptIn] = useState(Boolean(attributes) ? attributes.member_can_opt_in : false);
     const [errorToDisplay, setErrorToDisplay] = useState("");
+    const [requiredAmountIsDisabled, setRequiredAmountIsDisabled] = useState(false);
+    const [canOptInIsDisabled, setCanOptInIsDisabled] = useState(true);
 
     const handleSave = async () => {
         const endpoint = contribData ? `contribution_fields/${contribData.id}` : "contribution_fields";
@@ -44,10 +46,29 @@ const CreateEditModal = ({ modalType, showModal, setShowModal, contribData, shou
 
     const handleIsRequiredChange = (event) => {
         setIsRequired(event.target.checked);
+        if (event.target.checked) {
+            setRequiredAmountIsDisabled(false);
+            setCanOptInIsDisabled(true);
+            setCanOptIn(false);
+        } else {
+            setRequiredAmountIsDisabled(true);
+            setCanOptInIsDisabled(false);
+            setRequiredAmount(0);
+        }
     };
 
     const handleOptInChange = (event) => {
         setCanOptIn(event.target.checked);
+        if (event.target.checked) {
+            setRequiredAmountIsDisabled(false);
+            setRequiredAmount(0);
+        } else if (isRequired) {
+            setRequiredAmountIsDisabled(false);
+            setRequiredAmount(0);
+        } else if (!isRequired) {
+            setRequiredAmountIsDisabled(true);
+            setRequiredAmount(0);
+        }
     };
 
     const handleRequiredAmountChange = (event) => {
@@ -111,23 +132,43 @@ const CreateEditModal = ({ modalType, showModal, setShowModal, contribData, shou
                                         <tr>
                                             <th scope="row" className="card-title text-end">Required Amount:&nbsp; $</th>
                                             <td className="text-start">
-                                                <input className="form-control"
-                                                       type="number"
-                                                       value={requiredAmount}
-                                                       onChange={handleRequiredAmountChange}
+                                                {!requiredAmountIsDisabled &&
+                                                    <input className="form-control"
+                                                           type="number"
+                                                           value={requiredAmount}
+                                                           onChange={handleRequiredAmountChange}
                                                     />
+                                                }
+                                                {requiredAmountIsDisabled &&
+                                                    <input className="form-control"
+                                                           type="number"
+                                                           value={requiredAmount}
+                                                           placeholder={requiredAmount}
+                                                           readOnly={true}
+                                                    />
+                                                }
+
                                             </td>
                                         </tr>
                                         <tr>
                                             <th scope="row" className="card-title text-end">Members can Opt-In:</th>
                                             <td className="text-start">
                                                 <div className="form-check form-switch">
-                                                    <input className="form-check-input"
-                                                           type="checkbox"
-                                                           value={canOptIn}
-                                                           checked={canOptIn}
-                                                           onChange={handleOptInChange}
-                                                    />
+                                                    {!canOptInIsDisabled &&
+                                                        <input className="form-check-input"
+                                                               type="checkbox"
+                                                               value={canOptIn}
+                                                               checked={canOptIn}
+                                                               onChange={handleOptInChange}
+                                                        />
+                                                    }
+                                                    {canOptInIsDisabled &&
+                                                        <input className="form-check-input"
+                                                               type="checkbox"
+                                                               checked={canOptIn}
+                                                               readOnly={true}
+                                                        />
+                                                    }
                                                 </div>
                                             </td>
                                         </tr>
