@@ -9,29 +9,27 @@ import ApiClient from "../../utils/apiConfiguration";
 import TokenManager from "../../utils/authToken";
 import DataParser from "../../utils/dataParser";
 import {arrayDifference, getIdsFromArray, getObjectById, toTitle} from "../../utils/utils";
-import ReactTooltip from "react-tooltip";
 
 const apiClient = new ApiClient();
 const tokenManager = new TokenManager();
 
 
 const PaymentTitleHeader = ({ paymentName, isRequired }) => {
-    const dataTipMessage = "This field is required for your good standing membership!";
+    const dataTipMessage = "This field is required for your good membership standing!";
     return (
         <Fragment>
-            <div className="row payment-title-row">
+            <div className="row title-card align-items-center justify-content-center">
                 <div className="col">
-                    <div className="title-card align-bottom">
-                        <h5 className="card-title card-title-text text-center align-bottom">
+                    <h5 className="text-center">
                             {toTitle(paymentName)}
                             &nbsp;
-                            {isRequired &&
-                                <i className="fas fa-info-circle" data-tip={dataTipMessage}>
-                                    <ReactTooltip className="required-payment-tooltip" />
-                                </i>
-                            }
-                        </h5>
-                    </div>
+                        {isRequired &&
+
+                            <span data-for='scrollContent' data-tip={true} data-iscapture={true}>
+                                <i key={uuidv4()} className="fas fa-info-circle" data-tip={dataTipMessage} />
+                            </span>
+                        }
+                    </h5>
                 </div>
             </div>
         </Fragment>

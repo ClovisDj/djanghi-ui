@@ -17,11 +17,24 @@
 }
 
 .title-card {
-  background-color: #ffffff;
-  border: none;
-  border-radius: 5px;
-  box-shadow: 0 0 30px rgba(1, 41, 112, 0.1);
-  height: 50px;
+    background-color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    box-shadow: 0 0 30px rgba(1, 41, 112, 0.1);
+    height: 50px;
+    margin: 0 0 .5rem 0;
+}
+
+.title-card .col h5 {
+    font-size: 21px;
+    font-weight: 600;
+    color: #012970;
+    font-family: "Poppins", sans-serif;
+    margin-bottom: 0;
+}
+
+.title-card .col h5 span i {
+    color: rgb(253,82,116);
 }
 
 .payment-title-row {
@@ -53,6 +66,7 @@
   width: 1px;
   height: auto;
   padding: 0;
+    margin: .5rem 0;
 }
 
 .without-min-amount {
