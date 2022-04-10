@@ -64,7 +64,7 @@ const PaymentSummary = ({requiredAmount, contributionId, currentValue, paymentNa
                                             <table className="table table-borderless latest-payment-table">
                                                 <tbody>
                                                     <tr>
-                                                        <th scope="row" className="payment-info-text">Required</th>
+                                                        <th scope="row" className="payment-info-text">Required Amount</th>
                                                         <td className="text-end">
                                                             <AnimatedNumber value={requiredAmount}
                                                                             formatValue={formatValue}
@@ -132,50 +132,72 @@ const PaymentSummary = ({requiredAmount, contributionId, currentValue, paymentNa
                             <div className="underline" />
                             {hasAtLeastOnePayment &&
                                 <Fragment>
-                                    <div className="row payment-detail-row">
-                                        <div className="table-responsive payments-table">
-                                            <table className="table table-borderless latest-payment-table">
-                                                <tbody>
-                                                    <tr>
-                                                        <th scope="row" className="payment-info-text">Amount</th>
-                                                        <td className="text-end">
-                                                            <AnimatedNumber value={latestAmountDisplay}
-                                                                            formatValue={formatValue}
-                                                                            className={latestAmountDisplay >= 0 ? "no-payment-due" : "need-more-payment"}
-                                                            />
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th scope="row" className="payment-info-text">Type</th>
-                                                        <td className="text-end payment-info-text">
-                                                            {transactionType}
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th scope="row" className="payment-info-text">Date</th>
-                                                        <td className="text-end payment-info-text">
-                                                            {transactionDate}
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th scope="row" className="payment-info-text">Note</th>
-                                                        <td className="text-end payment-info-text">
-                                                            {paymentNote.length > 0 &&
-                                                                <a data-tip={paymentNote}>
-                                                                    <ReactTooltip />
-                                                                    <button type="button"
-                                                                            className="btn btn-sm btn-secondary"
-                                                                    >
-                                                                        Click Here!
-                                                                    </button>
-                                                                </a>
-                                                            }
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
+                                    <div className="row">
+                                        <div className="col payment-detail-row">
+                                            <div className="table-responsive payments-table">
+                                                <table className="table table-borderless latest-payment-table">
+                                                    <tbody>
+                                                        <tr>
+                                                            <th scope="row" className="payment-info-text">Amount</th>
+                                                        </tr>
+                                                        <tr>
+                                                            <th scope="row" className="payment-info-text">Type</th>
+                                                        </tr>
+                                                        <tr>
+                                                            <th scope="row" className="payment-info-text">Date</th>
+                                                        </tr>
+                                                        <tr>
+                                                            <th scope="row" className="payment-info-text">Note</th>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+
+                                        <div className="vertical-separator" />
+
+                                        <div className="col payment-detail-row">
+                                            <div className="table-responsive payments-table">
+                                                <table className="table table-borderless latest-payment-table">
+                                                    <tbody>
+                                                        <tr>
+                                                            <td className="text-end">
+                                                                <AnimatedNumber value={latestAmountDisplay}
+                                                                                formatValue={formatValue}
+                                                                                className={latestAmountDisplay >= 0 ? "no-payment-due" : "need-more-payment"}
+                                                                />
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td className="text-end payment-info-text">
+                                                                {transactionType}
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td className="text-end payment-info-text">
+                                                                {transactionDate}
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td className="text-end payment-info-text">
+                                                                {paymentNote.length > 0 &&
+                                                                    <a data-tip={paymentNote}>
+                                                                        <ReactTooltip />
+                                                                        <button type="button"
+                                                                                className="btn btn-sm btn-secondary"
+                                                                        >
+                                                                            Click Here!
+                                                                        </button>
+                                                                    </a>
+                                                                }
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
                                         </div>
                                     </div>
+
 
                                     <div className="underline" />
 
