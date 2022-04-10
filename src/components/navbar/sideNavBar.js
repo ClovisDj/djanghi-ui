@@ -24,7 +24,16 @@ const SideNavBar = ({user}) => {
                 }
             )
         },
-        M5: () => {navigate('/membership-payments')},
+        M5: () => {
+            navigate('/membership-payments',
+                {
+                    state: {
+                        mainLiActiveKey: "M5",
+                        associationMenuShowClass: associationMenuShowClass
+                    }
+                }
+                )
+        },
     };
     const handleSideNavClick = async (liKey) => {
       await setMainLiActiveKey(liKey);
@@ -56,15 +65,16 @@ const SideNavBar = ({user}) => {
                         <li key="M4">
                             <a className={mainLiActiveKey === "M4"? sideActiveClass: ""}
                                onClick={() => handleSideNavClick("M4")}>
-                                <i className={"bi bi-circle "} />
+                                <i className={"bi bi-circle"} />
                                 <span className="text-capitalize">MemberShip Fields</span>
                             </a>
                         </li>
                     }
                     {(userIsFullAdmin || userIsPaymentAdmin) &&
                         <li key="M5">
-                            <a onClick={() => handleSideNavClick("M5")}>
-                                <i className={"bi bi-circle " + (mainLiActiveKey === "M4"? sideActiveClass: "")} />
+                            <a className={mainLiActiveKey === "M5"? sideActiveClass: ""}
+                               onClick={() => handleSideNavClick("M5")}>
+                                <i className={"bi bi-circle"} />
                                 <span className="text-capitalize">MemberShip Payments</span>
                             </a>
                         </li>
