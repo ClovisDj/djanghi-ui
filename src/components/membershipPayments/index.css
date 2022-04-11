@@ -1,0 +1,44 @@
+
+
+.placeholder-row {
+    height: 3rem;
+    background: #f6f9ff;
+    margin-bottom: .5rem;
+}
+
+.bd-subnavbar {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 5rem;
+}
+
+.bd-subnavbar {
+  z-index: 960;
+  background-color: rgba(255,255,255,0.95);
+  box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.05),inset 0 -1px 0 rgba(0,0,0,0.15);
+}
+
+.algolia-autocomplete {
+    position: relative;
+    display: inline-block;
+    direction: ltr;
+    width: 50%;
+}
+
+.bd-search {
+    width: 100%;
+}
+
+#search-input {
+    position: relative;
+    verticalAlign: top
+}
+
+@media (max-width: 767.98px) {
+    .bd-search {
+        width: 30%;
+    }
+    .algolia-autocomplete {
+        width: 100%;
+    }
+}
