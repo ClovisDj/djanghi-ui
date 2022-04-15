@@ -16,4 +16,3 @@ const MembershipPayments = () => {
 };
 
 export default MembershipPayments;
-

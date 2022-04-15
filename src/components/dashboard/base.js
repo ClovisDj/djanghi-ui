@@ -13,6 +13,7 @@ const BaseDashboard = ({ ComponentToRender }) => {
 
     useEffect(async () => {
         if (!tokenManager.isAuthenticated()) {
+            tokenManager.logOut();
             navigate('/login', { replace: true});
         } else {
             const authUser = tokenManager.getAuthUser();

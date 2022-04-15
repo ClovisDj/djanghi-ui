@@ -36,6 +36,10 @@ class TokenManager {
         this.removeStoredToken(this.#refreshTokenKey)
     }
 
+    removeAuthUser = () => {
+        this.removeStoredToken(this.#authUser)
+    }
+
     storeRefreshToken = (token) => {
         this.storeToken(this.#refreshTokenKey, token);
     }
@@ -94,10 +98,11 @@ class TokenManager {
     logOut = () => {
         this.removeAuthToken();
         this.removeRefreshToken();
+        this.removeAuthUser();
     }
 
     isAuthenticated = () => {
-        return this.getStoredAuthToken() && !this.tokenIsExpired(this.getStoredAuthToken()) || this.canRefreshAuthToken();
+        return (this.getStoredAuthToken() && !this.tokenIsExpired(this.getStoredAuthToken())) || this.canRefreshAuthToken();
     }
 }
 
