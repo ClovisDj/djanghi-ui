@@ -7,7 +7,7 @@
     position: sticky;
     padding: 5px;
     top: 3.75rem;
-    z-index: 999;
+    z-index: 995;
     background-color: #fff;
     box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.05),inset 0 -1px 0 rgba(0,0,0,0.15);
 }
@@ -27,7 +27,7 @@
 .search-options {
     height: 40px;
     padding: 0 !important;
-    margin-bottom: 10px;
+    margin-bottom: 6px;
 }
 
 .bd-search {
@@ -55,20 +55,16 @@
     }
     .dropdown-contrib {
         padding: 0 0 0 .8rem;
-        width: 70%;
+        width: 12rem;
     }
 }
 
 .select-contrib {
     margin-left: auto;
-    width: 15rem;
+    width: 22rem;
     height: 40px;
 }
 
 .dropdown-contrib {
     padding: 0 0 0 .8rem;
-}
-
-.admin-payments-table-header .table thead th {
-    text-align: center;
 }

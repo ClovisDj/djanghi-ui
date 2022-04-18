@@ -1,1 +1,31 @@
 
+.admin-payments-table-header {
+    padding-bottom: 8px;
+}
+
+.admin-payments-table-header .table thead th {
+    text-align: center;
+    padding: 0 !important;
+}
+
+.admin-payment-status-container {
+    margin-top: 1rem;
+}
+
+.user-payment-status-row {
+    height: 3rem;
+    background-color: #fff;
+}
+
+.user-payment-status-row:hover {
+    cursor: pointer;
+    background-color: rgba(235, 240, 255, 0.82);
+}
+
+.user-name-display {
+    font-size: 18px;
+    font-weight: 400;
+    color: #012970;
+    font-family: "Poppins", sans-serif;
+    margin-bottom: 0;
+}

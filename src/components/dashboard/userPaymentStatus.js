@@ -8,7 +8,7 @@ import PaymentSummary from "./paymentSummary";
 import ApiClient from "../../utils/apiConfiguration";
 import TokenManager from "../../utils/authToken";
 import DataParser from "../../utils/dataParser";
-import {arrayDifference, getIdsFromArray, getObjectById, toTitle} from "../../utils/utils";
+import {arrayDifference, buildDummyPaymentStatus, getIdsFromArray, getObjectById, toTitle} from "../../utils/utils";
 
 const apiClient = new ApiClient();
 const tokenManager = new TokenManager();
@@ -24,7 +24,6 @@ const PaymentTitleHeader = ({ paymentName, isRequired }) => {
                             {toTitle(paymentName)}
                             &nbsp;
                         {isRequired &&
-
                             <span data-for='scrollContent' data-tip={true} data-iscapture={true}>
                                 <i key={uuidv4()} className="fas fa-info-circle" data-tip={dataTipMessage} />
                             </span>
@@ -63,20 +62,6 @@ const SinglePaymentStatus = ({paymentData}) => {
 const UserPaymentStatus = () => {
     const [paymentsStatus, setPaymentsStatus] = useState({data: []});
     const location = useLocation();
-
-    const buildDummyPaymentStatus = (includedItem) => {
-        return {
-            type: "MembershipPaymentSatus",
-            id: uuidv4(),
-            attributes: {
-                current_value: 0,
-                paid_percentage: 0,
-            },
-            relationships: {
-                membership_payment_type: includedItem,
-            },
-        };
-    };
 
     useEffect(async () => {
         let paymentData = await apiClient.get(`users/${tokenManager.getUserId()}/payments_status`);
