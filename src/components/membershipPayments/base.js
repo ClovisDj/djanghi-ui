@@ -1,10 +1,10 @@
 import {Fragment, useEffect, useState} from "react";
+import { v4 as uuidv4 } from 'uuid';
+
 import SecondaryNavBar from "../secondaryNavBar";
 import ApiClient from "../../utils/apiConfiguration";
 import DataParser from "../../utils/dataParser";
 import {ContribSelectContext, defaultSelectConfiguration} from "./context";
-import {v4 as uuidv4} from "uuid";
-import ReactTooltip from "react-tooltip";
 import {
     arrayDifference,
     buildDummyPaymentStatus, formatValue,
@@ -12,7 +12,9 @@ import {
     getIncludedType,
     getObjectById
 } from "../../utils/utils";
-import AnimatedNumber from "animated-number-react";
+
+import {UserStatusDisplayModal} from "./modals";
+import MoreTransactionsModal from "../dashboard/transactionsModal";
 
 
 const apiClient = new ApiClient();
@@ -36,12 +38,13 @@ const ListHeaderComponent = ({}) => {
     );
 };
 
-const RowUserPaymentStatusDisplay = ({ userContribStatus }) => {
+const RowUserPaymentStatusDisplay = ({ userContribStatus, handleClick }) => {
     const firstName = userContribStatus.relationships.user.attributes.first_name;
     const lastName = userContribStatus.relationships.user.attributes.last_name;
     const email = userContribStatus.relationships.user.attributes.email;
     const [displayName, setDisplayName] = useState("");
     const [displayBalance, setDisplayBalance] = useState(0);
+    const [requiredAmount, setRequiredAmount] = useState(0);
 
     useEffect(async () => {
         let nameToDisplay;
@@ -55,15 +58,18 @@ const RowUserPaymentStatusDisplay = ({ userContribStatus }) => {
             nameToDisplay = email;
         }
 
-        await setDisplayName(nameToDisplay);
-        await setDisplayBalance(userContribStatus.attributes.current_value);
+        setDisplayName(nameToDisplay);
+        setDisplayBalance(userContribStatus.attributes.current_value);
+        if (userContribStatus.relationships.membership_payment_type) {
+            setRequiredAmount(userContribStatus.relationships.membership_payment_type.attributes.required_amount);
+        }
     }, []);
 
     return (
         <Fragment>
-            <tr className="user-payment-status-row">
+            <tr className="user-payment-status-row" onClick={handleClick}>
                 <td className="align-middle user-name-display">{displayName}</td>
-                <td className={"text-end " + (displayBalance >= 0 ? "no-payment-due" : "need-more-payment")}>
+                <td className={"text-end align-middle " + (displayBalance >= requiredAmount ? "no-payment-due" : "need-more-payment")}>
                     {formatValue(displayBalance)}
                 </td>
             </tr>
@@ -80,6 +86,8 @@ const BaseMembershipPayments = () => {
     const [hasMoreUsers, setHasMoreUsers] = useState(false);
     const [usersStatusData, setUsersStatusData] = useState([]);
     const [usersParams, setUsersParams] = useState({});
+    const [clickedUserPaymentStatus, setClickedUserPaymentStatus] = useState({relationships: {user: {}}});
+    const [showMorePayments, setShowMorePayments] = useState(false);
 
     const fetchContribFields = async () => {
         const data = await apiClient.get("contribution_fields");
@@ -131,15 +139,15 @@ const BaseMembershipPayments = () => {
                 let usersSelectedContribData = dataParser.data;
                 if (usersSelectedContribData.hasOwnProperty("included")) {
                     includedUsersInStatus = includedUsersInStatus.concat(
-                        ... await getIncludedType(usersSelectedContribData.included, "User")
+                        ... getIncludedType(usersSelectedContribData.included, "User")
                     );
-                    usersIdsInStatus = usersIdsInStatus.concat(await getIdsFromArray(includedUsersInStatus));
+                    usersIdsInStatus = usersIdsInStatus.concat(getIdsFromArray(includedUsersInStatus));
                 }
                 usersWithoutInStatus = await arrayDifference(userIds, usersIdsInStatus);
                 for (let userId of usersWithoutInStatus) {
-                    const contribField = await getObjectById(contribData, selectConfig.selected.value);
+                    const contribField = getObjectById(contribData, selectConfig.selected.value);
                     const dummyUserPaymentStatus = buildDummyPaymentStatus(contribField);
-                    dummyUserPaymentStatus.relationships.user = await getObjectById(userData.data, userId);
+                    dummyUserPaymentStatus.relationships.user = getObjectById(userData.data, userId);
                     usersSelectedContribData.data.push(dummyUserPaymentStatus);
                     await usersSelectedContribData.data.sort((itemA, itemB) => {
                         const paymentNameA = itemA.relationships.user.attributes.first_name;
@@ -178,6 +186,11 @@ const BaseMembershipPayments = () => {
         });
     };
 
+    const handleRowClick = (paymentStatus) => {
+        setClickedUserPaymentStatus(paymentStatus);
+        setShowMorePayments(true);
+    };
+
     return (
         <ContribSelectContext.Provider value={selectConfig}>
             <Fragment>
@@ -193,8 +206,8 @@ const BaseMembershipPayments = () => {
                             {
                                 usersStatusData.map((payment) => (
                                     <Fragment key={payment.id}>
-                                        <RowUserPaymentStatusDisplay key={payment.id}
-                                                                     userContribStatus={payment}
+                                        <RowUserPaymentStatusDisplay userContribStatus={payment}
+                                                                     handleClick={() =>  handleRowClick(payment)}
                                         />
                                     </Fragment>
                                 ))
@@ -202,6 +215,13 @@ const BaseMembershipPayments = () => {
                         </tbody>
                     </table>
                 </div>
+                <MoreTransactionsModal paymentName={"dummy"}
+                                       userId={clickedUserPaymentStatus.relationships.user.id}
+                                       contributionId={selectConfig.selected.value}
+                                       showMorePayments={showMorePayments}
+                                       setShowMorePayments={setShowMorePayments}
+
+                />
             </Fragment>
         </ContribSelectContext.Provider>
     );

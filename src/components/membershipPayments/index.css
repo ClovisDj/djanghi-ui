@@ -13,13 +13,13 @@
 }
 
 .user-payment-status-row {
-    height: 3rem;
+    height: 4rem;
     background-color: #fff;
 }
 
 .user-payment-status-row:hover {
     cursor: pointer;
-    background-color: rgba(235, 240, 255, 0.82);
+    background-color: rgba(222, 227, 250, 0.6);
 }
 
 .user-name-display {
@@ -28,4 +28,8 @@
     color: #012970;
     font-family: "Poppins", sans-serif;
     margin-bottom: 0;
+}
+
+.payment-modal-status-wrapper {
+    margin-top: 15px;
 }

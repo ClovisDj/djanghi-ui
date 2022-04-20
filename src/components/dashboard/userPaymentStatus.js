@@ -9,6 +9,7 @@ import ApiClient from "../../utils/apiConfiguration";
 import TokenManager from "../../utils/authToken";
 import DataParser from "../../utils/dataParser";
 import {arrayDifference, buildDummyPaymentStatus, getIdsFromArray, getObjectById, toTitle} from "../../utils/utils";
+import ReactTooltip from "react-tooltip";
 
 const apiClient = new ApiClient();
 const tokenManager = new TokenManager();
@@ -16,6 +17,7 @@ const tokenManager = new TokenManager();
 
 const PaymentTitleHeader = ({ paymentName, isRequired }) => {
     const dataTipMessage = "This field is required for your good membership standing!";
+    const tooltipId = uuidv4();
     return (
         <Fragment>
             <div className="row title-card align-items-center justify-content-center">
@@ -24,8 +26,9 @@ const PaymentTitleHeader = ({ paymentName, isRequired }) => {
                             {toTitle(paymentName)}
                             &nbsp;
                         {isRequired &&
-                            <span data-for='scrollContent' data-tip={true} data-iscapture={true}>
-                                <i key={uuidv4()} className="fas fa-info-circle" data-tip={dataTipMessage} />
+                            <span data-for={tooltipId} data-tip={dataTipMessage} >
+                                <ReactTooltip id={tooltipId} />
+                                <i key={uuidv4()} className="fas fa-info-circle" />
                             </span>
                         }
                     </h5>
@@ -35,7 +38,7 @@ const PaymentTitleHeader = ({ paymentName, isRequired }) => {
     );
 };
 
-const SinglePaymentStatus = ({paymentData}) => {
+export const SinglePaymentStatus = ({paymentData}) => {
     const paymentName = paymentData.relationships.membership_payment_type.attributes.name;
     const requiredAmount = paymentData.relationships.membership_payment_type.attributes.required_amount;
     const contributionId = paymentData.relationships.membership_payment_type.id;

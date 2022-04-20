@@ -1,6 +1,7 @@
 import {Fragment, useEffect, useState} from "react";
 import AnimatedNumber from "animated-number-react";
 import ReactTooltip from "react-tooltip";
+import { v4 as uuidv4 } from 'uuid';
 
 import MoreTransactionsModal from "./transactionsModal";
 
@@ -217,6 +218,7 @@ const PaymentSummary = ({requiredAmount, contributionId, currentValue, paymentNa
                                         contributionId={contributionId}
                                         showMorePayments={showMorePayments}
                                         setShowMorePayments={setShowMorePayments}
+                                        userId={tokenManager.getUserId()}
                                     />
                                 </Fragment>
                             }

@@ -1,14 +1,13 @@
 import {Fragment, useEffect, useState} from "react";
 import {Button, Modal} from "react-bootstrap";
+
 import {formatValue, toTitle} from "../../utils/utils";
 import InfiniteScroll from "react-infinite-scroll-component";
 import ReactTooltip from "react-tooltip";
 import ApiClient from "../../utils/apiConfiguration";
-import TokenManager from "../../utils/authToken";
+
 
 const apiClient = new ApiClient();
-const tokenManager = new TokenManager();
-
 
 const PaymentRow = ({singlePaymentData}) => {
     const transactionType = singlePaymentData.attributes.payment_type === "PAYMENT" ? "Credit" : "Debit";
@@ -39,30 +38,54 @@ const PaymentRow = ({singlePaymentData}) => {
        </Fragment>
     )};
 
-const MoreTransactionsModal = ({paymentName, showMorePayments, setShowMorePayments, contributionId}) => {
+const MoreTransactionsModal = ({paymentName, showMorePayments, setShowMorePayments, contributionId, userId}) => {
     const [data, setData] = useState([]);
     const [currentPage, setCurrentPage] = useState(0);
-    const [hasMorePayments, setHasMorePayments] = useState(true);
+    const [selectedUseId, setSelectedUseId] = useState("");
+    const [selectedContributionId, setSelectedContributionId] = useState("");
+    const [hasMorePayments, setHasMorePayments] = useState(false);
 
-    const fetchMorePayments = async () => {
-        let currentData = data;
-        const paymentData = await apiClient.get(
-            `users/${tokenManager.getUserId()}/membership_payments`,
-            {
-                contribution_id: contributionId,
-                page: currentPage + 1
+    const fetchMorePayments = async (user= null) => {
+        if ((user || selectedUseId) && selectedContributionId) {
+            let currentData = data;
+            const paymentData = await apiClient.get(
+                `users/${user? user: selectedUseId}/membership_payments`,
+                {
+                    contribution_id: selectedContributionId,
+                    page: currentPage + 1
+                }
+            );
+            if (paymentData) {
+                setData(currentData.concat(paymentData.data));
+                setCurrentPage(paymentData.meta.pagination.page);
+                setHasMorePayments(paymentData.meta.pagination.page < paymentData.meta.pagination.pages);
             }
-        );
-        if (paymentData) {
-            setData(currentData.concat(paymentData.data));
-            setCurrentPage(paymentData.meta.pagination.page);
-            setHasMorePayments(paymentData.meta.pagination.page < paymentData.meta.pagination.pages);
         }
+
     };
 
     useEffect(async () => {
+        if (showMorePayments) {
+            setSelectedUseId(userId);
+            setSelectedContributionId(contributionId);
+        }
+    }, [userId, contributionId, showMorePayments]);
+
+    const handlePreOpen = async (event) => {
+        // We fetch the data here to avoid fetching every
+        // time we change contribution type in payments page
         await fetchMorePayments();
-    }, []);
+    };
+
+    const handleExit = (event) => {
+        // Here reset the values to the default one so that
+        // they will not get mixed up with previously loaded ones
+        setSelectedUseId("");
+        setData([]);
+        setCurrentPage(0);
+        setSelectedContributionId("");
+        setHasMorePayments(false);
+    };
 
     return (
         <Fragment>
@@ -71,6 +94,8 @@ const MoreTransactionsModal = ({paymentName, showMorePayments, setShowMorePaymen
                 size="lg"
                 show={showMorePayments}
                 onHide={() => setShowMorePayments(false)}
+                onExit={handleExit}
+                onEntering={handlePreOpen}
                 scrollable={true}
                 aria-labelledby="example-modal-sizes-title-sm"
             >
@@ -102,15 +127,17 @@ const MoreTransactionsModal = ({paymentName, showMorePayments, setShowMorePaymen
                                         </tr>
                                    </thead>
                                     <tbody>
-                                        {
-                                            data.map((payment) => (
+                                        {data.length > 0 && data.map((payment) => (
                                                 <Fragment key={payment.id}>
-                                                  <PaymentRow key={payment.id} singlePaymentData={payment} />
+                                                  <PaymentRow singlePaymentData={payment} />
                                                 </Fragment>
                                             ))
                                         }
                                     </tbody>
                                 </table>
+                                {data.length === 0 &&
+                                    <div scope="col" className="text-center">No Payments to Display</div>
+                                }
                             </div>
                         </InfiniteScroll>
 
