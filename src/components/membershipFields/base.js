@@ -78,7 +78,7 @@ const BaseMembershipFields = () => {
             />
             <FloatingButton buttonType={"plus"}
                             handleClick={handlePlusButtonClick}
-                            shouldStatus={true}
+                            shouldDisplay={true}
                             tooltipText={"Add more fields!"}
             />
         </Fragment>

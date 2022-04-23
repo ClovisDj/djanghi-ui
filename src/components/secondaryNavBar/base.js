@@ -1,12 +1,10 @@
 import {Fragment} from "react";
 import Select from "react-select";
 import {ContribSelectContext} from "../membershipPayments/context";
+import {blueColor, whiteColor} from "../../utils/utils";
 
 
 const BaseSecondaryNavBar = ({ searchValue, handleSearch, handleSelect, TableHeaderComponent }) => {
-    const blueColor = "rgba(65,84,241,0.8)";
-    const whiteColor = "#fff";
-
     const customStyles = {
         color: whiteColor,
         option: (base, state) => ({
@@ -23,7 +21,7 @@ const BaseSecondaryNavBar = ({ searchValue, handleSearch, handleSelect, TableHea
             color: whiteColor,
             background: blueColor,
             paddingLeft: "8px !important",
-            borderRadius: "6px",
+            borderRadius: "3px !important",
             padding: "2px"
         }),
     };

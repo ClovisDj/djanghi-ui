@@ -3,15 +3,14 @@ import {Fragment, useEffect, useState} from "react";
 import "./style.css"
 import ReactTooltip from "react-tooltip";
 
-const FloatingButton = ({ buttonType, handleClick, shouldStatus, tooltipText}) => {
+const FloatingButton = ({ buttonType, handleClick, shouldDisplay, tooltipText}) => {
     const [displayStatus, setDisplayStatus] = useState(true);
 
     useEffect(async () => {
-        setDisplayStatus(Boolean(shouldStatus));
+        setDisplayStatus(Boolean(shouldDisplay));
     }, []);
 
     const handleOnclick = (event) => {
-        event.preventDefault();
         handleClick();
     };
 

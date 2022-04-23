@@ -1,20 +1,21 @@
 import {Fragment, useEffect, useState} from "react";
-import { v4 as uuidv4 } from 'uuid';
+import {v4 as uuidv4} from "uuid";
 
 import SecondaryNavBar from "../secondaryNavBar";
 import ApiClient from "../../utils/apiConfiguration";
 import DataParser from "../../utils/dataParser";
-import {ContribSelectContext, defaultSelectConfiguration} from "./context";
+import {ContribSelectContext, defaultSelectConfiguration, ShouldRefreshPaymentsContext} from "./context";
 import {
     arrayDifference,
-    buildDummyPaymentStatus, formatValue,
+    buildDummyPaymentStatus, buildUserDisplayName, formatValue,
     getIdsFromArray,
     getIncludedType,
     getObjectById
 } from "../../utils/utils";
 
-import {UserStatusDisplayModal} from "./modals";
+import AddPaymentsModal from "./modals";
 import MoreTransactionsModal from "../dashboard/transactionsModal";
+import FloatingButton from "../floatingButton/floatingButton";
 
 
 const apiClient = new ApiClient();
@@ -47,17 +48,7 @@ const RowUserPaymentStatusDisplay = ({ userContribStatus, handleClick }) => {
     const [requiredAmount, setRequiredAmount] = useState(0);
 
     useEffect(async () => {
-        let nameToDisplay;
-        if (firstName && lastName) {
-            nameToDisplay = `${firstName} ${lastName}`;
-        } else if (!firstName && lastName) {
-            nameToDisplay = lastName;
-        } else if (firstName && !lastName) {
-            nameToDisplay = firstName;
-        } else {
-            nameToDisplay = email;
-        }
-
+        const nameToDisplay = buildUserDisplayName(firstName, lastName, email);
         setDisplayName(nameToDisplay);
         setDisplayBalance(userContribStatus.attributes.current_value);
         if (userContribStatus.relationships.membership_payment_type) {
@@ -84,10 +75,14 @@ const BaseMembershipPayments = () => {
     const [contribData, setContribData] = useState([]);
     const [adminContribStatusParams, setAdminContribStatusParams] = useState({});
     const [hasMoreUsers, setHasMoreUsers] = useState(false);
+    const [showPaymentModal, setShowPaymentModal] = useState(false);
     const [usersStatusData, setUsersStatusData] = useState([]);
     const [usersParams, setUsersParams] = useState({});
     const [clickedUserPaymentStatus, setClickedUserPaymentStatus] = useState({relationships: {user: {}}});
-    const [showMorePayments, setShowMorePayments] = useState(false);
+    const [clickedUserDisplayName, setClickedUserDisplayName] = useState("");
+    const [showSelectedUserPayments, setShowSelectedUserPayments] = useState(false);
+    const [shouldRefreshData, setShouldRefreshData] = useState(false);
+    const [tableKey, setTableKey] = useState(uuidv4());
 
     const fetchContribFields = async () => {
         const data = await apiClient.get("contribution_fields");
@@ -119,8 +114,12 @@ const BaseMembershipPayments = () => {
         }
     };
 
-    const fetchMembersContribStatus = async () => {
-        const userData = await apiClient.get("users", usersParams);
+    const fetchMembersContribStatus = async (searchParams = {}) => {
+        const requestParams = {
+            ...usersParams,
+            ...searchParams
+        };
+        const userData = await apiClient.get("users", requestParams);
         if (userData && userData.data && userData.data.length > 0) {
             const thereIsMoreUsers = userData.meta.pagination.page < userData.meta.pagination.pages;
             setHasMoreUsers(thereIsMoreUsers);
@@ -134,6 +133,8 @@ const BaseMembershipPayments = () => {
             let usersIdsInStatus = [];
             let usersWithoutInStatus = [];
             const contribStatusData = await apiClient.get("membership_payments_status", queryParams);
+            console.log("query params:", queryParams);
+            console.log("membership data:", contribStatusData.data);
             if (contribStatusData.data) {
                 const dataParser = await new DataParser(contribStatusData);
                 let usersSelectedContribData = dataParser.data;
@@ -155,9 +156,11 @@ const BaseMembershipPayments = () => {
                         return paymentNameA.localeCompare(paymentNameB) ;
                     });
                 }
-                await setUsersStatusData(usersSelectedContribData.data);
+                setUsersStatusData(usersSelectedContribData.data);
             }
+            setTableKey(uuidv4());
         }
+
     };
 
     useEffect(async () => {
@@ -168,8 +171,21 @@ const BaseMembershipPayments = () => {
         await fetchMembersContribStatus();
     }, [selectConfig.selected.value]);
 
-    const handleSearch = (event) => {
+    useEffect(async () => {
+        if(shouldRefreshData) {
+            await fetchMembersContribStatus();
+            setShouldRefreshData(false);
+        }
+
+    }, [shouldRefreshData]);
+
+    const handleSearch = async (event) => {
         setSearchValue(event.target.value);
+        setUsersParams({
+            ...usersParams,
+            search: event.target.value
+        });
+        await fetchMembersContribStatus({search: event.target.value});
     };
 
     const handleSelect = (selection) => {
@@ -188,41 +204,67 @@ const BaseMembershipPayments = () => {
 
     const handleRowClick = (paymentStatus) => {
         setClickedUserPaymentStatus(paymentStatus);
-        setShowMorePayments(true);
+        const userAttributes = paymentStatus.relationships.user.attributes;
+        const userDisplayName = buildUserDisplayName(
+            userAttributes.first_name,
+            userAttributes.last_name,
+            userAttributes.email
+        );
+        setClickedUserDisplayName(userDisplayName);
+        setShowSelectedUserPayments(true);
+    };
+
+    const handleOpenPaymentModal = () => {
+        setShowPaymentModal(true);
     };
 
     return (
         <ContribSelectContext.Provider value={selectConfig}>
-            <Fragment>
-                <SecondaryNavBar searchText={searchValue}
-                                 handleSearch={handleSearch}
-                                 handleSelect={handleSelect}
-                                 TableHeaderComponent={ListHeaderComponent}
-                />
+            <ShouldRefreshPaymentsContext.Provider
+                value={{shouldRefreshData: shouldRefreshData, setShouldRefreshData: setShouldRefreshData}}>
+                <Fragment>
+                    <SecondaryNavBar searchText={searchValue}
+                                     handleSearch={handleSearch}
+                                     handleSelect={handleSelect}
+                                     TableHeaderComponent={ListHeaderComponent}
+                    />
 
-                <div className="table-responsive admin-payment-status-container">
-                    <table className="table">
-                        <tbody>
-                            {
-                                usersStatusData.map((payment) => (
-                                    <Fragment key={payment.id}>
-                                        <RowUserPaymentStatusDisplay userContribStatus={payment}
-                                                                     handleClick={() =>  handleRowClick(payment)}
-                                        />
-                                    </Fragment>
-                                ))
-                            }
-                        </tbody>
-                    </table>
-                </div>
-                <MoreTransactionsModal paymentName={"dummy"}
-                                       userId={clickedUserPaymentStatus.relationships.user.id}
-                                       contributionId={selectConfig.selected.value}
-                                       showMorePayments={showMorePayments}
-                                       setShowMorePayments={setShowMorePayments}
+                    <div className="table-responsive admin-payment-status-container">
+                        <table key={tableKey} className="table">
+                            <tbody>
+                                {
+                                    usersStatusData.map((payment) => (
+                                        <Fragment key={payment.id}>
+                                            <RowUserPaymentStatusDisplay userContribStatus={payment}
+                                                                         handleClick={() => handleRowClick(payment)}
+                                            />
+                                        </Fragment>
+                                    ))
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <MoreTransactionsModal paymentName={clickedUserDisplayName ? clickedUserDisplayName : ""}
+                                           userId={clickedUserPaymentStatus.relationships.user.id}
+                                           contributionId={selectConfig.selected.value}
+                                           showMorePayments={showSelectedUserPayments}
+                                           setShowMorePayments={setShowSelectedUserPayments}
+                    />
 
-                />
-            </Fragment>
+                    <AddPaymentsModal showPaymentModal={showPaymentModal}
+                                      setShowPaymentModal={setShowPaymentModal}
+                                      contribInfo={selectConfig.selected}
+                                      // refreshData={shouldRefreshData}
+                                      // setRefreshData={setShouldRefreshData}
+                    />
+
+                    <FloatingButton buttonType={"plus"}
+                                handleClick={handleOpenPaymentModal}
+                                shouldDisplay={true}
+                                tooltipText={"Add Payments"}
+                    />
+                    </Fragment>
+            </ShouldRefreshPaymentsContext.Provider>
         </ContribSelectContext.Provider>
     );
 };

@@ -83,6 +83,13 @@
     font-family: "Nunito", sans-serif;
 }
 
+.overpaid-display-payment {
+    font-size: 1.25rem;
+    color: #ff931a !important;
+    font-weight: 450;
+    font-family: "Nunito", sans-serif;
+}
+
 .no-payment-due {
     font-size: 1.25rem;
     color: rgb(54, 162, 235);
@@ -122,7 +129,7 @@
 .payments-modal-body {
     position: relative;
     flex: 1 1 auto;
-    padding: 0 1rem;
+    padding: 1rem;
     overflow-y: auto;
     background: white;
 }
@@ -199,9 +206,17 @@
 }
 
 .payment-info-text {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 400;
   color: #012970;
+  font-family: "Poppins", sans-serif;
+  margin-bottom: 0!important;
+}
+
+.overpaid-info-text {
+  font-size: 16px;
+  font-weight: 400;
+  color: #ff931a;
   font-family: "Poppins", sans-serif;
   margin-bottom: 0!important;
 }

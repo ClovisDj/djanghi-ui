@@ -1,7 +1,6 @@
 import {Fragment, useEffect, useState} from "react";
 import AnimatedNumber from "animated-number-react";
 import ReactTooltip from "react-tooltip";
-import { v4 as uuidv4 } from 'uuid';
 
 import MoreTransactionsModal from "./transactionsModal";
 
@@ -23,6 +22,7 @@ const PaymentSummary = ({requiredAmount, contributionId, currentValue, paymentNa
     const [transactionDate, setTransactionDate] = useState(null);
     const [showMorePayments, setShowMorePayments] = useState(false);
     const [paymentNote, setPaymentNote] = useState("");
+    const [unPaid, setUnPaid] = useState(0);
 
     useEffect(async () => {
         const paymentData = await apiClient.get(
@@ -43,6 +43,7 @@ const PaymentSummary = ({requiredAmount, contributionId, currentValue, paymentNa
                 setTransactionType(transType === "PAYMENT" ? "Credit" : "Debit");
                 setTransactionDate(new Date(transDate).toLocaleDateString());
                 setPaymentNote(note && note.length > 0 ? note : "");
+
             } else {
                 setHasAtLeastOnePayment(false);
             }
@@ -83,11 +84,13 @@ const PaymentSummary = ({requiredAmount, contributionId, currentValue, paymentNa
                                                         </td>
                                                     </tr>
                                                     <tr>
-                                                        <th scope="row" className="payment-info-text">Unpaid</th>
+                                                        <th scope="row" className={currentValue > requiredAmount ? "overpaid-info-text" : "payment-info-text"}>
+                                                            {currentValue > requiredAmount ? "OverPaid" : "Unpaid"}
+                                                        </th>
                                                         <td className="text-end">
                                                             <AnimatedNumber value={unpaidValue}
                                                                             formatValue={formatValue}
-                                                                            className="need-more-payment"
+                                                                            className={currentValue > requiredAmount ? "overpaid-display-payment" : "need-more-payment"}
                                                             />
                                                         </td>
                                                     </tr>

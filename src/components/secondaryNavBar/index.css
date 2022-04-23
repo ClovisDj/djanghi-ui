@@ -41,6 +41,16 @@
     height: inherit;
 }
 
+.select-contrib {
+    margin-left: auto;
+    width: 22rem;
+    height: 40px;
+}
+
+.dropdown-contrib {
+    padding: 0 0 0 .8rem;
+}
+
 @media (max-width: 767.98px) {
     .bd-search {
         width: 80%;
@@ -57,14 +67,4 @@
         padding: 0 0 0 .8rem;
         width: 12rem;
     }
-}
-
-.select-contrib {
-    margin-left: auto;
-    width: 22rem;
-    height: 40px;
-}
-
-.dropdown-contrib {
-    padding: 0 0 0 .8rem;
 }

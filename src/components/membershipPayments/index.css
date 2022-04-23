@@ -33,3 +33,51 @@
 .payment-modal-status-wrapper {
     margin-top: 15px;
 }
+
+.add-payments-modal-content {
+    height: 75%;
+}
+
+.add-payments-modal-dialog {
+    max-width: 50% !important;
+}
+
+.payment-modal-content {
+    padding: 0 !important;
+}
+
+.inner-rows {
+    padding-top: 1rem;
+}
+
+.payment-multi-select {
+    margin-right: auto;
+    width: 60%;
+}
+
+.payment-amount-input {
+    margin-right: auto;
+    width: 58.5%;
+}
+
+.user-select-row {
+    padding-top: .5rem;
+}
+
+.payment-note {
+    border: 1px solid #d0d0d0;
+    border-radius: 5px;
+    width: 100%;
+}
+
+@media (max-width: 767.98px) {
+    .add-payments-modal-dialog {
+        max-width: 100% !important;
+    }
+    .payment-multi-select {
+        width: 100%;
+    }
+    .payment-amount-input {
+        width: 100%;
+    }
+}

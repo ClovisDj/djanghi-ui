@@ -59,3 +59,27 @@ export const buildDummyPaymentStatus = (includedItem) => {
   };
 };
 
+export const buildUserDisplayName = (firstName, lastName, email, shortenName = false) => {
+  let nameToDisplay;
+  if (firstName && lastName) {
+      nameToDisplay = `${firstName} ${lastName}`;
+  } else if (!firstName && lastName) {
+      nameToDisplay = lastName;
+  } else if (firstName && !lastName) {
+      nameToDisplay = firstName;
+  } else {
+      nameToDisplay = email;
+  }
+  return nameToDisplay;
+};
+
+
+export const preventNonNumeric = (event) => {
+    if (!/[0-9]/.test(event.key)) {
+      event.preventDefault();
+    }
+};
+
+export const blueColor = "rgba(77,121,215,0.89)";
+export const whiteColor = "#fff";
+export const redColor = "rgb(253,82,116)";

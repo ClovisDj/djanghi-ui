@@ -10,3 +10,6 @@ export const defaultSelectConfiguration = {
 };
 
 export const ContribSelectContext = createContext(defaultSelectConfiguration);
+
+export const ShouldRefreshPaymentsContext = createContext();
+
