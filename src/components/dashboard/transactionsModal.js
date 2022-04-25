@@ -45,10 +45,12 @@ const MoreTransactionsModal = ({paymentName, showMorePayments, setShowMorePaymen
     const [selectedUseId, setSelectedUseId] = useState("");
     const [selectedContributionId, setSelectedContributionId] = useState("");
     const [hasMorePayments, setHasMorePayments] = useState(false);
+    const [isFetchingData, setIsFetchingData] = useState(false);
 
     const fetchMorePayments = async (user= null) => {
         if ((user || selectedUseId) && selectedContributionId) {
             let currentData = data;
+            setIsFetchingData(true);
             const paymentData = await apiClient.get(
                 `users/${user? user: selectedUseId}/membership_payments`,
                 {
@@ -61,8 +63,8 @@ const MoreTransactionsModal = ({paymentName, showMorePayments, setShowMorePaymen
                 setCurrentPage(paymentData.meta.pagination.page);
                 setHasMorePayments(paymentData.meta.pagination.page < paymentData.meta.pagination.pages);
             }
+            setIsFetchingData(false);
         }
-
     };
 
     useEffect(async () => {
@@ -108,7 +110,7 @@ const MoreTransactionsModal = ({paymentName, showMorePayments, setShowMorePaymen
                           </Modal.Title>
                         </Modal.Header>
                     <Modal.Body bsPrefix={"payments-modal-body"} id={"payments-modal-body"}>
-                        {data.length === 0 && showMorePayments &&
+                        {data.length === 0 && showMorePayments && isFetchingData &&
                             <PageLoader width="5rem" height="5rem" marginTop="5rem" />
                         }
                         <InfiniteScroll
@@ -139,8 +141,8 @@ const MoreTransactionsModal = ({paymentName, showMorePayments, setShowMorePaymen
                                         }
                                     </tbody>
                                 </table>
-                                {data.length === 0 &&
-                                    <div scope="col" className="text-center">No Payments to Display</div>
+                                {data.length === 0 && !isFetchingData &&
+                                    <div className="text-center">No Payments to Display</div>
                                 }
                             </div>
                         </InfiniteScroll>

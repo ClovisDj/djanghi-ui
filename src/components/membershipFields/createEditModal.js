@@ -1,4 +1,4 @@
-import {Fragment, useState} from "react";
+import {Fragment, useEffect, useState} from "react";
 import {Button, Modal} from "react-bootstrap";
 import { v4 as uuidv4 } from 'uuid';
 
@@ -13,8 +13,11 @@ const CreateEditModal = ({ modalType, showModal, setShowModal, contribData, shou
     const [isRequired, setIsRequired] = useState(Boolean(attributes) ? attributes.is_required : true);
     const [canOptIn, setCanOptIn] = useState(Boolean(attributes) ? attributes.member_can_opt_in : false);
     const [errorToDisplay, setErrorToDisplay] = useState("");
-    const [requiredAmountIsDisabled, setRequiredAmountIsDisabled] = useState(false);
     const [canOptInIsDisabled, setCanOptInIsDisabled] = useState(true);
+
+    useEffect(() => {
+        setCanOptInIsDisabled(isRequired);
+    }, []);
 
     const handleSave = async () => {
         const endpoint = contribData ? `contribution_fields/${contribData.id}` : "contribution_fields";
@@ -47,11 +50,9 @@ const CreateEditModal = ({ modalType, showModal, setShowModal, contribData, shou
     const handleIsRequiredChange = (event) => {
         setIsRequired(event.target.checked);
         if (event.target.checked) {
-            setRequiredAmountIsDisabled(false);
             setCanOptInIsDisabled(true);
             setCanOptIn(false);
         } else {
-            setRequiredAmountIsDisabled(true);
             setCanOptInIsDisabled(false);
             setRequiredAmount(0);
         }
@@ -60,13 +61,10 @@ const CreateEditModal = ({ modalType, showModal, setShowModal, contribData, shou
     const handleOptInChange = (event) => {
         setCanOptIn(event.target.checked);
         if (event.target.checked) {
-            setRequiredAmountIsDisabled(false);
             setRequiredAmount(0);
         } else if (isRequired) {
-            setRequiredAmountIsDisabled(false);
             setRequiredAmount(0);
         } else if (!isRequired) {
-            setRequiredAmountIsDisabled(true);
             setRequiredAmount(0);
         }
     };
@@ -100,8 +98,8 @@ const CreateEditModal = ({ modalType, showModal, setShowModal, contribData, shou
                                 <table id="contrib-card" className="table table-borderless latest-payment-table">
                                     <tbody>
                                         <tr>
-                                            <th scope="row" className="payment-info-text text-start">Name</th>
-                                            <td className="text-start">
+                                            <th scope="col" className="payment-info-text text-start">Name</th>
+                                            <td scope="col" className="text-start">
                                                 <input className="form-control"
                                                        type="text"
                                                        maxLength={30}
@@ -110,15 +108,15 @@ const CreateEditModal = ({ modalType, showModal, setShowModal, contribData, shou
                                                        required={true}
                                                 />
                                                 {errorToDisplay &&
-                                                        <div className="error-display">
-                                                            {errorToDisplay}
-                                                        </div>
-                                                    }
+                                                    <div className="error-display">
+                                                        {errorToDisplay}
+                                                    </div>
+                                                }
                                             </td>
                                         </tr>
                                         <tr>
-                                            <th scope="row" className="payment-info-text text-start">Is Required</th>
-                                            <td className="text-start">
+                                            <th scope="col" className="payment-info-text text-start">Is Required</th>
+                                            <td scope="col" className="text-start">
                                                 <div className="form-check form-switch">
                                                     <input className="form-check-input"
                                                            type="checkbox"
@@ -129,34 +127,28 @@ const CreateEditModal = ({ modalType, showModal, setShowModal, contribData, shou
                                                 </div>
                                             </td>
                                         </tr>
-                                        <tr scope="col">
-                                            <th scope="row" className="payment-info-text text-start">Required Amount</th>
-                                            <td className="text-start">
-                                                {!requiredAmountIsDisabled &&
-                                                    <div className="required-amount">
-                                                        <span className="payment-info-text">$</span>
+                                            <tr>
+                                                <th scope="col" className="payment-info-text text-start">
+                                                    <div className="row">
+                                                        <div className="col">Required Amount</div>
+                                                        <div className="col currency-symbol">$</div>
+                                                    </div>
+                                                </th>
+                                                <td scope="col" className="text-start">
+                                                    <div>
                                                         <input className="form-control"
-                                                           type="number"
-                                                           value={requiredAmount}
-                                                           onChange={handleRequiredAmountChange}
+                                                               type="number"
+                                                               value={requiredAmount}
+                                                               onChange={handleRequiredAmountChange}
                                                         />
                                                     </div>
-
-                                                }
-                                                {requiredAmountIsDisabled &&
-                                                    <input className="form-control"
-                                                           type="number"
-                                                           value={requiredAmount}
-                                                           placeholder={requiredAmount}
-                                                           readOnly={true}
-                                                    />
-                                                }
-
-                                            </td>
-                                        </tr>
+                                                </td>
+                                            </tr>
                                         <tr>
-                                            <th scope="row" className="payment-info-text text-start">Members can Opt-In</th>
-                                            <td className="text-start">
+                                            <th scope="col" className="payment-info-text text-start">
+                                                Members can Opt-In
+                                            </th>
+                                            <td scope="col" className="text-start">
                                                 <div className="form-check form-switch">
                                                     {!canOptInIsDisabled &&
                                                         <input className="form-check-input"

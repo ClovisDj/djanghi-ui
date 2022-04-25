@@ -52,20 +52,10 @@
   margin-right: auto;
 }
 
-.required-amount {
-  display: flex;
-  height: 40px;
-}
-
-.required-amount span {
-  text-align: left;
-  height: fit-content;
-  font-size: 20px;
-  padding: 6px;
-}
-
-.text-start .form-check {
-  margin-left: 25px;
+.currency-symbol {
+  text-align: end;
+  padding: 8px;
+  font-size: 22px;
 }
 
 .contrib-name-input {
