@@ -1,7 +1,7 @@
 import {Fragment} from "react";
 import Select from "react-select";
-import {ContribSelectContext} from "../membershipPayments/context";
-import {blueColor, whiteColor} from "../../utils/utils";
+import {ContribSelectContext} from "../../membershipPayments/context";
+import {blueColor, whiteColor} from "../../../utils/utils";
 
 
 const BaseSecondaryNavBar = ({ searchValue, handleSearch, handleSelect, TableHeaderComponent }) => {

@@ -67,7 +67,12 @@
 .payment-note {
     border: 1px solid #d0d0d0;
     border-radius: 5px;
+    padding: 6px;
     width: 100%;
+}
+
+.user-select-row .error-display {
+    padding-top: 6px;
 }
 
 @media (max-width: 767.98px) {

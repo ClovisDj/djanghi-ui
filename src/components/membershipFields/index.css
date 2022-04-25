@@ -51,3 +51,24 @@
 .mr-auto {
   margin-right: auto;
 }
+
+.required-amount {
+  display: flex;
+  height: 40px;
+}
+
+.required-amount span {
+  text-align: left;
+  height: fit-content;
+  font-size: 20px;
+  padding: 6px;
+}
+
+.text-start .form-check {
+  margin-left: 25px;
+}
+
+.contrib-name-input {
+  margin-left: 25px;
+  width: -moz-available;
+}

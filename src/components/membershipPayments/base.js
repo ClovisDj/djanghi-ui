@@ -1,7 +1,7 @@
 import {Fragment, useEffect, useState} from "react";
 import {v4 as uuidv4} from "uuid";
 
-import SecondaryNavBar from "../secondaryNavBar";
+import SecondaryNavBar from "../sharedComponents/secondaryNavBar";
 import ApiClient from "../../utils/apiConfiguration";
 import DataParser from "../../utils/dataParser";
 import {ContribSelectContext, defaultSelectConfiguration, ShouldRefreshPaymentsContext} from "./context";
@@ -15,7 +15,8 @@ import {
 
 import AddPaymentsModal from "./modals";
 import MoreTransactionsModal from "../dashboard/transactionsModal";
-import FloatingButton from "../floatingButton/floatingButton";
+import FloatingButton from "../sharedComponents/floatingButton/floatingButton";
+import PageLoader from "../sharedComponents/spinner/pageLoader";
 
 
 const apiClient = new ApiClient();
@@ -46,13 +47,28 @@ const RowUserPaymentStatusDisplay = ({ userContribStatus, handleClick }) => {
     const [displayName, setDisplayName] = useState("");
     const [displayBalance, setDisplayBalance] = useState(0);
     const [requiredAmount, setRequiredAmount] = useState(0);
+    const [balanceClassDisplay, setBalanceClassDisplay] = useState("no-payment-due");
 
     useEffect(async () => {
         const nameToDisplay = buildUserDisplayName(firstName, lastName, email);
         setDisplayName(nameToDisplay);
-        setDisplayBalance(userContribStatus.attributes.current_value);
+        const currentValue = userContribStatus.attributes.current_value;
+        setDisplayBalance(currentValue);
         if (userContribStatus.relationships.membership_payment_type) {
-            setRequiredAmount(userContribStatus.relationships.membership_payment_type.attributes.required_amount);
+            const requiredAmount = userContribStatus.relationships.membership_payment_type.attributes.required_amount;
+            setRequiredAmount(requiredAmount);
+            if (currentValue > 0 && requiredAmount > 0 && currentValue < requiredAmount) {
+                setDisplayBalance(-1 * currentValue);
+                setBalanceClassDisplay("need-more-payment");
+            }
+
+            if (currentValue > 0 && currentValue > requiredAmount) {
+                setBalanceClassDisplay("overpaid-display-payment");
+            }
+
+            if (currentValue < 0) {
+                setBalanceClassDisplay("need-more-payment");
+            }
         }
     }, []);
 
@@ -60,7 +76,7 @@ const RowUserPaymentStatusDisplay = ({ userContribStatus, handleClick }) => {
         <Fragment>
             <tr className="user-payment-status-row" onClick={handleClick}>
                 <td className="align-middle user-name-display">{displayName}</td>
-                <td className={"text-end align-middle " + (displayBalance >= requiredAmount ? "no-payment-due" : "need-more-payment")}>
+                <td className={"text-end align-middle " + balanceClassDisplay}>
                     {formatValue(displayBalance)}
                 </td>
             </tr>
@@ -82,6 +98,9 @@ const BaseMembershipPayments = () => {
     const [clickedUserDisplayName, setClickedUserDisplayName] = useState("");
     const [showSelectedUserPayments, setShowSelectedUserPayments] = useState(false);
     const [shouldRefreshData, setShouldRefreshData] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const [userIdsArray, setUserIdsArray] = useState([]);
+    // The below param is to force re-render the table component once a payment added
     const [tableKey, setTableKey] = useState(uuidv4());
 
     const fetchContribFields = async () => {
@@ -115,6 +134,8 @@ const BaseMembershipPayments = () => {
     };
 
     const fetchMembersContribStatus = async (searchParams = {}) => {
+        setIsLoading(true);
+
         const requestParams = {
             ...usersParams,
             ...searchParams
@@ -123,7 +144,8 @@ const BaseMembershipPayments = () => {
         if (userData && userData.data && userData.data.length > 0) {
             const thereIsMoreUsers = userData.meta.pagination.page < userData.meta.pagination.pages;
             setHasMoreUsers(thereIsMoreUsers);
-            const userIds = getIdsFromArray(userData.data);
+            const userIds = await getIdsFromArray(userData.data);
+            setUserIdsArray(userIds);
             const queryParams = {
                 ...adminContribStatusParams,
                 user_ids: userIds.join(',')
@@ -133,8 +155,6 @@ const BaseMembershipPayments = () => {
             let usersIdsInStatus = [];
             let usersWithoutInStatus = [];
             const contribStatusData = await apiClient.get("membership_payments_status", queryParams);
-            console.log("query params:", queryParams);
-            console.log("membership data:", contribStatusData.data);
             if (contribStatusData.data) {
                 const dataParser = await new DataParser(contribStatusData);
                 let usersSelectedContribData = dataParser.data;
@@ -158,9 +178,9 @@ const BaseMembershipPayments = () => {
                 }
                 setUsersStatusData(usersSelectedContribData.data);
             }
-            setTableKey(uuidv4());
         }
-
+        setIsLoading(false);
+        setTableKey(uuidv4());
     };
 
     useEffect(async () => {
@@ -229,11 +249,14 @@ const BaseMembershipPayments = () => {
                                      TableHeaderComponent={ListHeaderComponent}
                     />
 
+                    {isLoading &&
+                        <PageLoader />
+                    }
+
                     <div className="table-responsive admin-payment-status-container">
                         <table key={tableKey} className="table">
                             <tbody>
-                                {
-                                    usersStatusData.map((payment) => (
+                                {!isLoading && userIdsArray.length === usersStatusData.length && usersStatusData.map((payment) => (
                                         <Fragment key={payment.id}>
                                             <RowUserPaymentStatusDisplay userContribStatus={payment}
                                                                          handleClick={() => handleRowClick(payment)}
@@ -254,8 +277,6 @@ const BaseMembershipPayments = () => {
                     <AddPaymentsModal showPaymentModal={showPaymentModal}
                                       setShowPaymentModal={setShowPaymentModal}
                                       contribInfo={selectConfig.selected}
-                                      // refreshData={shouldRefreshData}
-                                      // setRefreshData={setShouldRefreshData}
                     />
 
                     <FloatingButton buttonType={"plus"}

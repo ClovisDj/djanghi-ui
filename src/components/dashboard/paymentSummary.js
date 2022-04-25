@@ -25,6 +25,11 @@ const PaymentSummary = ({requiredAmount, contributionId, currentValue, paymentNa
     const [unPaid, setUnPaid] = useState(0);
 
     useEffect(async () => {
+        if (requiredAmount && requiredAmount > 0 && currentValue) {
+            if (currentValue > requiredAmount) {
+
+            }
+        }
         const paymentData = await apiClient.get(
             `users/${tokenManager.getUserId()}/membership_payments`,
             {
@@ -75,11 +80,11 @@ const PaymentSummary = ({requiredAmount, contributionId, currentValue, paymentNa
                                                         </td>
                                                     </tr>
                                                     <tr>
-                                                        <th scope="row" className="payment-info-text">Paid</th>
+                                                        <th scope="row" className="payment-info-text">Balance</th>
                                                         <td className="text-end">
                                                             <AnimatedNumber value={displayCurrentAmount}
                                                                             formatValue={formatValue}
-                                                                            className="no-payment-due"
+                                                                            className={displayCurrentAmount >=0 ? "no-payment-due" : "need-more-payment"}
                                                             />
                                                         </td>
                                                     </tr>
@@ -90,7 +95,7 @@ const PaymentSummary = ({requiredAmount, contributionId, currentValue, paymentNa
                                                         <td className="text-end">
                                                             <AnimatedNumber value={unpaidValue}
                                                                             formatValue={formatValue}
-                                                                            className={currentValue > requiredAmount ? "overpaid-display-payment" : "need-more-payment"}
+                                                                            className={currentValue >= requiredAmount ? "overpaid-display-payment" : "need-more-payment"}
                                                             />
                                                         </td>
                                                     </tr>
@@ -105,13 +110,13 @@ const PaymentSummary = ({requiredAmount, contributionId, currentValue, paymentNa
                                             <table className="table table-borderless latest-payment-table">
                                                 <tbody>
                                                     <tr>
-                                                        <th scope="row" className="payment-info-text">
-                                                            {displayCurrentAmount >= 0 ? "Paid" : "Unpaid"}
+                                                        <th scope="row" className={displayCurrentAmount > 0 ? "overpaid-info-text" : "payment-info-text"}>
+                                                            {displayCurrentAmount >= 0 ? "OverPaid" : "Unpaid"}
                                                         </th>
                                                         <td className="text-end">
                                                             <AnimatedNumber value={displayCurrentAmount}
                                                                             formatValue={formatValue}
-                                                                            className={displayCurrentAmount >= 0 ? "no-payment-due" : "need-more-payment"}
+                                                                            className={displayCurrentAmount >= 0 ? "overpaid-display-payment" : "need-more-payment"}
                                                             />
                                                         </td>
                                                     </tr>
@@ -186,7 +191,7 @@ const PaymentSummary = ({requiredAmount, contributionId, currentValue, paymentNa
                                                             <td className="text-end payment-info-text">
                                                                 {paymentNote.length > 0 &&
                                                                     <a data-tip={paymentNote}>
-                                                                        <ReactTooltip />
+                                                                        <ReactTooltip html={true} className="custom-tooltip" />
                                                                         <button type="button"
                                                                                 className="btn btn-sm btn-secondary"
                                                                         >

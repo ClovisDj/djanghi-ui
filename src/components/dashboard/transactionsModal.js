@@ -5,6 +5,7 @@ import {formatValue, toTitle} from "../../utils/utils";
 import InfiniteScroll from "react-infinite-scroll-component";
 import ReactTooltip from "react-tooltip";
 import ApiClient from "../../utils/apiConfiguration";
+import PageLoader from "../sharedComponents/spinner/pageLoader";
 
 
 const apiClient = new ApiClient();
@@ -25,7 +26,7 @@ const PaymentRow = ({singlePaymentData}) => {
                 <td>
                     {note && note.length > 0 &&
                         <a data-tip={note}>
-                            <ReactTooltip />
+                            <ReactTooltip html={true} className="custom-tooltip" />
                             <button type="button"
                                     className="btn btn-sm btn-secondary"
                             >
@@ -102,11 +103,14 @@ const MoreTransactionsModal = ({paymentName, showMorePayments, setShowMorePaymen
                     <Modal.Header bsPrefix={"custom-modal-header"} closeButton>
                         <Modal.Title id="user-payments-list">
                             <div className="card-title">
-                                {toTitle(paymentName)} Payments
+                                {toTitle(paymentName)} -  Payments
                             </div>
                           </Modal.Title>
                         </Modal.Header>
                     <Modal.Body bsPrefix={"payments-modal-body"} id={"payments-modal-body"}>
+                        {data.length === 0 && showMorePayments &&
+                            <PageLoader width="5rem" height="5rem" marginTop="5rem" />
+                        }
                         <InfiniteScroll
                           dataLength={data.length}
                           next={fetchMorePayments}

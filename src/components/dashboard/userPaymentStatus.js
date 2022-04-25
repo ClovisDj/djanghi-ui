@@ -17,17 +17,21 @@ const tokenManager = new TokenManager();
 
 const PaymentTitleHeader = ({ paymentName, isRequired }) => {
     const dataTipMessage = "This field is required for your good membership standing!";
-    const tooltipId = uuidv4();
+
+    useEffect(() => {
+        ReactTooltip.rebuild();
+    }, []);
+
     return (
         <Fragment>
-            <div className="row title-card align-items-center justify-content-center">
+            <div key={uuidv4()} className="row title-card align-items-center justify-content-center">
                 <div className="col">
                     <h5 className="text-center">
                             {toTitle(paymentName)}
                             &nbsp;
                         {isRequired &&
-                            <span data-for={tooltipId} data-tip={dataTipMessage} >
-                                <ReactTooltip id={tooltipId} />
+                            <span data-tip={dataTipMessage} >
+                                <ReactTooltip id={uuidv4()} html={true} className="custom-tooltip" />
                                 <i key={uuidv4()} className="fas fa-info-circle" />
                             </span>
                         }

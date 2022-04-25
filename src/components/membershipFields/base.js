@@ -1,6 +1,6 @@
 import {Fragment, useEffect, useState} from "react";
 
-import FloatingButton from "../floatingButton/floatingButton";
+import FloatingButton from "../sharedComponents/floatingButton/floatingButton";
 import SingleContributionDisplay from "./contribCard";
 import CreateEditModal from "./createEditModal";
 

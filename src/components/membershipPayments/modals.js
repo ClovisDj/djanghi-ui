@@ -46,6 +46,10 @@ const customStyles = {
             }
         }
     },
+    menu: (base) => ({
+        ...base,
+        width: "94%",
+    }),
     multiValueLabel: (provided, state) => ({
         ...provided,
         color: `${whiteColor} !important`,
@@ -74,7 +78,7 @@ const redCustomStyles = {
 };
 
 const AddPaymentsModal = ({ showPaymentModal, setShowPaymentModal, contribInfo }) => {
-    const transactionTypeOptions = [
+    const defaultTransactionTypeOptions = [
         {value: "PAYMENT", label: "Credit"},
         {value: "COST", label: "Debit"},
     ];
@@ -84,18 +88,28 @@ const AddPaymentsModal = ({ showPaymentModal, setShowPaymentModal, contribInfo }
     const [isForAllMembers, setIsForAllMembers] = useState(false);
     const [memberOptions, setMemberOptions] = useState([]);
     const [selectedMembers, setSelectedMembers] = useState([]);
-    const [selectedTransactionType, setSelectedTransactionType] = useState(transactionTypeOptions[0]);
+    const [selectedTransactionType, setSelectedTransactionType] = useState(defaultTransactionTypeOptions[0]);
+    const [transactionTypeOptions, setTransactionTypeOptions] = useState([defaultTransactionTypeOptions[1]]);
     const [amount, setAmount] = useState(0);
     const [note, setNote] = useState("");
     const [usersError, setUsersError] = useState("");
     const [amountError, setAmountError] = useState("");
+    const [globalError, setGlobalError] = useState("");
 
     const handleAmountChange = (event) => {
         setAmount(event.target.value);
+        setAmountError("");
     };
 
     const handleTransaction = (transactionTypeChoice) => {
         setSelectedTransactionType(transactionTypeChoice);
+        const selectedIndex = defaultTransactionTypeOptions.findIndex(
+            (item) => item.value === transactionTypeChoice.value
+        );
+
+        let newChoices = JSON.parse(JSON.stringify(defaultTransactionTypeOptions));
+        newChoices.splice(selectedIndex, 1);
+        setTransactionTypeOptions(newChoices);
     };
 
     const handleForAllMembers = (event) => {
@@ -104,6 +118,7 @@ const AddPaymentsModal = ({ showPaymentModal, setShowPaymentModal, contribInfo }
 
     const handleSelections = (selections) => {
         setSelectedMembers(selections);
+        setUsersError("");
     };
 
     const handleNoteChange = (event) => {
@@ -113,13 +128,16 @@ const AddPaymentsModal = ({ showPaymentModal, setShowPaymentModal, contribInfo }
     const resetModalData = async () => {
         setIsForAllMembers(false);
         setSelectedMembers([]);
-        setSelectedTransactionType(transactionTypeOptions[0]);
+        setSelectedTransactionType(defaultTransactionTypeOptions[0]);
+        setTransactionTypeOptions([defaultTransactionTypeOptions[1]])
         setAmount(0);
         setNote("");
+        setAmountError("");
+        setUsersError("");
     };
 
     const handleCloseModal = async () => {
-        setShowPaymentModal(false);
+        await setShowPaymentModal(false);
         await resetModalData();
     };
 
@@ -139,10 +157,33 @@ const AddPaymentsModal = ({ showPaymentModal, setShowPaymentModal, contribInfo }
         };
     };
 
+    const validateData = async () => {
+        let dataIsValid = true;
+        if (!isForAllMembers && selectedMembers.length === 0 ) {
+            setUsersError("You should provide at least one user.");
+            dataIsValid = false;
+        }
+
+        if (amount <= 0) {
+            setAmountError("You should provide a positive non null value.");
+            dataIsValid = false;
+        }
+        return dataIsValid;
+    };
+
     const handleSave = async () => {
+        const dataIsValid = await validateData();
+        if (!dataIsValid) {
+            return;
+        }
+
         const payload = buildRequestPayload();
         const response = await apiClient.post("bulk_membership_payments", payload);
-        // setRefreshData(true);
+
+        if (response.errors) {
+            setGlobalError(data.errors[0].detail);
+        }
+
         refreshDataContext.setShouldRefreshData(true);
         await handleCloseModal();
     };
@@ -169,7 +210,6 @@ const AddPaymentsModal = ({ showPaymentModal, setShowPaymentModal, contribInfo }
     };
 
     useEffect(async () => {
-        console.log(">>>> Context:", refreshDataContext);
         const initialOptions = await fetchUsers();
         setMemberOptions(initialOptions);
     }, []);
@@ -233,6 +273,9 @@ const AddPaymentsModal = ({ showPaymentModal, setShowPaymentModal, contribInfo }
                                                onChange={handleAmountChange}
                                                onKeyPress={preventNonNumeric}
                                         />
+                                        <div className="text-start error-display">
+                                            {amountError}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -242,20 +285,23 @@ const AddPaymentsModal = ({ showPaymentModal, setShowPaymentModal, contribInfo }
                                     <div className="row inner-rows">
                                         <div className="col payment-info-text text-start align-middle">Member(s):</div>
                                         <div id="users-select-async" className="row user-select-row">
-                                                <AsyncSelect className={"payment-multi-select"}
-                                                             styles={customStyles}
-                                                             name="select users"
-                                                             placeholder="Search"
-                                                             isSearchable={true}
-                                                             loadOptions={fetchOptions}
-                                                             onChange={handleSelections}
-                                                             options={memberOptions}
-                                                             cacheOptions={memberOptions}
-                                                             defaultOptions={memberOptions}
-                                                             value={selectedMembers}
-                                                             isMulti={true}
-                                                             closeMenuOnSelect={false}
-                                                />
+                                            <AsyncSelect className={"payment-multi-select"}
+                                                         styles={customStyles}
+                                                         name="select users"
+                                                         placeholder="Search"
+                                                         isSearchable={true}
+                                                         loadOptions={fetchOptions}
+                                                         onChange={handleSelections}
+                                                         options={memberOptions}
+                                                         cacheOptions={memberOptions}
+                                                         defaultOptions={memberOptions}
+                                                         value={selectedMembers}
+                                                         isMulti={true}
+                                                         closeMenuOnSelect={false}
+                                            />
+                                            <div className="text-start error-display">
+                                                {usersError}
+                                            </div>
                                         </div>
                                     </div>
                                 </Fragment>
@@ -273,6 +319,10 @@ const AddPaymentsModal = ({ showPaymentModal, setShowPaymentModal, contribInfo }
 
                                     </div>
                                 </div>
+                            </div>
+
+                            <div className="text-start error-display">
+                                {globalError}
                             </div>
 
                         </div>

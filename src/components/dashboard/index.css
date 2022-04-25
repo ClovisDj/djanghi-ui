@@ -226,8 +226,12 @@ th, td {
 }
 
 .custom-tooltip {
- font-size: 15px !important;
- pointer-events: auto !important;
+    font-size: 14px !important;
+    font-weight: 400 !important;
+    max-width: 250px;
+    text-align: left;
+    padding: 8px !important;
+    margin: 0;
 }
 
 .custom-tooltip :hover {
@@ -247,6 +251,10 @@ th, td {
 .required-payment-tooltip :hover {
     visibility: visible !important;
     opacity: 1 !important;
+}
+
+.card-body .row .payments-table {
+    padding: 0 6px;
 }
 
 @media (max-width: 767.98px) {

@@ -100,7 +100,7 @@ const CreateEditModal = ({ modalType, showModal, setShowModal, contribData, shou
                                 <table id="contrib-card" className="table table-borderless latest-payment-table">
                                     <tbody>
                                         <tr>
-                                            <th scope="row" className="card-title text-end">Name:</th>
+                                            <th scope="row" className="payment-info-text text-start">Name</th>
                                             <td className="text-start">
                                                 <input className="form-control"
                                                        type="text"
@@ -117,7 +117,7 @@ const CreateEditModal = ({ modalType, showModal, setShowModal, contribData, shou
                                             </td>
                                         </tr>
                                         <tr>
-                                            <th scope="row" className="card-title text-end">Is Required:</th>
+                                            <th scope="row" className="payment-info-text text-start">Is Required</th>
                                             <td className="text-start">
                                                 <div className="form-check form-switch">
                                                     <input className="form-check-input"
@@ -129,15 +129,19 @@ const CreateEditModal = ({ modalType, showModal, setShowModal, contribData, shou
                                                 </div>
                                             </td>
                                         </tr>
-                                        <tr>
-                                            <th scope="row" className="card-title text-end">Required Amount:&nbsp; $</th>
+                                        <tr scope="col">
+                                            <th scope="row" className="payment-info-text text-start">Required Amount</th>
                                             <td className="text-start">
                                                 {!requiredAmountIsDisabled &&
-                                                    <input className="form-control"
+                                                    <div className="required-amount">
+                                                        <span className="payment-info-text">$</span>
+                                                        <input className="form-control"
                                                            type="number"
                                                            value={requiredAmount}
                                                            onChange={handleRequiredAmountChange}
-                                                    />
+                                                        />
+                                                    </div>
+
                                                 }
                                                 {requiredAmountIsDisabled &&
                                                     <input className="form-control"
@@ -151,7 +155,7 @@ const CreateEditModal = ({ modalType, showModal, setShowModal, contribData, shou
                                             </td>
                                         </tr>
                                         <tr>
-                                            <th scope="row" className="card-title text-end">Members can Opt-In:</th>
+                                            <th scope="row" className="payment-info-text text-start">Members can Opt-In</th>
                                             <td className="text-start">
                                                 <div className="form-check form-switch">
                                                     {!canOptInIsDisabled &&

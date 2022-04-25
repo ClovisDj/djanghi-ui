@@ -6,7 +6,6 @@ import {formatValue} from "../../utils/utils";
 const PaymentChart = ({paymentData}) => {
     const requiredAmount = paymentData.relationships.membership_payment_type.attributes.required_amount;
     const currentValue = paymentData.attributes.current_value;
-    const nonRequiredMinPaymentClass = currentValue < 0 ? "need-more-payment" : "no-payment-due";
     const displayCurrentAmount = currentValue;
     const series = (typeof requiredAmount === "number") ? [currentValue, requiredAmount - currentValue] : [];
     const options = {
@@ -65,7 +64,7 @@ const PaymentChart = ({paymentData}) => {
 
                         {requiredAmount <= 0 &&
                             <div className="row">
-                                <div className={"col text-center align-middle without-min-amount " + `${nonRequiredMinPaymentClass}`}>
+                                <div className={"col text-center align-middle without-min-amount " + (displayCurrentAmount > 0 ? "overpaid-info-text" : "need-more-payment" )}>
                                     <span>
                                         {formatValue(displayCurrentAmount)}
                                     </span>
