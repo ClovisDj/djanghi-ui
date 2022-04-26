@@ -17,6 +17,7 @@ import AddPaymentsModal from "./modals";
 import MoreTransactionsModal from "../dashboard/transactionsModal";
 import FloatingButton from "../sharedComponents/floatingButton/floatingButton";
 import PageLoader from "../sharedComponents/spinner/pageLoader";
+import ReactTooltip from "react-tooltip";
 
 
 const apiClient = new ApiClient();
@@ -30,8 +31,9 @@ const ListHeaderComponent = ({}) => {
                 <table className="table">
                     <thead>
                         <tr>
-                          <th scope="col">Name</th>
-                          <th scope="col">Balance</th>
+                          <th className="text-start col-6" scope="col">Name</th>
+                          <th className="text-end col-3" scope="col">Unpaid</th>
+                          <th className="text-end col-3" scope="col">Paid</th>
                         </tr>
                     </thead>
                 </table>
@@ -46,8 +48,9 @@ const RowUserPaymentStatusDisplay = ({ userContribStatus, handleClick }) => {
     const email = userContribStatus.relationships.user.attributes.email;
     const [displayName, setDisplayName] = useState("");
     const [displayBalance, setDisplayBalance] = useState(0);
-    const [requiredAmount, setRequiredAmount] = useState(0);
+    const [unpaidAmount, setUnpaidAmount] = useState(0);
     const [balanceClassDisplay, setBalanceClassDisplay] = useState("no-payment-due");
+    const [tooltipMessage, setTooltipMessage] = useState("");
 
     useEffect(async () => {
         const nameToDisplay = buildUserDisplayName(firstName, lastName, email);
@@ -56,9 +59,8 @@ const RowUserPaymentStatusDisplay = ({ userContribStatus, handleClick }) => {
         setDisplayBalance(currentValue);
         if (userContribStatus.relationships.membership_payment_type) {
             const requiredAmount = userContribStatus.relationships.membership_payment_type.attributes.required_amount;
-            setRequiredAmount(requiredAmount);
-            if (currentValue > 0 && requiredAmount > 0 && currentValue < requiredAmount) {
-                setDisplayBalance(-1 * currentValue);
+
+            if (currentValue < 0) {
                 setBalanceClassDisplay("need-more-payment");
             }
 
@@ -66,17 +68,45 @@ const RowUserPaymentStatusDisplay = ({ userContribStatus, handleClick }) => {
                 setBalanceClassDisplay("overpaid-display-payment");
             }
 
-            if (currentValue < 0) {
-                setBalanceClassDisplay("need-more-payment");
+            if (requiredAmount > 0) {
+                if (requiredAmount > currentValue) {
+                    setUnpaidAmount(requiredAmount - currentValue);
+                    setBalanceClassDisplay("need-more-payment");
+                } else if (currentValue > requiredAmount) {
+                    setUnpaidAmount(currentValue - requiredAmount);
+                    setBalanceClassDisplay("overpaid-display-payment");
+                    setTooltipMessage(`This member is overpaying $ ${currentValue - requiredAmount}`);
+                } else {
+                    setBalanceClassDisplay("no-payment-due");
+                }
+            } else {
+                if (currentValue < 0) {
+                    setUnpaidAmount(-1 * currentValue);
+                } else if (currentValue > 0) {
+                    setUnpaidAmount(currentValue);
+                    setBalanceClassDisplay("overpaid-display-payment");
+                    setTooltipMessage(`This member is overpaying $ ${currentValue}`);
+                } else {
+                   setUnpaidAmount(currentValue);
+                   setBalanceClassDisplay("no-payment-due");
+                }
             }
         }
     }, []);
 
     return (
         <Fragment>
-            <tr className="user-payment-status-row" onClick={handleClick}>
-                <td className="align-middle user-name-display">{displayName}</td>
-                <td className={"text-end align-middle " + balanceClassDisplay}>
+            <tr className="user-payment-status-row d-flex" onClick={handleClick} data-tip={tooltipMessage}>
+                <td className="user-name-display overflow-scroll col-6" scope="col">
+                   {displayName}
+                </td>
+                <td className={"text-end overflow-scroll col-3 " + balanceClassDisplay} scope="col">
+                    {formatValue(unpaidAmount)}
+                </td>
+                <td className={"text-end overflow-scroll col-3 " + balanceClassDisplay} scope="col">
+                    {tooltipMessage &&
+                        <ReactTooltip className="custom-tooltip" />
+                    }
                     {formatValue(displayBalance)}
                 </td>
             </tr>
@@ -253,7 +283,7 @@ const BaseMembershipPayments = () => {
                         <PageLoader />
                     }
 
-                    <div className="table-responsive admin-payment-status-container">
+                    <div className="table-responsive-md admin-payment-status-container">
                         <table key={tableKey} className="table">
                             <tbody>
                                 {!isLoading && userIdsArray.length === usersStatusData.length && usersStatusData.map((payment) => (

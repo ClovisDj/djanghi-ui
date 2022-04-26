@@ -148,11 +148,15 @@
 
 .credit-payment {
     color: white;
+    font-weight: 400;
+    font-size: 15px;
     background: rgb(54, 162, 235);
 }
 
 .debit-payment {
     color: white;
+    font-weight: 400;
+    font-size: 15px;
     background: rgb(253,82,116);
 }
 

@@ -3,14 +3,17 @@
     padding-bottom: 8px;
 }
 
-.admin-payments-table-header .table thead th {
-    text-align: center;
-    padding: 0 !important;
-}
-
 .admin-payment-status-container {
     margin-top: 1rem;
 }
+
+.user-payment-status-row td {
+    padding: 16px 5px 5px 5px !important;
+}
+
+.user-payment-status-row td {
+        font-size: 1.1rem;
+    }
 
 .user-payment-status-row {
     height: 4rem;
@@ -23,7 +26,7 @@
 }
 
 .user-name-display {
-    font-size: 18px;
+    font-size: 16px !important;
     font-weight: 400;
     color: #012970;
     font-family: "Poppins", sans-serif;
@@ -84,5 +87,14 @@
     }
     .payment-amount-input {
         width: 100%;
+    }
+    .user-payment-status-row {
+        height: 3.5rem;
+    }
+    .user-payment-status-row td {
+        font-size: 1rem;
+    }
+    .user-payment-status-row td {
+        padding: 15px 5px 5px 5px !important;
     }
 }

@@ -80,11 +80,11 @@ const PaymentSummary = ({requiredAmount, contributionId, currentValue, paymentNa
                                                         </td>
                                                     </tr>
                                                     <tr>
-                                                        <th scope="row" className="payment-info-text">Balance</th>
+                                                        <th scope="row" className="payment-info-text">Total Paid</th>
                                                         <td className="text-end">
                                                             <AnimatedNumber value={displayCurrentAmount}
                                                                             formatValue={formatValue}
-                                                                            className={displayCurrentAmount >=0 ? "no-payment-due" : "need-more-payment"}
+                                                                            className={displayCurrentAmount >= requiredAmount ? "no-payment-due" : "need-more-payment"}
                                                             />
                                                         </td>
                                                     </tr>
@@ -135,7 +135,7 @@ const PaymentSummary = ({requiredAmount, contributionId, currentValue, paymentNa
 
                         <div className="latest-payment-info">
                             <div className="card-title text-center">
-                                <h5 className="">Latest Transaction Info</h5>
+                                <h5 className="">Last Transaction Info</h5>
                             </div>
 
                             <div className="underline" />
