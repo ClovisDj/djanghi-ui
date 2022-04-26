@@ -92,6 +92,7 @@ const AddPaymentsModal = ({ showPaymentModal, setShowPaymentModal, contribInfo }
     const [transactionTypeOptions, setTransactionTypeOptions] = useState([defaultTransactionTypeOptions[1]]);
     const [amount, setAmount] = useState(0);
     const [note, setNote] = useState("");
+    const [noteCharactersLeft, setNoteCharactersLeft] = useState(250);
     const [usersError, setUsersError] = useState("");
     const [amountError, setAmountError] = useState("");
     const [globalError, setGlobalError] = useState("");
@@ -123,6 +124,7 @@ const AddPaymentsModal = ({ showPaymentModal, setShowPaymentModal, contribInfo }
 
     const handleNoteChange = (event) => {
         setNote(event.target.value);
+        setNoteCharactersLeft(250 - event.target.value.length);
     };
 
     const resetModalData = async () => {
@@ -132,6 +134,7 @@ const AddPaymentsModal = ({ showPaymentModal, setShowPaymentModal, contribInfo }
         setTransactionTypeOptions([defaultTransactionTypeOptions[1]])
         setAmount(0);
         setNote("");
+        setNoteCharactersLeft(250);
         setAmountError("");
         setUsersError("");
     };
@@ -314,9 +317,10 @@ const AddPaymentsModal = ({ showPaymentModal, setShowPaymentModal, contribInfo }
                                         <textarea className="payment-note"
                                                   value={note}
                                                   onChange={handleNoteChange}
+                                                  maxLength={250}
                                                   placeholder="Optional"
                                         />
-
+                                        <div>Characters {noteCharactersLeft} left</div>
                                     </div>
                                 </div>
                             </div>
