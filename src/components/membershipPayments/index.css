@@ -3,6 +3,10 @@
     padding-bottom: 8px;
 }
 
+.admin-payments-table-header table thead tr th {
+    height: 40px !important;
+}
+
 .admin-payment-status-container {
     margin-top: 1rem;
 }
