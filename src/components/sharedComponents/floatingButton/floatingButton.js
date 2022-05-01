@@ -19,7 +19,7 @@ const FloatingButton = ({ buttonType, handleClick, shouldDisplay, tooltipText}) 
             {displayStatus &&
                 <div id={"floating-button-" + buttonType}
                      className={"floating-button"} data-tip={tooltipText}>
-                    <ReactTooltip html={true} className="custom-tooltip" />
+                    <ReactTooltip html={true} className="custom-tooltip" effect="solid" />
                     <a className="btn btn-floating btn-primary btn-lg" onClick={handleOnclick}>
                         <i className="fas fa-plus" />
                     </a>

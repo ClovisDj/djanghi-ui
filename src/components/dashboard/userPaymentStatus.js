@@ -23,8 +23,8 @@ const PaymentTitleHeader = ({ paymentName, isRequired }) => {
     }, []);
 
     return (
-        <Fragment>
-            <div key={uuidv4()} className="row title-card align-items-center justify-content-center">
+        <Fragment key={uuidv4()}>
+            <div className="row title-card align-items-center justify-content-center">
                 <div className="col">
                     <h5 className="text-center">
                             {toTitle(paymentName)}
@@ -84,7 +84,7 @@ const UserPaymentStatus = () => {
                 let includedObject;
                 for (let idItem of idsWithoutPaymentsStatus) {
                     includedObject = getObjectById(contribData.data, idItem);
-                    paymentData.data.push(buildDummyPaymentStatus(includedObject));
+                    await paymentData.data.push(buildDummyPaymentStatus(includedObject));
                 }
                 // We sort payments statuses by contribution field name
                 paymentData.data.sort((itemA, itemB) => {

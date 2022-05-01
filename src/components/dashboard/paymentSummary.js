@@ -22,7 +22,6 @@ const PaymentSummary = ({requiredAmount, contributionId, currentValue, paymentNa
     const [transactionDate, setTransactionDate] = useState(null);
     const [showMorePayments, setShowMorePayments] = useState(false);
     const [paymentNote, setPaymentNote] = useState("");
-    const [unPaid, setUnPaid] = useState(0);
 
     useEffect(async () => {
         if (requiredAmount && requiredAmount > 0 && currentValue) {

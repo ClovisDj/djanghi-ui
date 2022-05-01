@@ -7,7 +7,9 @@ import DataParser from "../../utils/dataParser";
 import {ContribSelectContext, defaultSelectConfiguration, ShouldRefreshPaymentsContext} from "./context";
 import {
     arrayDifference,
-    buildDummyPaymentStatus, buildUserDisplayName, formatValue,
+    buildDummyPaymentStatus,
+    buildUserDisplayName,
+    formatValue,
     getIdsFromArray,
     getIncludedType,
     getObjectById
@@ -208,7 +210,10 @@ const BaseMembershipPayments = () => {
                 }
                 setUsersStatusData(usersSelectedContribData.data);
             }
+        } else {
+            setUsersStatusData([]);
         }
+
         setIsLoading(false);
         setTableKey(uuidv4());
     };

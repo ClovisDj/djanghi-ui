@@ -4,7 +4,10 @@
 }
 
 .admin-payments-table-header table thead tr th {
-    height: 40px !important;
+    height: 35px !important;
+    padding: 3px !important;
+    font-size: 15px !important;
+    font-weight: 450 !important;
 }
 
 .admin-payment-status-container {
@@ -12,12 +15,12 @@
 }
 
 .user-payment-status-row td {
-    padding: 16px 5px 5px 5px !important;
+    padding: 20px 5px 2px 8px !important;
 }
 
 .user-payment-status-row td {
-        font-size: 1.1rem;
-    }
+    font-size: 1.1rem;
+}
 
 .user-payment-status-row {
     height: 4rem;

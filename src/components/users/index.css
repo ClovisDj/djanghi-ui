@@ -1,0 +1,57 @@
+.user-status-row {
+    height: 4rem;
+    background-color: #fff;
+}
+
+.user-status-row:hover {
+    cursor: pointer;
+    background-color: rgba(222, 227, 250, 0.6);
+}
+
+.user-status-row .user-name-display {
+    padding: 18px 0 3px 6px !important;
+}
+
+.registration-status {
+    padding: 13px 5px !important;
+}
+
+.admin-status {
+    padding: 13px 5px !important;
+}
+
+.admin-status button {
+     font-size: 13px !important;
+    font-weight: 550 !important;
+}
+
+.resend-registration {
+    z-index: 200;
+}
+
+.registration-status button {
+    font-size: 13px !important;
+    font-weight: 550 !important;
+}
+
+.custom-registered-color button {
+    background: rgba(4, 101, 45, 0.98) !important;
+}
+
+.custom-registered-color:hover {
+    cursor: default !important;
+}
+
+.custom-input {
+    font-size: 16px !important;
+    font-weight: 400;
+    color: #012970 !important;
+    font-family: "Poppins", sans-serif;
+}
+
+
+@media (max-width: 767.98px) {
+    .resend-registration button {
+        padding: 8px !important;
+    }
+}

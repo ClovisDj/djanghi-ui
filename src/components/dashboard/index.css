@@ -232,7 +232,7 @@ th, td {
 .custom-tooltip {
     font-size: 14px !important;
     font-weight: 400 !important;
-    max-width: 250px;
+    max-width: 250px !important;
     text-align: left;
     padding: 8px !important;
     margin: 0;

@@ -108,6 +108,7 @@ const AddPaymentsModal = ({ showPaymentModal, setShowPaymentModal, contribInfo }
             (item) => item.value === transactionTypeChoice.value
         );
 
+        // This is to perform a deep copy of this array
         let newChoices = JSON.parse(JSON.stringify(defaultTransactionTypeOptions));
         newChoices.splice(selectedIndex, 1);
         setTransactionTypeOptions(newChoices);
@@ -351,5 +352,3 @@ const AddPaymentsModal = ({ showPaymentModal, setShowPaymentModal, contribInfo }
 };
 
 export default AddPaymentsModal;
-
-
