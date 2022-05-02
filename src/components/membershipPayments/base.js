@@ -1,5 +1,6 @@
 import {Fragment, useEffect, useState} from "react";
 import {v4 as uuidv4} from "uuid";
+import {isMobile} from "react-device-detect";
 
 import SecondaryNavBar from "../sharedComponents/secondaryNavBar";
 import ApiClient from "../../utils/apiConfiguration";
@@ -99,13 +100,13 @@ const RowUserPaymentStatusDisplay = ({ userContribStatus, handleClick }) => {
     return (
         <Fragment>
             <tr className="user-payment-status-row d-flex" onClick={handleClick} data-tip={tooltipMessage}>
-                <td className="user-name-display overflow-scroll col-6" scope="col">
+                <td className={"user-name-display col-6 " + (isMobile ? "overflow-scroll" : "")} scope="col">
                    {displayName}
                 </td>
-                <td className={"text-end overflow-scroll col-3 " + balanceClassDisplay} scope="col">
+                <td className={"text-end col-3 " + balanceClassDisplay + (isMobile ? " overflow-scroll" : "")} scope="col">
                     {formatValue(unpaidAmount)}
                 </td>
-                <td className={"text-end overflow-scroll col-3 " + balanceClassDisplay} scope="col">
+                <td className={"text-end col-3 " + balanceClassDisplay + (isMobile ? " overflow-scroll" : "")} scope="col">
                     {tooltipMessage &&
                         <ReactTooltip className="custom-tooltip" />
                     }

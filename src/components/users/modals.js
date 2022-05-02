@@ -18,6 +18,8 @@ const UserProfileModalComponent = ({ userData, showModal, setShowModal, isCreate
     const [female, setFemale] = useState(false);
     const [male, setMale] = useState(false);
     const [unspecified, setUnspecified] = useState(false);
+    const [sendRegistrationLink, setSendRegistrationLink] = useState(true);
+    const [errorMessage, setErrorMessage] = useState("");
 
 
     const sexChoicesMap = {
@@ -54,7 +56,32 @@ const UserProfileModalComponent = ({ userData, showModal, setShowModal, isCreate
     };
 
     const clearModalContent = async () => {
+        setEmail("");
+        setFirstName("");
+        setLastName("");
+        setSendRegistrationLink(true);
+        clearErrorMessage();
+    };
 
+    const clearErrorMessage = () => {
+        if (errorMessage) {
+            setErrorMessage("");
+        }
+    };
+
+    const handleEmailChange = (event) => {
+        setEmail(event.target.value);
+        clearErrorMessage();
+    };
+
+    const handleFirstNameChange = (event) => {
+        setFirstName(event.target.value);
+        clearErrorMessage();
+    };
+
+    const handleLastNameChange = (event) => {
+        setLastName(event.target.value);
+        clearErrorMessage();
     };
 
     const buildRequestPayload = async () => {
@@ -69,6 +96,9 @@ const UserProfileModalComponent = ({ userData, showModal, setShowModal, isCreate
 
         if (isCreate) {
             payload.email = email;
+            payload.first_name = payload.first_name ? payload.first_name : "";
+            payload.last_name = payload.last_name ? payload.last_name : "";
+            payload.send_registration_link = sendRegistrationLink;
         }
 
         [[female, "F"], [male, "M"], [unspecified, "U"]].forEach((sexOption) => {
@@ -81,20 +111,38 @@ const UserProfileModalComponent = ({ userData, showModal, setShowModal, isCreate
         return payload;
     };
 
+    const validateData = async () => {
+        let isValid = true;
+        if (isCreate) {
+            if (!email) {
+                setErrorMessage("You need to provide a valid email address.");
+                isValid = false;
+            }
+        }
+        return isValid;
+    };
+
     const handleSave = async () => {
         const requestMethod = isCreate ? "post" : "patch";
         const requestEndPoint = isCreate ? "registrations" : `users/${userData.id}`;
         const requestData = await buildRequestPayload();
-        const userResponseData = await apiClient[requestMethod](requestEndPoint, requestData);
-        if (userResponseData.data) {
-            refreshDataContext.setShouldRefreshData(true);
-            setShowModal(false);
+
+        const dataIsValid = await validateData();
+        if (dataIsValid) {
+            const userResponseData = await apiClient[requestMethod](requestEndPoint, requestData);
+
+            if (userResponseData.data) {
+                await refreshDataContext.setShouldRefreshData(true);
+                await handleCloseModal();
+            } else if (userResponseData.errors) {
+                setErrorMessage(userResponseData.errors[0].detail);
+            }
         }
     };
 
     return (
         <Fragment>
-            <Modal contentClassName="add-payments-modal-content"
+            <Modal contentClassName={!isCreate ? "add-payments-modal-content" : ""}
                    show={showModal}
                    backdrop="static"
                    onHide={handleCloseModal}
@@ -115,9 +163,9 @@ const UserProfileModalComponent = ({ userData, showModal, setShowModal, isCreate
                                      <input type="text"
                                             className="form-control custom-input"
                                             value={email}
-                                            placeholder="(optional)"
+                                            placeholder="(required)"
                                             disabled={!isCreate}
-                                            onChange={(event) => {setFirstName(event.target.value)}}
+                                            onChange={handleEmailChange}
                                      />
                                  </div>
                              </div>
@@ -131,7 +179,7 @@ const UserProfileModalComponent = ({ userData, showModal, setShowModal, isCreate
                                             value={firstName}
                                             placeholder="(optional)"
                                             maxLength={120}
-                                            onChange={(event) => {setFirstName(event.target.value)}}
+                                            onChange={handleFirstNameChange}
                                      />
                                  </div>
                              </div>
@@ -145,102 +193,117 @@ const UserProfileModalComponent = ({ userData, showModal, setShowModal, isCreate
                                             maxLength={120}
                                             placeholder="(optional)"
                                             value={lastName}
-                                            onChange={(event) => {setLastName(event.target.value)}}
+                                            onChange={handleLastNameChange}
                                      />
                                  </div>
                              </div>
-                             <div className="row inner-rows">
-                                 <div className="col-4 payment-info-text text-start align-middle">
-                                     Address
-                                 </div>
-                                 <div className="col-8 payment-info-text text-start align-middle">
-                                     <input type="text"
-                                            className="form-control custom-input"
-                                            maxLength={300}
-                                            value={address}
-                                            placeholder="(optional)"
-                                            onChange={(event) => {setAddress(event.target.value)}}
-                                     />
-                                 </div>
-                             </div>
-                             <div className="row inner-rows">
-                                 <div className="col-4 payment-info-text text-start align-middle">
-                                     Date of Birth
-                                 </div>
-                                 <div className="col-8 payment-info-text text-start align-middle">
-                                     <input type="date"
-                                            className="form-control custom-input"
-                                            value={dateOfBirth}
-                                            onChange={(event) => {setDateOfBirth(event.target.value)}}
-                                     />
-                                 </div>
-                             </div>
-                             <div className="row inner-rows">
-                                 <div className="col-4 payment-info-text text-start align-middle">
-                                     City of birth
-                                 </div>
-                                 <div className="col-8 payment-info-text text-start align-middle">
-                                     <input type="text"
-                                            className="form-control custom-input"
-                                            maxLength={100}
-                                            value={cityOfBirth}
-                                            placeholder="(optional)"
-                                            onChange={(event) => {setCityOfBirth(event.target.value)}}
-                                     />
-                                 </div>
-                             </div>
-                             <div className="row inner-rows">
-                                 <div className="col-4 payment-info-text text-start align-middle">
-                                     Country of birth
-                                 </div>
-                                 <div className="col-8 payment-info-text text-start align-middle">
-                                     <input type="text"
-                                            className="form-control custom-input"
-                                            maxLength={100}
-                                            value={countryOfBirth}
-                                            placeholder="(optional)"
-                                            onChange={(event) => {setCountryOfBirth(event.target.value)}}
-                                     />
-                                 </div>
-                             </div>
-                             <div className="row inner-rows">
-                                 <div className="col-4 payment-info-text text-start align-middle">
-                                     Gender
-                                 </div>
-                                 <div className="col-8 payment-info-text text-start align-middle">
-                                     <div className="form-check form-check-inline" onClick={() => handleUserSexChoice("F")}>
-                                         <input type="radio"
-                                                className="form-check-input"
-                                                name="rdo"
-                                                checked={female}
-                                                value={female}
-                                                onChange={() => handleUserSexChoice("F")}
-                                         />
-                                         <label className="form-check-label">Female</label>
+                             {!isCreate &&
+                                 <Fragment>
+                                     <div className="row inner-rows">
+                                         <div className="col-4 payment-info-text text-start align-middle">Address</div>
+                                         <div className="col-8 payment-info-text text-start align-middle">
+                                             <input type="text"
+                                                    className="form-control custom-input"
+                                                    maxLength={300}
+                                                    value={address}
+                                                    placeholder="(optional)"
+                                                    onChange={(event) => {setAddress(event.target.value)}}
+                                            />
+                                         </div>
                                      </div>
-                                     <div className="form-check form-check-inline" onClick={() => handleUserSexChoice("M")}>
-                                         <input type="radio"
-                                                className="form-check-input"
-                                                name="rdo"
-                                                checked={male}
-                                                value={male}
-                                                onChange={() => handleUserSexChoice("M")}
-                                         />
-                                         <label className="form-check-label">Male</label>
+                                     <div className="row inner-rows">
+                                         <div className="col-4 payment-info-text text-start align-middle">Date of Birth</div>
+                                         <div className="col-8 payment-info-text text-start align-middle">
+                                             <input type="date"
+                                                    className="form-control custom-input"
+                                                    value={dateOfBirth}
+                                                    onChange={(event) => {setDateOfBirth(event.target.value)}}
+                                             />
+                                         </div>
                                      </div>
-                                     <div className="form-check form-check-inline" onClick={() => handleUserSexChoice("U")}>
-                                         <input type="radio"
-                                                className="form-check-input"
-                                                name="rdo"
-                                                checked={unspecified}
-                                                value={unspecified}
-                                                onChange={() => handleUserSexChoice("U")}
-                                         />
-                                         <label className="form-check-label">Other</label>
+                                     <div className="row inner-rows">
+                                         <div className="col-4 payment-info-text text-start align-middle">City of birth</div>
+                                         <div className="col-8 payment-info-text text-start align-middle">
+                                             <input type="text"
+                                                    className="form-control custom-input"
+                                                    maxLength={100}
+                                                    value={cityOfBirth}
+                                                    placeholder="(optional)"
+                                                    onChange={(event) => {setCityOfBirth(event.target.value)}}
+                                             />
+                                         </div>
                                      </div>
-                                 </div>
-                             </div>
+                                     <div className="row inner-rows">
+                                         <div className="col-4 payment-info-text text-start align-middle">Country of birth</div>
+                                         <div className="col-8 payment-info-text text-start align-middle">
+                                             <input type="text"
+                                                    className="form-control custom-input"
+                                                    maxLength={100}
+                                                    value={countryOfBirth}
+                                                    placeholder="(optional)"
+                                                    onChange={(event) => {setCountryOfBirth(event.target.value)}}
+                                             />
+                                            </div>
+                                     </div>
+                                     <div className="row inner-rows">
+                                         <div className="col-4 payment-info-text text-start align-middle">Gender</div>
+                                         <div className="col-8 payment-info-text text-start align-middle">
+                                             <div className="form-check form-check-inline" onClick={() => handleUserSexChoice("F")}>
+                                                 <input type="radio"
+                                                        className="form-check-input"
+                                                        name="rdo"
+                                                        checked={female}
+                                                        value={female}
+                                                        onChange={() => handleUserSexChoice("F")}
+                                                 />
+                                                 <label className="form-check-label">Female</label>
+                                             </div>
+                                             <div className="form-check form-check-inline" onClick={() => handleUserSexChoice("M")}>
+                                                 <input type="radio"
+                                                        className="form-check-input"
+                                                        name="rdo"
+                                                        checked={male}
+                                                        value={male}
+                                                        onChange={() => handleUserSexChoice("M")}
+                                                 />
+                                                 <label className="form-check-label">Male</label>
+                                             </div>
+                                             <div className="form-check form-check-inline" onClick={() => handleUserSexChoice("U")}>
+                                                 <input type="radio"
+                                                        className="form-check-input"
+                                                        name="rdo"
+                                                        checked={unspecified}
+                                                        value={unspecified}
+                                                        onChange={() => handleUserSexChoice("U")}
+                                                 />
+                                                 <label className="form-check-label">Other</label>
+                                             </div>
+                                         </div>
+                                     </div>
+                                 </Fragment>
+                             }
+
+                             {isCreate &&
+                                <div className="row inner-rows">
+                                    <div className="col-4 payment-info-text text-start align-middle">Send Registration</div>
+                                    <div className="col-8 payment-info-text text-start align-middle">
+                                        <div className="form-check form-switch">
+                                            <input className="form-check-input"
+                                                   type="checkbox"
+                                                   checked={sendRegistrationLink}
+                                                   value={sendRegistrationLink}
+                                                   onChange={(e) => setSendRegistrationLink(e.target.checked)}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                             }
                          </div>
+
+                        <div className="text-end error-display">
+                            {errorMessage}
+                        </div>
+
                     </Modal.Body>
                 <Modal.Footer bsPrefix="custom-modal-footer">
                     <Button type="button"

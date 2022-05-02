@@ -11,6 +11,7 @@ import {Button} from "react-bootstrap";
 import TokenManager from "../../utils/authToken";
 import UserProfileModalComponent from "./modals";
 import {RefreshUsersContext} from "./contexts";
+import {isMobile} from "react-device-detect";
 
 
 const apiClient = new ApiClient();
@@ -35,7 +36,7 @@ const ListUsersHeaderComponent = ({}) => {
                                 <Fragment>
                                     <th className="text-start col-4" scope="col">Name</th>
                                     <th className="text-center col-4" scope="col">Admin</th>
-                                    <th className="text-end overflow-scroll col-4" scope="col">Registration</th>
+                                    <th className="text-end col-4" scope="col">Registration</th>
                                 </Fragment>
                             }
                             {authUser && authUser.attributes && !authUser.attributes.is_full_admin &&
@@ -101,7 +102,7 @@ const SingleUserComponent = ({ userData }) => {
             <tr className="user-status-row d-flex" onClick={handleUserClick} >
                 {authUser && authUser.attributes && authUser.attributes.is_full_admin &&
                     <Fragment>
-                        <td className="user-name-display overflow-scroll col-4" scope="col">
+                        <td className={"user-name-display col-4 " + (isMobile ? "overflow-scroll" : "")} scope="col">
                             {displayName}
                         </td>
                         <td className="admin-status text-center col-4" scope="col">
@@ -180,6 +181,7 @@ const BaseUsers = ({ }) => {
     const [userData, setUserData] = useState([]);
     const [dataIsLoading, setDataIsLoading] = useState(false);
     const [shouldRefreshData, setShouldRefreshData] = useState(false);
+    const [showRegistrationModal, setShowRegistrationModal] = useState(false);
     const [tableKey, setTableKey] = useState(uuidv4());
 
 
@@ -211,7 +213,7 @@ const BaseUsers = ({ }) => {
     }, [shouldRefreshData]);
 
     const handleOpenRegistrationModal = () => {
-
+        setShowRegistrationModal(true);
     };
 
     const handleSearch = async (event) => {
@@ -247,6 +249,11 @@ const BaseUsers = ({ }) => {
                         </tbody>
                     </table>
                 </div>
+
+                <UserProfileModalComponent showModal={showRegistrationModal}
+                                           setShowModal={setShowRegistrationModal}
+                                           isCreate={true}
+                />
 
                 <FloatingButton buttonType={"plus"}
                                 handleClick={handleOpenRegistrationModal}
