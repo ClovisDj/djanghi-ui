@@ -230,6 +230,7 @@ th, td {
 }
 
 .custom-tooltip {
+    text-transform: none !important;
     font-size: 14px !important;
     font-weight: 400 !important;
     max-width: 250px !important;

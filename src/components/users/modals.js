@@ -1,9 +1,117 @@
 import {Button, Modal} from "react-bootstrap";
 import {Fragment, useContext, useEffect, useState} from "react";
+
 import ApiClient from "../../utils/apiConfiguration";
 import {RefreshUsersContext} from "./contexts";
+import TokenManager from "../../utils/authToken";
 
 const apiClient = new ApiClient();
+const tokenManager = new TokenManager();
+
+export const AdminRolesModal = ({ displayName, userData, showModal, setShowModal, isAddRole }) => {
+    const refreshDataContext = useContext(RefreshUsersContext);
+    const [isFullAdmin, setIsFullAdmin] = useState(false);
+    const [authUserIsCurrent, setAuthUserIsCurrent] = useState(false);
+    const [isPaymentManager, setIsPaymentManager] = useState(false);
+
+    const rolesMap = {
+        A: () => setIsFullAdmin(true),
+        B: () => setIsPaymentManager(true),
+    };
+
+    useEffect(async () => {
+        await setAuthUserIsCurrent(tokenManager.getUserId() === userData.id);
+        for (let role of userData.attributes.roles) {
+            try {
+                rolesMap[role.value]();
+            } catch (e) {}
+
+        }
+    }, []);
+
+    const handleCloseModal = async () => {
+        await setShowModal(false);
+    };
+
+    const handleSave = async () => {
+        let requestRoles = [];
+        if (isFullAdmin) requestRoles.push("A");
+        if (isPaymentManager) requestRoles.push("B");
+
+        const response = await apiClient.post(`users/${userData.id}/admin`, {roles: requestRoles});
+
+        if (!response.errors) {
+            await refreshDataContext.setShouldRefreshData(true);
+            await setShowModal(false);
+        }
+    };
+
+     return (
+        <Fragment>
+            <Modal contentClassName={""}
+                   show={showModal}
+                   backdrop="static"
+                   onHide={handleCloseModal}
+                   scrollable={true}
+            >
+                <Modal.Header bsPrefix={"custom-modal-header"} closeButton>
+                    <Modal.Title id="user-payments-list">
+                        {isAddRole &&
+                            <div className="card-title">Modify Admin - {displayName}</div>
+                        }
+                        {!isAddRole &&
+                            <div className="card-title">Make Admin - {displayName}</div>
+                        }
+                      </Modal.Title>
+                </Modal.Header>
+                <Modal.Body bsPrefix={"payments-modal-body"}>
+                    <div className="row">
+                        <div className="col-6 payment-info-text text-start align-middle">Full Admin</div>
+                        <div className="col-6 payment-info-text text-start align-middle">
+                            <div className="form-check form-switch">
+                                <input className="form-check-input"
+                                       type="checkbox"
+                                       checked={isFullAdmin}
+                                       value={isFullAdmin}
+                                       disabled={authUserIsCurrent}
+                                       onChange={(e) => setIsFullAdmin(e.target.checked)}
+                                />
+                            </div>
+                        </div>
+                    </div>
+                    <div className="row inner-rows">
+                        <div className="col-6 payment-info-text text-start align-middle">Payment Manager</div>
+                        <div className="col-6 payment-info-text text-start align-middle">
+                            <div className="form-check form-switch">
+                                <input className="form-check-input"
+                                       type="checkbox"
+                                       checked={isPaymentManager}
+                                       value={isPaymentManager}
+                                       onChange={(e) => setIsPaymentManager(e.target.checked)}
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                </Modal.Body>
+                <Modal.Footer bsPrefix="custom-modal-footer">
+                    <Button type="button"
+                            className="btn-sm btn-secondary mr-auto"
+                            onClick={handleCloseModal}
+                    >
+                        Close
+                    </Button>
+                    <Button
+                        className="btn btn-danger btn-sm"
+                        onClick={async () => await handleSave()}
+                    >
+                        Save
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+        </Fragment>
+     );
+};
 
 const UserProfileModalComponent = ({ userData, showModal, setShowModal, isCreate= false }) => {
     const refreshDataContext = useContext(RefreshUsersContext);

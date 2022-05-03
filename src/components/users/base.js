@@ -9,9 +9,10 @@ import PageLoader from "../sharedComponents/spinner/pageLoader";
 import {v4 as uuidv4} from "uuid";
 import {Button} from "react-bootstrap";
 import TokenManager from "../../utils/authToken";
-import UserProfileModalComponent from "./modals";
+import UserProfileModalComponent, {AdminRolesModal} from "./modals";
 import {RefreshUsersContext} from "./contexts";
 import {isMobile} from "react-device-detect";
+import ReactTooltip from "react-tooltip";
 
 
 const apiClient = new ApiClient();
@@ -55,12 +56,17 @@ const ListUsersHeaderComponent = ({}) => {
 
 
 const SingleUserComponent = ({ userData }) => {
+    const editAdminTip = "Modify this admin roles";
+    const addAdminTip = "Make this user admin";
+    const resendTip = "Resend user registration link";
+    const registeredTip = "This user is already registered";
     const [authUser, setAuthUser] = useState();
     const [displayName, setDisplayName] = useState("");
     const [isRegistered, setIsRegistered] = useState(true);
     const [userIsAdmin, setUserIsAdmin] = useState(false);
     const [userIsFullAdmin, setUserIsFullAdmin] = useState(false);
     const [openProfileModal, setOpenProfileModal] = useState(false);
+    const [showAdminModal, setShowAdminModal] = useState(false);
 
     const handleUserClick = () => {
         setOpenProfileModal(true);
@@ -74,6 +80,7 @@ const SingleUserComponent = ({ userData }) => {
 
     const handleAdminButtonClick = async (event) => {
         event.stopPropagation();
+        setShowAdminModal(true);
         console.log(userData);
         console.log("clicked admin button!!!");
     };
@@ -108,33 +115,42 @@ const SingleUserComponent = ({ userData }) => {
                         <td className="admin-status text-center col-4" scope="col">
                             {userIsFullAdmin &&
                                 <div className="resend-registration">
-                                    <Button variant="primary" onClick={handleAdminButtonClick}>Full Admin</Button>
+                                    <Button key={uuidv4()} variant="primary" onClick={handleAdminButtonClick} data-tip={editAdminTip}>
+                                        <ReactTooltip key={uuidv4()} className="custom-tooltip" effect="solid" place="top" />
+                                        Full Admin
+                                    </Button>
                                 </div>
                             }
                             {!userIsFullAdmin && userIsAdmin &&
                                 <div className="resend-registration">
-                                    <Button variant="secondary" onClick={handleAdminButtonClick}>
+                                    <Button key={uuidv4()} variant="secondary" onClick={handleAdminButtonClick} data-tip={editAdminTip}>
+                                        <ReactTooltip key={uuidv4()} className="custom-tooltip" effect="solid" place="top" />
                                         &ensp; Manager &ensp;
                                     </Button>
                                 </div>
                             }
                             {!userIsAdmin &&
                                 <div className="resend-registration">
-                                    <Button variant="light" onClick={handleAdminButtonClick}>Make Admin</Button>
+                                    <Button key={uuidv4()} variant="light" onClick={handleAdminButtonClick} data-tip={addAdminTip}>
+                                        <ReactTooltip key={uuidv4()} className="custom-tooltip" effect="solid" place="top" />
+                                        Make Admin
+                                    </Button>
                                 </div>
                             }
                         </td>
                         <td className="registration-status text-end col-4" scope="col">
                             {!isRegistered &&
                                 <div className="resend-registration">
-                                    <Button variant="warning" onClick={handleResendRegistration}>
+                                    <Button key={uuidv4()} variant="warning" onClick={handleResendRegistration} data-tip={resendTip}>
+                                        <ReactTooltip id={uuidv4()} className="custom-tooltip" effect="solid" place="top" />
                                         &nbsp;&ensp; Resend &ensp;&nbsp;
                                     </Button>
                                 </div>
                             }
                             {isRegistered &&
                                 <div className="resend-registration custom-registered-color">
-                                    <Button variant="success" onClick={handleDisabledResendRegistration}>
+                                    <Button key={uuidv4()} variant="success" onClick={handleDisabledResendRegistration} data-tip={registeredTip}>
+                                        <ReactTooltip id={uuidv4()} className="custom-tooltip" effect="solid" place="top" />
                                         Registered
                                     </Button>
                                 </div>
@@ -170,6 +186,12 @@ const SingleUserComponent = ({ userData }) => {
             <UserProfileModalComponent userData={userData}
                                        setShowModal={setOpenProfileModal}
                                        showModal={openProfileModal}
+            />
+            <AdminRolesModal userData={userData}
+                             displayName={displayName}
+                             showModal={showAdminModal}
+                             setShowModal={setShowAdminModal}
+                             isAddRole={userIsAdmin}
             />
         </Fragment>
     );
