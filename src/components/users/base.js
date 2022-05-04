@@ -13,6 +13,7 @@ import UserProfileModalComponent, {AdminRolesModal} from "./modals";
 import {RefreshUsersContext} from "./contexts";
 import {isMobile} from "react-device-detect";
 import ReactTooltip from "react-tooltip";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 
 const apiClient = new ApiClient();
@@ -199,25 +200,33 @@ const SingleUserComponent = ({ userData }) => {
 
 const BaseUsers = ({ }) => {
     const [searchValue, setSearchValue] = useState("");
-    const [userSearchParams, setUserSearchParams] = useState({});
+    const [userSearchParams, setUserSearchParams] = useState({search: ""});
+    const [currentPage, setCurrentPage] = useState(1);
     const [userData, setUserData] = useState([]);
+    const [hasMoreUsers, setHasMoreUsers] = useState(false);
     const [dataIsLoading, setDataIsLoading] = useState(false);
     const [shouldRefreshData, setShouldRefreshData] = useState(false);
     const [showRegistrationModal, setShowRegistrationModal] = useState(false);
     const [tableKey, setTableKey] = useState(uuidv4());
 
 
-    const fetchUsers = async (params= {}) => {
-        let data;
-        const requestParams = {
+    const fetchUsers = async () => {
+        let data = [...userData];
+        let requestParams = {
             ...userSearchParams,
-            ...params
+            page: currentPage,
         };
+
         setDataIsLoading(true);
         let localUserData = await apiClient.get(`users`, requestParams);
         if (localUserData.data) {
-            data = new DataParser(localUserData);
-            setUserData(data.data.data);
+            localUserData = new DataParser(localUserData).data;
+
+            setUserData(data.concat(localUserData.data));
+
+            const hasMorePages = localUserData.meta.pagination.page < localUserData.meta.pagination.pages;
+            setCurrentPage(hasMorePages ? localUserData.meta.pagination.page + 1 : currentPage);
+            setHasMoreUsers(localUserData.meta.pagination.page < localUserData.meta.pagination.pages);
         }
         setDataIsLoading(false);
         return data;
@@ -225,7 +234,7 @@ const BaseUsers = ({ }) => {
 
     useEffect(async () => {
         await fetchUsers();
-    }, []);
+    }, [userSearchParams.search]);
 
      useEffect(async () => {
          if (shouldRefreshData) {
@@ -240,11 +249,12 @@ const BaseUsers = ({ }) => {
 
     const handleSearch = async (event) => {
         setSearchValue(event.target.value);
+        setUserData([]);
+        setCurrentPage(1);
         setUserSearchParams({
             ...userSearchParams,
-            search: event.target.value
+            search: event.target.value,
         });
-        await fetchUsers({search: event.target.value});
     };
 
     return (
@@ -260,17 +270,26 @@ const BaseUsers = ({ }) => {
                     <PageLoader />
                 }
 
-                <div className="table-responsive-md admin-payment-status-container">
-                    <table key={tableKey} className="table">
-                        <tbody>
-                            {!dataIsLoading && userData.map((user) => (
-                                <Fragment key={user.id}>
-                                    <SingleUserComponent userData={user} />
-                                </Fragment>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
+                <InfiniteScroll dataLength={userData.length}
+                                next={fetchUsers}
+                                hasMore={hasMoreUsers}
+                                pullDownToRefresh={true}
+                                refreshFunction={fetchUsers}
+                                scrollableTarget={"admin-payment-status-container"}
+                                loader={<h4>...</h4>}
+                >
+                    <div className="table-responsive-md admin-payment-status-container">
+                        <table key={tableKey} className="table">
+                            <tbody>
+                                {userData && userData.length > 0 && userData.map((user) => (
+                                    <Fragment key={user.id}>
+                                        <SingleUserComponent userData={user} />
+                                    </Fragment>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                </InfiniteScroll>
 
                 <UserProfileModalComponent showModal={showRegistrationModal}
                                            setShowModal={setShowRegistrationModal}

@@ -1,4 +1,5 @@
 import {Fragment, useEffect, useState} from "react";
+import {isMobile} from "react-device-detect";
 
 
 const PageLoader = ({ width, height, marginTop, zIndex }) => {
@@ -6,9 +7,17 @@ const PageLoader = ({ width, height, marginTop, zIndex }) => {
         width: "9rem",
         height: "9rem",
         marginTop: "10rem",
-        zIndex: "511"
     };
     const [style, setStyle] = useState(defaultStyle);
+    const [wrapperStyle, setWrapperStyle] = useState({
+        zIndex: "999",
+        backgroundColor: "none",
+        position: "fixed",
+        top: "40%",
+        left: "58%",
+        WebkitTransform: "translate(-50%, -50%)",
+        transform: "translate(-50%, -50%)",
+    });
 
     useEffect(() => {
         let localStyle = {...defaultStyle};
@@ -18,11 +27,18 @@ const PageLoader = ({ width, height, marginTop, zIndex }) => {
         localStyle.zIndex = zIndex ? zIndex : localStyle.zIndex;
 
         setStyle(localStyle);
+
+        if (isMobile) {
+            setWrapperStyle({
+                ...wrapperStyle,
+                left: "50%",
+            });
+        }
     }, []);
 
     return (
         <Fragment>
-            <div className="text-center">
+            <div className="text-center" style={wrapperStyle}>
                 <div className="spinner-border page-loading-spinner" role="status" style={style}>
                     <span className="visually-hidden">Loading...</span>
                 </div>

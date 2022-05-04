@@ -113,14 +113,13 @@ const MoreTransactionsModal = ({paymentName, showMorePayments, setShowMorePaymen
                         {data.length === 0 && showMorePayments && isFetchingData &&
                             <PageLoader width="5rem" height="5rem" marginTop="5rem" />
                         }
-                        <InfiniteScroll
-                          dataLength={data.length}
-                          next={fetchMorePayments}
-                          hasMore={hasMorePayments}
-                          pullDownToRefresh={true}
-                          refreshFunction={fetchMorePayments}
-                          scrollableTarget={"payments-modal-body"}
-                          loader={<h4>Loading...</h4>}
+                        <InfiniteScroll dataLength={data.length}
+                                        next={fetchMorePayments}
+                                        hasMore={hasMorePayments}
+                                        pullDownToRefresh={true}
+                                        refreshFunction={fetchMorePayments}
+                                        scrollableTarget={"payments-modal-body"}
+                                        loader={<h4>Loading...</h4>}
                         >
                             <div className="table-responsive payments-table">
                                 <table className="table">

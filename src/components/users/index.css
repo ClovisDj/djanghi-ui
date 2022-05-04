@@ -1,5 +1,5 @@
 .user-status-row {
-    height: 4rem;
+    height: 4.3rem;
     background-color: #fff;
 }
 
@@ -9,15 +9,15 @@
 }
 
 .user-status-row .user-name-display {
-    padding: 18px 0 3px 6px !important;
+    padding: 20px 0 3px 6px !important;
 }
 
 .registration-status {
-    padding: 13px 5px !important;
+    padding: 15px 5px !important;
 }
 
 .admin-status {
-    padding: 13px 5px !important;
+    padding: 15px 5px !important;
 }
 
 .admin-status button {
