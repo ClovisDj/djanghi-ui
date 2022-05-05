@@ -186,10 +186,11 @@ const AddPaymentsModal = ({ showPaymentModal, setShowPaymentModal, contribInfo }
 
         if (response.errors) {
             setGlobalError(data.errors[0].detail);
+        } else {
+            await refreshDataContext.resetPaymentPageData();
+            refreshDataContext.setShouldRefreshData(true);
+            await handleCloseModal();
         }
-
-        refreshDataContext.setShouldRefreshData(true);
-        await handleCloseModal();
     };
 
     const fetchUsers = async (searchText = null) => {

@@ -292,7 +292,7 @@ const BaseMembershipPayments = () => {
     return (
         <ContribSelectContext.Provider value={selectConfig}>
             <ShouldRefreshPaymentsContext.Provider
-                value={{shouldRefreshData: shouldRefreshData, setShouldRefreshData: setShouldRefreshData}}>
+                value={{shouldRefreshData: shouldRefreshData, setShouldRefreshData: setShouldRefreshData, resetPaymentPageData: resetPaymentPageData,}}>
                 <Fragment>
                     <SecondaryNavBar searchText={searchValue}
                                      handleSearch={handleSearch}
@@ -300,7 +300,7 @@ const BaseMembershipPayments = () => {
                                      TableHeaderComponent={ListHeaderComponent}
                     />
 
-                    {isLoading &&
+                    {isLoading && !shouldRefreshData && !usersParams.search.length > 0 &&
                         <PageLoader />
                     }
 

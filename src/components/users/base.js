@@ -246,26 +246,35 @@ const BaseUsers = ({ }) => {
         setShowRegistrationModal(true);
     };
 
-    const handleSearch = async (event) => {
-        setSearchValue(event.target.value);
+    const resetPageParams = async () => {
         setUserData([]);
         setCurrentPage(1);
+    };
+
+    const handleSearch = async (event) => {
+        setSearchValue(event.target.value);
+        await resetPageParams();
         setUserSearchParams({
             ...userSearchParams,
             search: event.target.value,
         });
     };
 
+    const refreshDataContext = {
+        shouldRefreshData: shouldRefreshData,
+        setShouldRefreshData: setShouldRefreshData,
+        resetPageParams: resetPageParams,
+    };
+
     return (
-        <RefreshUsersContext.Provider
-            value={{shouldRefreshData: shouldRefreshData, setShouldRefreshData: setShouldRefreshData}}>
+        <RefreshUsersContext.Provider value={refreshDataContext}>
             <Fragment>
                 <SecondaryNavBar searchText={searchValue}
                                  handleSearch={handleSearch}
                                  TableHeaderComponent={ListUsersHeaderComponent}
                 />
 
-                {dataIsLoading &&
+                {dataIsLoading && !shouldRefreshData && !userSearchParams.search.length > 0 &&
                     <PageLoader />
                 }
 

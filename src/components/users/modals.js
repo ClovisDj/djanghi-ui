@@ -41,6 +41,7 @@ export const AdminRolesModal = ({ displayName, userData, showModal, setShowModal
         const response = await apiClient.post(`users/${userData.id}/admin`, {roles: requestRoles});
 
         if (!response.errors) {
+            await refreshDataContext.resetPageParams();
             await refreshDataContext.setShouldRefreshData(true);
             await setShowModal(false);
         }
