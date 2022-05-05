@@ -209,7 +209,6 @@ const BaseUsers = ({ }) => {
     const [showRegistrationModal, setShowRegistrationModal] = useState(false);
     const [tableKey, setTableKey] = useState(uuidv4());
 
-
     const fetchUsers = async () => {
         let data = [...userData];
         let requestParams = {
@@ -226,7 +225,7 @@ const BaseUsers = ({ }) => {
 
             const hasMorePages = localUserData.meta.pagination.page < localUserData.meta.pagination.pages;
             setCurrentPage(hasMorePages ? localUserData.meta.pagination.page + 1 : currentPage);
-            setHasMoreUsers(localUserData.meta.pagination.page < localUserData.meta.pagination.pages);
+            setHasMoreUsers(hasMorePages);
         }
         setDataIsLoading(false);
         return data;

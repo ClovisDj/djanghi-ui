@@ -15,7 +15,7 @@
 }
 
 .user-payment-status-row td {
-    padding: 20px 5px 2px 8px !important;
+    padding: 21px 5px 2px 8px !important;
 }
 
 .user-payment-status-row td {
@@ -23,7 +23,7 @@
 }
 
 .user-payment-status-row {
-    height: 4rem;
+    height: 4.5rem;
     background-color: #fff;
 }
 
@@ -94,12 +94,6 @@
     }
     .payment-amount-input {
         width: 100%;
-    }
-    .user-payment-status-row {
-        height: 3.5rem;
-    }
-    .user-payment-status-row td {
-        font-size: 1rem;
     }
     .user-payment-status-row td {
         padding: 15px 5px 5px 5px !important;

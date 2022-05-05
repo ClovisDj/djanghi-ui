@@ -1,6 +1,8 @@
 import {Fragment, useEffect, useState} from "react";
 import {v4 as uuidv4} from "uuid";
 import {isMobile} from "react-device-detect";
+import ReactTooltip from "react-tooltip";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 import SecondaryNavBar from "../sharedComponents/secondaryNavBar";
 import ApiClient from "../../utils/apiConfiguration";
@@ -20,7 +22,7 @@ import AddPaymentsModal from "./modals";
 import MoreTransactionsModal from "../dashboard/transactionsModal";
 import FloatingButton from "../sharedComponents/floatingButton/floatingButton";
 import PageLoader from "../sharedComponents/spinner/pageLoader";
-import ReactTooltip from "react-tooltip";
+
 
 
 const apiClient = new ApiClient();
@@ -122,17 +124,17 @@ const BaseMembershipPayments = () => {
     const [selectConfig, setSelectConfig] = useState(defaultSelectConfiguration);
     const [contribOptions, setContribOptions] = useState([]);
     const [contribData, setContribData] = useState([]);
-    const [adminContribStatusParams, setAdminContribStatusParams] = useState({});
+    const [adminContribStatusParams, setAdminContribStatusParams] = useState({contribution_id: ""});
     const [hasMoreUsers, setHasMoreUsers] = useState(false);
     const [showPaymentModal, setShowPaymentModal] = useState(false);
     const [usersStatusData, setUsersStatusData] = useState([]);
-    const [usersParams, setUsersParams] = useState({});
+    const [usersParams, setUsersParams] = useState({search: ""});
+    const [currentPage, setCurrentPage] = useState(1);
     const [clickedUserPaymentStatus, setClickedUserPaymentStatus] = useState({relationships: {user: {}}});
     const [clickedUserDisplayName, setClickedUserDisplayName] = useState("");
     const [showSelectedUserPayments, setShowSelectedUserPayments] = useState(false);
     const [shouldRefreshData, setShouldRefreshData] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const [userIdsArray, setUserIdsArray] = useState([]);
     // The below param is to force re-render the table component once a payment added
     const [tableKey, setTableKey] = useState(uuidv4());
 
@@ -169,16 +171,19 @@ const BaseMembershipPayments = () => {
     const fetchMembersContribStatus = async (searchParams = {}) => {
         setIsLoading(true);
 
+        let localUsersStatusData = [...usersStatusData];
         const requestParams = {
             ...usersParams,
-            ...searchParams
+            ...searchParams,
+            page: currentPage,
         };
+
         const userData = await apiClient.get("users", requestParams);
         if (userData && userData.data && userData.data.length > 0) {
             const thereIsMoreUsers = userData.meta.pagination.page < userData.meta.pagination.pages;
+            setCurrentPage(thereIsMoreUsers ? userData.meta.pagination.page + 1 : currentPage);
             setHasMoreUsers(thereIsMoreUsers);
-            const userIds = await getIdsFromArray(userData.data);
-            setUserIdsArray(userIds);
+            const userIds = getIdsFromArray(userData.data);
             const queryParams = {
                 ...adminContribStatusParams,
                 user_ids: userIds.join(',')
@@ -197,19 +202,21 @@ const BaseMembershipPayments = () => {
                     );
                     usersIdsInStatus = usersIdsInStatus.concat(getIdsFromArray(includedUsersInStatus));
                 }
+
                 usersWithoutInStatus = await arrayDifference(userIds, usersIdsInStatus);
                 for (let userId of usersWithoutInStatus) {
-                    const contribField = getObjectById(contribData, selectConfig.selected.value);
+                    const contribField = getObjectById(contribData, adminContribStatusParams.contribution_id);
                     const dummyUserPaymentStatus = buildDummyPaymentStatus(contribField);
-                    dummyUserPaymentStatus.relationships.user = getObjectById(userData.data, userId);
-                    usersSelectedContribData.data.push(dummyUserPaymentStatus);
-                    await usersSelectedContribData.data.sort((itemA, itemB) => {
-                        const paymentNameA = itemA.relationships.user.attributes.first_name;
-                        const paymentNameB = itemB.relationships.user.attributes.first_name;
-                        return paymentNameA.localeCompare(paymentNameB) ;
-                    });
+                    dummyUserPaymentStatus.relationships.user = await getObjectById(userData.data, userId);
+                    await usersSelectedContribData.data.push(dummyUserPaymentStatus);
                 }
-                setUsersStatusData(usersSelectedContribData.data);
+
+                await usersSelectedContribData.data.sort((itemA, itemB) => {
+                    const paymentNameA = itemA.relationships.user.attributes.first_name;
+                    const paymentNameB = itemB.relationships.user.attributes.first_name;
+                    return paymentNameA.localeCompare(paymentNameB) ;
+                });
+                setUsersStatusData(localUsersStatusData.concat(usersSelectedContribData.data));
             }
         } else {
             setUsersStatusData([]);
@@ -219,32 +226,40 @@ const BaseMembershipPayments = () => {
         setTableKey(uuidv4());
     };
 
+    const resetPaymentPageData = async () => {
+        setUsersStatusData([]);
+        setCurrentPage(1);
+    };
+
     useEffect(async () => {
         await fetchContribFields();
     }, []);
 
     useEffect(async () => {
-        await fetchMembersContribStatus();
-    }, [selectConfig.selected.value]);
+        if (adminContribStatusParams.contribution_id) {
+            await fetchMembersContribStatus();
+        }
+    }, [adminContribStatusParams.contribution_id, searchValue]);
 
     useEffect(async () => {
         if(shouldRefreshData) {
             await fetchMembersContribStatus();
             setShouldRefreshData(false);
         }
-
     }, [shouldRefreshData]);
 
     const handleSearch = async (event) => {
         setSearchValue(event.target.value);
         setUsersParams({
             ...usersParams,
-            search: event.target.value
+            search: event.target.value,
         });
-        await fetchMembersContribStatus({search: event.target.value});
+        await resetPaymentPageData();
     };
 
-    const handleSelect = (selection) => {
+    const handleSelect = async (selection) => {
+        await resetPaymentPageData();
+
         let localSelectOptions = {
             ...selectConfig,
             contribOptions: contribOptions,
@@ -289,20 +304,29 @@ const BaseMembershipPayments = () => {
                         <PageLoader />
                     }
 
-                    <div className="table-responsive-md admin-payment-status-container">
-                        <table key={tableKey} className="table">
-                            <tbody>
-                                {!isLoading && userIdsArray.length === usersStatusData.length && usersStatusData.map((payment) => (
+                    <InfiniteScroll dataLength={usersStatusData.length}
+                                next={fetchMembersContribStatus}
+                                hasMore={hasMoreUsers}
+                                pullDownToRefresh={true}
+                                refreshFunction={fetchMembersContribStatus}
+                                scrollableTarget={"admin-payment-status-container"}
+                                loader={<h4>...</h4>}
+                    >
+                        <div className="table-responsive-md admin-payment-status-container">
+                            <table key={tableKey} className="table">
+                                <tbody>
+                                    {usersStatusData && usersStatusData.map((payment) => (
                                         <Fragment key={payment.id}>
                                             <RowUserPaymentStatusDisplay userContribStatus={payment}
                                                                          handleClick={() => handleRowClick(payment)}
                                             />
                                         </Fragment>
-                                    ))
-                                }
-                            </tbody>
-                        </table>
-                    </div>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </InfiniteScroll>
+
                     <MoreTransactionsModal paymentName={clickedUserDisplayName ? clickedUserDisplayName : ""}
                                            userId={clickedUserPaymentStatus.relationships.user.id}
                                            contributionId={selectConfig.selected.value}
@@ -320,7 +344,7 @@ const BaseMembershipPayments = () => {
                                 shouldDisplay={true}
                                 tooltipText={"Add Payments"}
                     />
-                    </Fragment>
+                </Fragment>
             </ShouldRefreshPaymentsContext.Provider>
         </ContribSelectContext.Provider>
     );
