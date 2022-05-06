@@ -29,13 +29,13 @@ h1, h2, h3, h4, h5, h6 {
 # Main
 --------------------------------------------------------------*/
 #main {
-  margin-top: 80px;
-  padding: 20px 150px;
+  margin-top: 70px;
+  padding: 10px 150px;
   transition: all 0.3s;
 }
 @media (max-width: 1199px) {
   #main {
-    padding: 20px;
+    padding: 15px;
   }
 }
 
@@ -212,119 +212,12 @@ h1, h2, h3, h4, h5, h6 {
   box-shadow: 0 0 30px rgba(1, 41, 112, 0.1);
 }
 
-.card-chart {
-  margin-bottom: 10px;
-  border: none;
-  border-radius: 5px;
-  background-color: #ffffff;
-  height: 430px;
-  box-shadow: 0 0 30px rgba(1, 41, 112, 0.1);
-}
-
-.card-detail {
-  margin-bottom: 30px;
-  border: none;
-  border-radius: 5px;
-  background-color: #ffffff;
-  height: 430px;
-  box-shadow: 0 0 30px rgba(1, 41, 112, 0.1);
-}
-
-.title-card {
-  background-color: #ffffff;
-  border: none;
-  border-radius: 5px;
-  box-shadow: 0 0 30px rgba(1, 41, 112, 0.1);
-  height: 50px;
-}
-
-.payment-title-row {
-  margin-bottom: 10px;
-}
-
-.card-title-text {
-  padding-top: 13px !important;
-  font-size: 21px !important;
-  margin-bottom: 0 !important;
-  height: 100%;
-}
-
-.amount-detail {
-  font-size: 20px;
-  color: rgb(253,82,116);
-  text-align: right;
-}
-
-.underline {
-  background-color: rgb(231, 233, 232);
-  height: 1px;
-  width: 100%;
-  margin: 0 0 5px 0;
-}
-
-.vertical-separator {
-  background-color: rgb(231, 233, 232);
-  width: 1px;
-  height: auto;
-  padding: 0;
-}
-
-.without-min-amount {
-  height: 350px;
-  font-family: "Tahoma";
-  font-size: 50px !important;
-  padding: 170px 0 0 0;
-}
-
-.need-more-payment {
-  font-size: 1.2rem;
-  color: rgb(253,82,116)!important;
-  font-weight: 300;
-}
-
-.no-payment-due {
-  font-size: 1.2rem;
-  color: rgb(54, 162, 235);
-  font-weight: 300;
-}
-
 .card-header, .card-footer {
   border-color: #ebeef4;
   background-color: #fff;
   color: #798eb3;
   padding: 15px;
 }
-
-.card-title {
-  font-size: 18px;
-  font-weight: 600;
-  color: #012970;
-  font-family: "Poppins", sans-serif;
-  margin-bottom: 0!important;
-}
-
-.card-title h5{
-  padding: 10px 0 0 0;
-  font-size: 18px;
-  font-weight: 600;
-  color: #012970;
-  font-family: "Poppins", sans-serif;
-  margin-bottom: 0;
-}
-
-.payment-detail p{
-  font-size: 18px;
-  font-weight: 250;
-  color: #012970;
-  font-family: "Poppins", sans-serif;
-  margin-bottom: 10px;
-}
-
-.more-payment {
-  /*width: 50%;*/
-  margin: 20px 0;
-}
-
 
 .card-title span {
   color: #899bbd;
@@ -757,6 +650,9 @@ h1, h2, h3, h4, h5, h6 {
   background-color: #4154f1;
 }
 .side-active {
+  font-size: 16px;
+  margin-right: 10px;
+  color: #4154f1 !important;
   background: #f6f9ff !important;
 }
 /*--------------------------------------------------------------
@@ -961,6 +857,10 @@ h1, h2, h3, h4, h5, h6 {
   text-overflow: ellipsis;
   white-space: nowrap;
   color: #666;
+}
+
+.btn-close {
+  transform: scale(2);
 }
 
 /*--------------------------------------------------------------

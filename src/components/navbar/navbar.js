@@ -34,7 +34,6 @@ const NavBar = ({user, association}) => {
                 />
                 <SideNavBar
                     user={user}
-                    association={association}
                 />
             </div>
         </Fragment>

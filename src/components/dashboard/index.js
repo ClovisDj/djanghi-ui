@@ -8,10 +8,9 @@ const Dashboard = () => {
 
     return (
         <Fragment>
-            <BaseDashboard ComponentToRender={UserPaymentStatus}/>
+            <BaseDashboard ComponentToRender={UserPaymentStatus} />
         </Fragment>
     );
 };
 
-export default  Dashboard;
-
+export default Dashboard;
