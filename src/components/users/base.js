@@ -71,19 +71,15 @@ const SingleUserComponent = ({ userData }) => {
 
     const handleUserClick = () => {
         setOpenProfileModal(true);
-        console.log("clicked user!!!");
     };
 
     const handleResendRegistration = async (event) => {
         event.stopPropagation();
-        console.log("clicked resend button!!!");
     };
 
     const handleAdminButtonClick = async (event) => {
         event.stopPropagation();
         setShowAdminModal(true);
-        console.log(userData);
-        console.log("clicked admin button!!!");
     };
 
     const handleDisabledResendRegistration = async (event) => {
