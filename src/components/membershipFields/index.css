@@ -1,0 +1,64 @@
+
+.contrib-card {
+  margin-bottom: 30px;
+  padding: .7rem;
+  border: none;
+  border-radius: 5px;
+  background-color: #ffffff;
+  height: auto;
+  box-shadow: 0 0 30px rgba(1, 41, 112, 0.1);
+}
+
+.contrib-table-div {
+  height: 16rem;
+}
+
+.contrib-table-div .table-borderless {
+  margin-bottom: 0;
+}
+
+.no-payment-due h5 {
+  margin: 0;
+}
+
+#contrib-card td, th {
+    vertical-align: middle;
+}
+
+#contrib-card tr {
+  height: 3.5rem;
+}
+
+.contrib-title h5 {
+  padding: 10px 0 20px 20px;
+  font-size: 18px;
+  font-weight: 600;
+  color: #012970;
+  font-family: "Poppins", sans-serif;
+  margin-bottom: 0;
+}
+
+.btn-secondary {
+  color: #fff;
+  background-color: #606060 !important;
+}
+
+.btn-danger {
+  color: #fff;
+  background-color: rgb(253,82,116) !important;
+}
+
+.mr-auto {
+  margin-right: auto;
+}
+
+.currency-symbol {
+  text-align: end;
+  padding: 8px;
+  font-size: 22px;
+}
+
+.contrib-name-input {
+  margin-left: 25px;
+  width: -moz-available;
+}

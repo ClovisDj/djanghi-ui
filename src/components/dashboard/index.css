@@ -1,8 +1,135 @@
+.card-chart {
+  margin-bottom: 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: #ffffff;
+  height: 430px;
+  box-shadow: 0 0 30px rgba(1, 41, 112, 0.1);
+}
+
+.card-detail {
+  margin-bottom: 30px;
+  border: none;
+  border-radius: 5px;
+  background-color: #ffffff;
+  height: 430px;
+  box-shadow: 0 0 30px rgba(1, 41, 112, 0.1);
+}
+
+.title-card {
+    background-color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    box-shadow: 0 0 30px rgba(1, 41, 112, 0.1);
+    height: 50px;
+    margin: 0 0 .5rem 0;
+}
+
+.title-card .col h5 {
+    font-size: 21px;
+    font-weight: 600;
+    color: #012970;
+    font-family: "Poppins", sans-serif;
+    margin-bottom: 0;
+}
+
+.title-card .col h5 span i {
+    color: rgb(253,82,116);
+}
+
+.payment-title-row {
+  margin-bottom: 10px;
+}
+
+.card-title-text {
+  padding-top: 13px !important;
+  font-size: 21px !important;
+  margin-bottom: 0 !important;
+  height: 100%;
+}
+
+.amount-detail {
+  font-size: 20px;
+  color: rgb(253,82,116);
+  text-align: right;
+}
+
+.underline {
+  background-color: rgb(231, 233, 232);
+  height: 1px;
+  width: 100%;
+  margin: 0 0 5px 0;
+}
+
+.vertical-separator {
+  background-color: rgb(231, 233, 232);
+  width: 1px;
+  height: auto;
+  padding: 0;
+    margin: .5rem 0;
+}
+
+.without-min-amount {
+  height: 350px;
+  font-family: "Tahoma";
+  font-size: 50px !important;
+  padding: 170px 0 0 0;
+}
+
+.need-more-payment {
+    font-size: 1.25rem;
+    color: rgb(253,82,116)!important;
+    font-weight: 450;
+    font-family: "Nunito", sans-serif;
+}
+
+.overpaid-display-payment {
+    font-size: 1.25rem;
+    color: #ff931a !important;
+    font-weight: 450;
+    font-family: "Nunito", sans-serif;
+}
+
+.no-payment-due {
+    font-size: 1.25rem;
+    color: rgb(54, 162, 235);
+    font-weight: 500;
+    font-family: "Nunito", sans-serif;
+}
+
+.card-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #012970;
+  font-family: "Poppins", sans-serif;
+  margin-bottom: 0!important;
+}
+
+.card-title h5{
+  padding: 10px 0 0 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #012970;
+  font-family: "Poppins", sans-serif;
+  margin-bottom: 0;
+}
+
+.payment-detail p{
+  font-size: 18px;
+  font-weight: 250;
+  color: #012970;
+  font-family: "Poppins", sans-serif;
+  margin-bottom: 10px;
+}
+
+.more-payment {
+  margin: 13px 0;
+}
 
 .payments-modal-body {
     position: relative;
     flex: 1 1 auto;
-    padding: 0 1rem;
+    padding: 1rem;
     overflow-y: auto;
     background: white;
 }
@@ -21,11 +148,15 @@
 
 .credit-payment {
     color: white;
+    font-weight: 400;
+    font-size: 15px;
     background: rgb(54, 162, 235);
 }
 
 .debit-payment {
     color: white;
+    font-weight: 400;
+    font-size: 15px;
     background: rgb(253,82,116);
 }
 
@@ -79,9 +210,17 @@
 }
 
 .payment-info-text {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 400;
   color: #012970;
+  font-family: "Poppins", sans-serif;
+  margin-bottom: 0!important;
+}
+
+.overpaid-info-text {
+  font-size: 16px;
+  font-weight: 400;
+  color: #ff931a;
   font-family: "Poppins", sans-serif;
   margin-bottom: 0!important;
 }
@@ -91,11 +230,40 @@ th, td {
 }
 
 .custom-tooltip {
- font-size: 15px !important;
- pointer-events: auto !important;
+    text-transform: none !important;
+    font-size: 14px !important;
+    font-weight: 400 !important;
+    max-width: 250px !important;
+    text-align: left;
+    padding: 8px !important;
+    margin: 0;
 }
 
 .custom-tooltip :hover {
     visibility: visible !important;
     opacity: 1 !important;
+}
+
+.no-payment {
+    margin-top: 5rem;
+}
+
+.required-payment-tooltip {
+    font-size: 12px !important;
+    pointer-events: auto !important;
+}
+
+.required-payment-tooltip :hover {
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+.card-body .row .payments-table {
+    padding: 0 6px;
+}
+
+@media (max-width: 767.98px) {
+    .card-chart {
+        height: fit-content;
+    }
 }

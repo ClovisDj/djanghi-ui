@@ -4,10 +4,12 @@ import jwt_decode from "jwt-decode";
 class TokenManager {
     #authTokenKey;
     #refreshTokenKey;
+    #authUser;
 
     constructor() {
         this.#authTokenKey = "djanghiAuthToken";
         this.#refreshTokenKey = "djanghiRefreshToken";
+        this.#authUser = "djanghiAuthUser";
     }
 
     storeToken = (tokenKey, token) => {
@@ -16,6 +18,10 @@ class TokenManager {
 
     storeAuthToken = (token) => {
         this.storeToken(this.#authTokenKey, token);
+    }
+
+    storeAuthUser = (userData) => {
+        this.storeToken(this.#authUser, JSON.stringify(userData));
     }
 
     removeStoredToken = (tokenKey) => {
@@ -30,6 +36,10 @@ class TokenManager {
         this.removeStoredToken(this.#refreshTokenKey)
     }
 
+    removeAuthUser = () => {
+        this.removeStoredToken(this.#authUser)
+    }
+
     storeRefreshToken = (token) => {
         this.storeToken(this.#refreshTokenKey, token);
     }
@@ -40,6 +50,11 @@ class TokenManager {
 
     getStoredRefreshToken = () => {
         return localStorage.getItem(this.#refreshTokenKey);
+    }
+
+    getAuthUser = () => {
+        // Don't know why but this object needs to be deserialized twice
+        return JSON.parse(JSON.parse(localStorage.getItem(this.#authUser)));
     }
 
     decodeToken = (token) => {
@@ -83,10 +98,11 @@ class TokenManager {
     logOut = () => {
         this.removeAuthToken();
         this.removeRefreshToken();
+        this.removeAuthUser();
     }
 
     isAuthenticated = () => {
-        return this.getStoredAuthToken() && !this.tokenIsExpired(this.getStoredAuthToken()) || this.canRefreshAuthToken();
+        return (this.getStoredAuthToken() && !this.tokenIsExpired(this.getStoredAuthToken())) || this.canRefreshAuthToken();
     }
 }
 
