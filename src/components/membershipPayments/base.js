@@ -7,7 +7,12 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import SecondaryNavBar from "../sharedComponents/secondaryNavBar";
 import ApiClient from "../../utils/apiConfiguration";
 import DataParser from "../../utils/dataParser";
-import {ContribSelectContext, defaultSelectConfiguration, ShouldRefreshPaymentsContext} from "./context";
+import {
+    ClickedUserContext,
+    ContribSelectContext,
+    defaultSelectConfiguration,
+    ShouldRefreshPaymentsContext
+} from "./context";
 import {
     arrayDifference,
     buildDummyPaymentStatus,
@@ -18,7 +23,7 @@ import {
     getObjectById
 } from "../../utils/utils";
 
-import AddPaymentsModal from "./modals";
+import AddPaymentsModal, {AddOrListPaymentsModal} from "./modals";
 import MoreTransactionsModal from "../dashboard/transactionsModal";
 import FloatingButton from "../sharedComponents/floatingButton/floatingButton";
 import PageLoader from "../sharedComponents/spinner/pageLoader";
@@ -135,6 +140,8 @@ const BaseMembershipPayments = () => {
     const [showSelectedUserPayments, setShowSelectedUserPayments] = useState(false);
     const [shouldRefreshData, setShouldRefreshData] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [showModalChoice, setShowModalChoice] = useState(false);
+    const [shouldEmptyUsersList, setShouldEmptyUsersList] = useState(false);
     // The below param is to force re-render the table component once a payment added
     const [tableKey, setTableKey] = useState(uuidv4());
 
@@ -216,7 +223,14 @@ const BaseMembershipPayments = () => {
                     const paymentNameB = itemB.relationships.user.attributes.first_name;
                     return paymentNameA.localeCompare(paymentNameB) ;
                 });
-                setUsersStatusData(localUsersStatusData.concat(usersSelectedContribData.data));
+
+                if (!shouldEmptyUsersList) {
+                    setUsersStatusData(localUsersStatusData.concat(usersSelectedContribData.data));
+                } else {
+                    setUsersStatusData(usersSelectedContribData.data);
+                    setShouldEmptyUsersList(false);
+                }
+
             }
         } else {
             setUsersStatusData([]);
@@ -227,7 +241,7 @@ const BaseMembershipPayments = () => {
     };
 
     const resetPaymentPageData = async () => {
-        setUsersStatusData([]);
+        setShouldEmptyUsersList(true);
         setCurrentPage(1);
     };
 
@@ -282,69 +296,91 @@ const BaseMembershipPayments = () => {
             userAttributes.email
         );
         setClickedUserDisplayName(userDisplayName);
-        setShowSelectedUserPayments(true);
+        setShowModalChoice(true);
     };
 
     const handleOpenPaymentModal = () => {
         setShowPaymentModal(true);
     };
 
+    const refreshDataContextData = {
+        shouldRefreshData: shouldRefreshData,
+        setShouldRefreshData: setShouldRefreshData,
+        resetPaymentPageData: resetPaymentPageData
+    };
+
+    const clickedUserContextData = {
+        clickedUser: clickedUserPaymentStatus,
+        setClickedUser: setClickedUserPaymentStatus,
+        clickedUserDisplayName: clickedUserDisplayName,
+        setClickedUserDisplayName: setClickedUserDisplayName,
+        setShowPaymentModal: setShowPaymentModal,
+        showSelectedUserPayments: showSelectedUserPayments,
+        setShowSelectedUserPayments: setShowSelectedUserPayments,
+
+    };
+
     return (
         <ContribSelectContext.Provider value={selectConfig}>
-            <ShouldRefreshPaymentsContext.Provider
-                value={{shouldRefreshData: shouldRefreshData, setShouldRefreshData: setShouldRefreshData, resetPaymentPageData: resetPaymentPageData,}}>
-                <Fragment>
-                    <SecondaryNavBar searchText={searchValue}
-                                     handleSearch={handleSearch}
-                                     handleSelect={handleSelect}
-                                     TableHeaderComponent={ListHeaderComponent}
-                    />
+            <ShouldRefreshPaymentsContext.Provider value={refreshDataContextData}>
+                <ClickedUserContext.Provider value={clickedUserContextData}>
+                    <Fragment>
+                        <SecondaryNavBar searchText={searchValue}
+                                         handleSearch={handleSearch}
+                                         handleSelect={handleSelect}
+                                         TableHeaderComponent={ListHeaderComponent}
+                        />
 
-                    {isLoading && !shouldRefreshData && !usersParams.search.length > 0 &&
-                        <PageLoader />
-                    }
+                        {isLoading && !shouldRefreshData && !usersParams.search.length > 0 &&
+                            <PageLoader />
+                        }
 
-                    <InfiniteScroll dataLength={usersStatusData.length}
-                                next={fetchMembersContribStatus}
-                                hasMore={hasMoreUsers}
-                                pullDownToRefresh={true}
-                                refreshFunction={fetchMembersContribStatus}
-                                scrollableTarget={"admin-payment-status-container"}
-                                loader={<h4>...</h4>}
-                    >
-                        <div className="table-responsive-md admin-payment-status-container">
-                            <table key={tableKey} className="table">
-                                <tbody>
-                                    {usersStatusData && usersStatusData.map((payment) => (
-                                        <Fragment key={payment.id}>
-                                            <RowUserPaymentStatusDisplay userContribStatus={payment}
-                                                                         handleClick={() => handleRowClick(payment)}
-                                            />
-                                        </Fragment>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    </InfiniteScroll>
+                        <InfiniteScroll dataLength={usersStatusData.length}
+                                    next={fetchMembersContribStatus}
+                                    hasMore={hasMoreUsers}
+                                    pullDownToRefresh={true}
+                                    refreshFunction={fetchMembersContribStatus}
+                                    scrollableTarget={"admin-payment-status-container"}
+                                    loader={<h4>...</h4>}
+                        >
+                            <div className="table-responsive-md admin-payment-status-container">
+                                <table key={tableKey} className="table">
+                                    <tbody>
+                                        {usersStatusData && usersStatusData.map((payment) => (
+                                            <Fragment key={payment.id}>
+                                                <RowUserPaymentStatusDisplay userContribStatus={payment}
+                                                                             handleClick={() => handleRowClick(payment)}
+                                                />
+                                            </Fragment>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </InfiniteScroll>
 
-                    <MoreTransactionsModal paymentName={clickedUserDisplayName ? clickedUserDisplayName : ""}
-                                           userId={clickedUserPaymentStatus.relationships.user.id}
-                                           contributionId={selectConfig.selected.value}
-                                           showMorePayments={showSelectedUserPayments}
-                                           setShowMorePayments={setShowSelectedUserPayments}
-                    />
+                        <MoreTransactionsModal paymentName={clickedUserDisplayName ? clickedUserDisplayName : ""}
+                                               userId={clickedUserPaymentStatus.relationships.user.id}
+                                               contributionId={selectConfig.selected.value}
+                                               showMorePayments={showSelectedUserPayments}
+                                               setShowMorePayments={setShowSelectedUserPayments}
+                        />
 
-                    <AddPaymentsModal showPaymentModal={showPaymentModal}
-                                      setShowPaymentModal={setShowPaymentModal}
-                                      contribInfo={selectConfig.selected}
-                    />
+                        <AddOrListPaymentsModal showModalChoice={showModalChoice}
+                                                setShowModalChoice={setShowModalChoice}
+                        />
 
-                    <FloatingButton buttonType={"plus"}
-                                handleClick={handleOpenPaymentModal}
-                                shouldDisplay={true}
-                                tooltipText={"Add Payments"}
-                    />
-                </Fragment>
+                        <AddPaymentsModal showPaymentModal={showPaymentModal}
+                                          setShowPaymentModal={setShowPaymentModal}
+                                          contribInfo={selectConfig.selected}
+                        />
+
+                        <FloatingButton buttonType={"plus"}
+                                    handleClick={handleOpenPaymentModal}
+                                    shouldDisplay={true}
+                                    tooltipText={"Add Payments"}
+                        />
+                    </Fragment>
+                </ClickedUserContext.Provider>
             </ShouldRefreshPaymentsContext.Provider>
         </ContribSelectContext.Provider>
     );

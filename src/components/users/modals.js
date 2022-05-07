@@ -97,13 +97,13 @@ export const AdminRolesModal = ({ displayName, userData, showModal, setShowModal
                 </Modal.Body>
                 <Modal.Footer bsPrefix="custom-modal-footer">
                     <Button type="button"
-                            className="btn-sm btn-secondary mr-auto"
+                            className="btn-sm close-button"
                             onClick={handleCloseModal}
                     >
                         Close
                     </Button>
                     <Button
-                        className="btn btn-danger btn-sm"
+                        className="btn btn-sm save-button"
                         onClick={async () => await handleSave()}
                     >
                         Save
@@ -241,6 +241,7 @@ const UserProfileModalComponent = ({ userData, showModal, setShowModal, isCreate
             const userResponseData = await apiClient[requestMethod](requestEndPoint, requestData);
 
             if (userResponseData.data) {
+                await refreshDataContext.resetPageParams();
                 await refreshDataContext.setShouldRefreshData(true);
                 await handleCloseModal();
             } else if (userResponseData.errors) {
@@ -259,7 +260,7 @@ const UserProfileModalComponent = ({ userData, showModal, setShowModal, isCreate
             >
                 <Modal.Header bsPrefix={"custom-modal-header"} closeButton>
                     <Modal.Title id="user-payments-list">
-                        <div className="card-title">User Profile</div>
+                        <div className="card-title">{isCreate ? "Register a new user" : "User Profile"}</div>
                       </Modal.Title>
                 </Modal.Header>
                     <Modal.Body bsPrefix={"payments-modal-body"}>
@@ -416,14 +417,14 @@ const UserProfileModalComponent = ({ userData, showModal, setShowModal, isCreate
                     </Modal.Body>
                 <Modal.Footer bsPrefix="custom-modal-footer">
                     <Button type="button"
-                            className="btn-sm btn-secondary mr-auto"
+                            className="btn-sm close-button"
                             onClick={handleCloseModal}
                     >
                         Close
                     </Button>
                     <Button
-                        className="btn btn-danger btn-sm"
-                        onClick={async () => await handleSave()}
+                        className="btn btn-sm save-button"
+                        onClick={ () => handleSave()}
                     >
                         Save
                     </Button>

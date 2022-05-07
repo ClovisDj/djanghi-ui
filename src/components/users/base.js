@@ -203,6 +203,7 @@ const BaseUsers = ({ }) => {
     const [dataIsLoading, setDataIsLoading] = useState(false);
     const [shouldRefreshData, setShouldRefreshData] = useState(false);
     const [showRegistrationModal, setShowRegistrationModal] = useState(false);
+    const [shouldEmptyUsersList, setShouldEmptyUsersList] = useState(false);
     const [tableKey, setTableKey] = useState(uuidv4());
 
     const fetchUsers = async () => {
@@ -217,13 +218,20 @@ const BaseUsers = ({ }) => {
         if (localUserData.data) {
             localUserData = new DataParser(localUserData).data;
 
-            setUserData(data.concat(localUserData.data));
+            if (!shouldEmptyUsersList) {
+                setUserData(data.concat(localUserData.data));
+            } else {
+                setUserData(localUserData.data);
+                setShouldEmptyUsersList(false);
+            }
+
 
             const hasMorePages = localUserData.meta.pagination.page < localUserData.meta.pagination.pages;
             setCurrentPage(hasMorePages ? localUserData.meta.pagination.page + 1 : currentPage);
             setHasMoreUsers(hasMorePages);
         }
         setDataIsLoading(false);
+        setTableKey(uuidv4());
         return data;
     };
 
@@ -243,7 +251,7 @@ const BaseUsers = ({ }) => {
     };
 
     const resetPageParams = async () => {
-        setUserData([]);
+        setShouldEmptyUsersList(true);
         setCurrentPage(1);
     };
 
@@ -259,6 +267,7 @@ const BaseUsers = ({ }) => {
     const refreshDataContext = {
         shouldRefreshData: shouldRefreshData,
         setShouldRefreshData: setShouldRefreshData,
+        setShouldEmptyUsersList: setShouldEmptyUsersList,
         resetPageParams: resetPageParams,
     };
 

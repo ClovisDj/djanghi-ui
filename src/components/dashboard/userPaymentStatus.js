@@ -31,8 +31,8 @@ const PaymentTitleHeader = ({ paymentName, isRequired }) => {
                             &nbsp;
                         {isRequired &&
                             <span data-tip={dataTipMessage} >
-                                <ReactTooltip id={uuidv4()} html={true} className="custom-tooltip" />
-                                <i key={uuidv4()} className="fas fa-info-circle" />
+                                <ReactTooltip  html={true} className="custom-tooltip" effect="solid" />
+                                <i className="fas fa-info-circle" />
                             </span>
                         }
                     </h5>
