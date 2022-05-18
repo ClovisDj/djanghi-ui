@@ -44,7 +44,7 @@ const ListUsersHeaderComponent = ({}) => {
                             {authUser && authUser.attributes && !authUser.attributes.is_full_admin &&
                                 <Fragment>
                                     <th className="text-start col-6" scope="col">Name</th>
-                                    <th className="text-end overflow-scroll col-6" scope="col">Registration</th>
+                                    <th className="text-end col-6" scope="col">Registration</th>
                                 </Fragment>
                             }
                         </tr>
@@ -61,6 +61,10 @@ const SingleUserComponent = ({ userData }) => {
     const addAdminTip = "Make this user admin";
     const resendTip = "Resend user registration link";
     const registeredTip = "This user is already registered";
+    const registeredTipId = uuidv4();
+    const editAdminTipID = uuidv4();
+    const addAdminTipID = uuidv4();
+    const isRegisteredTipId = uuidv4();
     const [authUser, setAuthUser] = useState();
     const [displayName, setDisplayName] = useState("");
     const [isRegistered, setIsRegistered] = useState(true);
@@ -112,24 +116,33 @@ const SingleUserComponent = ({ userData }) => {
                         <td className="admin-status text-center col-4" scope="col">
                             {userIsFullAdmin &&
                                 <div className="resend-registration">
-                                    <Button key={uuidv4()} variant="primary" onClick={handleAdminButtonClick} data-tip={editAdminTip}>
-                                        <ReactTooltip key={uuidv4()} className="custom-tooltip" effect="solid" place="top" />
+                                    <ReactTooltip id={editAdminTipID} className="custom-tooltip" effect="solid" place="right" />
+                                    <Button variant="primary"
+                                            onClick={handleAdminButtonClick}
+                                            data-tip={editAdminTip}
+                                            data-for={editAdminTipID}>
                                         Full Admin
                                     </Button>
                                 </div>
                             }
                             {!userIsFullAdmin && userIsAdmin &&
                                 <div className="resend-registration">
-                                    <Button key={uuidv4()} variant="secondary" onClick={handleAdminButtonClick} data-tip={editAdminTip}>
-                                        <ReactTooltip key={uuidv4()} className="custom-tooltip" effect="solid" place="top" />
+                                    <ReactTooltip id={editAdminTipID} className="custom-tooltip" effect="solid" place="right" />
+                                    <Button variant="secondary"
+                                            onClick={handleAdminButtonClick}
+                                            data-tip={editAdminTip}
+                                            data-for={editAdminTipID}>
                                         &ensp; Manager &ensp;
                                     </Button>
                                 </div>
                             }
                             {!userIsAdmin &&
                                 <div className="resend-registration">
-                                    <Button key={uuidv4()} variant="light" onClick={handleAdminButtonClick} data-tip={addAdminTip}>
-                                        <ReactTooltip key={uuidv4()} className="custom-tooltip" effect="solid" place="top" />
+                                    <ReactTooltip id={addAdminTipID} className="custom-tooltip" effect="solid" place="right" />
+                                    <Button variant="light"
+                                            onClick={handleAdminButtonClick}
+                                            data-tip={addAdminTip}
+                                            data-for={addAdminTipID}>
                                         Make Admin
                                     </Button>
                                 </div>
@@ -138,16 +151,22 @@ const SingleUserComponent = ({ userData }) => {
                         <td className="registration-status text-end col-4" scope="col">
                             {!isRegistered &&
                                 <div className="resend-registration">
-                                    <Button key={uuidv4()} variant="warning" onClick={handleResendRegistration} data-tip={resendTip}>
-                                        <ReactTooltip id={uuidv4()} className="custom-tooltip" effect="solid" place="top" />
+                                    <ReactTooltip id={registeredTipId} className="custom-tooltip" effect="solid" place="left" />
+                                    <Button variant="warning"
+                                            onClick={handleResendRegistration}
+                                            data-tip={resendTip}
+                                            data-for={registeredTipId}>
                                         &nbsp;&ensp; Resend &ensp;&nbsp;
                                     </Button>
                                 </div>
                             }
                             {isRegistered &&
                                 <div className="resend-registration custom-registered-color">
-                                    <Button key={uuidv4()} variant="success" onClick={handleDisabledResendRegistration} data-tip={registeredTip}>
-                                        <ReactTooltip id={uuidv4()} className="custom-tooltip" effect="solid" place="top" />
+                                    <ReactTooltip id={isRegisteredTipId} className="custom-tooltip" effect="solid" place="left" />
+                                    <Button variant="success"
+                                            onClick={handleDisabledResendRegistration}
+                                            data-tip={registeredTip}
+                                            data-for={isRegisteredTipId}>
                                         Registered
                                     </Button>
                                 </div>
@@ -158,20 +177,28 @@ const SingleUserComponent = ({ userData }) => {
 
                 {authUser && authUser.attributes && !authUser.attributes.is_full_admin &&
                     <Fragment>
-                        <td className="user-name-display overflow-scroll col-6" scope="col">
+                        <td className={"user-name-display col-6 " + (isMobile ? "overflow-scroll" : "")} scope="col">
                             {displayName}
                         </td>
                         <td className="registration-status text-end col-6" scope="col">
                             {!isRegistered &&
                                 <div className="resend-registration">
-                                    <Button variant="warning" onClick={handleResendRegistration}>
+                                    <ReactTooltip id={registeredTipId} className="custom-tooltip" effect="solid" place="left" />
+                                    <Button variant="warning"
+                                            onClick={handleResendRegistration}
+                                            data-tip={resendTip}
+                                            data-for={registeredTipId}>
                                         &nbsp;&ensp; Resend &ensp;&nbsp;
                                     </Button>
                                 </div>
                             }
                             {isRegistered &&
                                 <div className="resend-registration custom-registered-color">
-                                    <Button variant="success" onClick={handleDisabledResendRegistration}>
+                                    <ReactTooltip id={isRegisteredTipId} className="custom-tooltip" effect="solid" place="left" />
+                                    <Button variant="success"
+                                            onClick={handleDisabledResendRegistration}
+                                            data-tip={registeredTip}
+                                            data-for={isRegisteredTipId}>
                                         Registered
                                     </Button>
                                 </div>
