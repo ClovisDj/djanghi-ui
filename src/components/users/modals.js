@@ -207,7 +207,7 @@ const UserProfileModalComponent = ({ userData, showModal, setShowModal, isCreate
             payload.email = email;
             payload.first_name = payload.first_name ? payload.first_name : "";
             payload.last_name = payload.last_name ? payload.last_name : "";
-            payload.send_registration_link = sendRegistrationLink;
+            payload.should_send_activation = sendRegistrationLink;
         }
 
         [[female, "F"], [male, "M"], [unspecified, "U"]].forEach((sexOption) => {

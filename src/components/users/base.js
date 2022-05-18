@@ -7,7 +7,7 @@ import DataParser from "../../utils/dataParser";
 import {buildUserDisplayName} from "../../utils/utils";
 import PageLoader from "../sharedComponents/spinner/pageLoader";
 import {v4 as uuidv4} from "uuid";
-import {Button} from "react-bootstrap";
+import {Button, Modal} from "react-bootstrap";
 import TokenManager from "../../utils/authToken";
 import UserProfileModalComponent, {AdminRolesModal} from "./modals";
 import {RefreshUsersContext} from "./contexts";
@@ -56,6 +56,85 @@ const ListUsersHeaderComponent = ({}) => {
 };
 
 
+const ConfirmResendRegistrationModal = ({ userDisplayName, userEmail,  showResendConfirm, setShowResendConfirm }) => {
+
+    const resendRegistration = async (event) => {
+        event.stopPropagation();
+        event.preventDefault();
+
+        const resendLinkData = {
+            email: userEmail,
+            should_send_activation: true,
+        };
+        const resendResponse = await apiClient.post("registrations", resendLinkData);
+        console.log(resendResponse);
+        setShowResendConfirm(false);
+    };
+
+    const handleDismiss = (event) => {
+        event.stopPropagation();
+        event.preventDefault();
+        setShowResendConfirm(false);
+
+    };
+
+    return (
+        <Fragment>
+            <Modal contentClassName="add-payments-modal-content"
+                   show={showResendConfirm}
+                   onHide={() => setShowResendConfirm(false)}
+                   centered={true}
+            >
+                <Modal.Header bsPrefix={"custom-modal-header"} closeButton>
+                    <Modal.Title id="user-payments-list">
+                        <div className="card-title">
+                            Resend Registration Invite
+                        </div>
+                      </Modal.Title>
+                </Modal.Header>
+                <Modal.Body bsPrefix={"payments-modal-body"}>
+                    <div className="container payment-modal-content">
+                        <div className="row">
+                            <div className="col payment-info-text text-center align-middle">
+                                Are you sure you want to resend the registration invite to <strong>{userDisplayName}</strong>?
+                            </div>
+                        </div>
+                        <div className="row inner-rows">
+                            <div className="col-6 payment-info-text text-center align-middle">
+                                <Button type="button"
+                                        className="btn-sm btn-secondary"
+                                        onClick={resendRegistration}
+                                >
+                                        Yes
+                                </Button>
+                            </div>
+                            <div className="col-6 payment-info-text text-center align-middle">
+                                <Button type="button"
+                                        className="btn-sm btn-secondary"
+                                        onClick={handleDismiss}
+                                >
+                                        No
+                                </Button>
+                            </div>
+
+                        </div>
+                    </div>
+                </Modal.Body>
+                <Modal.Footer bsPrefix="custom-modal-footer">
+                        <Button type="button"
+                                className="btn-sm close-button"
+                                onClick={handleDismiss}
+                        >
+                            Close
+                        </Button>
+
+                    </Modal.Footer>
+            </Modal>
+        </Fragment>
+    );
+};
+
+
 const SingleUserComponent = ({ userData }) => {
     const editAdminTip = "Modify this admin roles";
     const addAdminTip = "Make this user admin";
@@ -67,11 +146,13 @@ const SingleUserComponent = ({ userData }) => {
     const isRegisteredTipId = uuidv4();
     const [authUser, setAuthUser] = useState();
     const [displayName, setDisplayName] = useState("");
+    const [userEmail, setUserEmail] = useState("");
     const [isRegistered, setIsRegistered] = useState(true);
     const [userIsAdmin, setUserIsAdmin] = useState(false);
     const [userIsFullAdmin, setUserIsFullAdmin] = useState(false);
     const [openProfileModal, setOpenProfileModal] = useState(false);
     const [showAdminModal, setShowAdminModal] = useState(false);
+    const [showResendConfirm, setShowResendConfirm] = useState(false);
 
     const handleUserClick = () => {
         setOpenProfileModal(true);
@@ -79,6 +160,8 @@ const SingleUserComponent = ({ userData }) => {
 
     const handleResendRegistration = async (event) => {
         event.stopPropagation();
+        event.preventDefault();
+        setShowResendConfirm(true);
     };
 
     const handleAdminButtonClick = async (event) => {
@@ -99,6 +182,7 @@ const SingleUserComponent = ({ userData }) => {
             const lastName = attributes.last_name;
             const email = attributes.email;
             setIsRegistered(attributes.is_registered);
+            setUserEmail(email);
             setDisplayName(buildUserDisplayName(firstName, lastName, email));
             setUserIsAdmin(attributes.is_admin);
             setUserIsFullAdmin(attributes.is_full_admin);
@@ -216,6 +300,11 @@ const SingleUserComponent = ({ userData }) => {
                              showModal={showAdminModal}
                              setShowModal={setShowAdminModal}
                              isAddRole={userIsAdmin}
+            />
+            <ConfirmResendRegistrationModal userDisplayName={displayName}
+                                            userEmail={userEmail}
+                                            setShowResendConfirm={setShowResendConfirm}
+                                            showResendConfirm={showResendConfirm}
             />
         </Fragment>
     );
