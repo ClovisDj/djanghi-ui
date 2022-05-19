@@ -195,8 +195,8 @@ const UserProfileModalComponent = ({ userData, showModal, setShowModal, isCreate
 
     const buildRequestPayload = async () => {
         let payload = {
-            first_name: firstName ? firstName : null,
-            last_name: lastName ? lastName : null,
+            first_name: firstName ? firstName : "",
+            last_name: lastName ? lastName : "",
             address: address ? address : null,
             date_of_birth: dateOfBirth ? dateOfBirth : null,
             city_of_birth: cityOfBirth ? cityOfBirth : null,
