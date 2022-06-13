@@ -16,7 +16,9 @@ module.exports = ({ mode } = { mode: "production" }) => {
             filename: "bundle.js"
         },
         devServer: {
-            historyApiFallback: true
+            historyApiFallback: true,
+            hot: true,
+            open: true
         },
         optimization: {
             minimize: true,
@@ -65,6 +67,7 @@ module.exports = ({ mode } = { mode: "production" }) => {
             new webpack.DefinePlugin({
               "process.env": JSON.stringify(process.env)
             }),
+            new webpack.HotModuleReplacementPlugin(),
         ]
     }
 };
