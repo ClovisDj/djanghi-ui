@@ -7,7 +7,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    command: ["npm", "start"]
+    command: ["yarn", "start"]
     volumes:
       - '.:/src'
     ports:

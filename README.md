@@ -19,7 +19,7 @@ To install the required packages run
 make install
 ```
 
-To regenerate package-lock.json run
+To regenerate / update yarn.lock run
 
 ```
 make lock
