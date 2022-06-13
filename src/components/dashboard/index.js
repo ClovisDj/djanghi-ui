@@ -3,6 +3,7 @@ import BaseDashboard from "./base";
 import UserPaymentStatus from "./userPaymentStatus";
 
 import "./index.css"
+import '../../../public/favicon.ico';
 
 const Dashboard = () => {
 

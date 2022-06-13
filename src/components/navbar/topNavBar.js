@@ -2,6 +2,8 @@ import React, {Fragment} from 'react';
 import {isMobile} from "react-device-detect";
 import {toTitle} from "../../utils/utils";
 
+import logo from '../../../public/favicon.ico';
+
 
 const TopNavBar = ({handleToggleMenu, handleLogOut, user, association}) => {
     const lastName = user ? user.attributes.last_name.split(" ")[0] : "";
@@ -12,7 +14,7 @@ const TopNavBar = ({handleToggleMenu, handleLogOut, user, association}) => {
             <header id="header" className="header fixed-top d-flex align-items-center">
                 <div className="d-flex align-items-center justify-content-between">
                     <a className="logo d-flex align-items-center">
-                        <img src={process.env.PUBLIC_URL + "/favicon.ico"} alt=""/>
+                        <img src={logo} alt=""/>
                         {association &&
                             <span className="d-none d-lg-block">{toTitle(association.attributes.label)}</span>
                         }
