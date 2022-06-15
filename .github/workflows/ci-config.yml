@@ -62,7 +62,8 @@ jobs:
           KEY: ${{ secrets.SSH_KEY }}
           script: |
             cd app-ui/
+            source .env
             docker login ${{ secrets.REGISTRY_HOST }} -u ${{ secrets.REGISTRY_USERNAME }} -p ${{ secrets.PACKAGE_ACCESS_TOKEN }}
-            docker pull ${{ secrets.REGISTRY_HOST }}/${{ secrets.REGISTRY_USERNAME }}/${{ secrets.API_IMAGE_NAME }}
-            docker pull ${{ secrets.REGISTRY_HOST }}/${{ secrets.REGISTRY_USERNAME }}/${{ secrets.NGINX_IMAGE }}
+            docker pull ${{ secrets.REGISTRY_HOST }}/${{ secrets.REGISTRY_USERNAME }}/${{ secrets.UI_IMAGE_NAME }}
+            docker pull ${{ secrets.REGISTRY_HOST }}/${{ secrets.REGISTRY_USERNAME }}/${{ secrets.NGINX_UI_IMAGE }}
             docker-compose -f docker-compose.prod.yml up -d
