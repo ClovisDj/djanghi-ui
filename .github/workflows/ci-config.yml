@@ -10,7 +10,6 @@ jobs:
   deploy:
     name: Build and deploy images
     runs-on: ubuntu-latest
-    environment: prod
 #    if: github.ref == 'refs/heads/master'
     steps:
       - uses: actions/checkout@v2
@@ -19,8 +18,8 @@ jobs:
         with:
           envkey_REGISTRY_HOST: ${{ secrets.REGISTRY_HOST }}
           envkey_REGISTRY_USERNAME: ${{ secrets.REGISTRY_USERNAME }}
-          envkey_API_IMAGE_NAME: ${{ secrets.UI_IMAGE_NAME }}
-          envkey_NGINX_IMAGE: ${{ secrets.NGINX_UI_IMAGE }}
+          envkey_UI_IMAGE_NAME: ${{ secrets.UI_IMAGE_NAME }}
+          envkey_NGINX_UI_IMAGE: ${{ secrets.NGINX_UI_IMAGE }}
           envkey_MAINTAINER_EMAIL: ${{ secrets.MAINTAINER_EMAIL }}
           file_name: .env
           fail_on_empty: true
