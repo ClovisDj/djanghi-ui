@@ -1,0 +1,42 @@
+version: '3.9'
+
+services:
+  djanghi-ui:
+    build:
+      context: .
+    image: ${REGISTRY_HOST}/${REGISTRY_USERNAME}/${UI_IMAGE_NAME}
+    volumes:
+      - build:/src/build
+
+  nginx-ui:
+    build: ./nginx
+    image: ${REGISTRY_HOST}/${REGISTRY_USERNAME}/${NGINX_UI_IMAGE}
+    restart: unless-stopped
+    volumes:
+      - build:/usr/share/nginx/html
+      - certbot-etc:/etc/letsencrypt
+      - certbot-var:/var/lib/letsencrypt
+      - web-root:/var/www/html
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - djanghi-ui
+    command: ["nginx", "-g", "daemon off;"]
+
+  certbot:
+    image: certbot/certbot
+    container_name: certbot
+    volumes:
+      - certbot-etc:/etc/letsencrypt
+      - certbot-var:/var/lib/letsencrypt
+      - web-root:/var/www/html
+    depends_on:
+      - nginx-ui
+    command: certonly --webroot --webroot-path=/var/www/html --email ${MAINTAINER_EMAIL} --agree-tos --no-eff-email --staging -d djanghi.com  -d www.djanghi.com
+
+volumes:
+  build:
+  certbot-etc:
+  certbot-var:
+  web-root:

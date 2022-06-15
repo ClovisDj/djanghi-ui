@@ -50,15 +50,10 @@
     "@popperjs/core": "^2.10.2"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject",
-    "deploy": "gh-pages -d build",
     "webpack": "webpack",
     "webpack-dev-server": "webpack-dev-server",
     "dev": "webpack-dev-server --env mode=development --port 3000",
-    "prod": "webpack --env mode=production"
+    "build": "webpack --env mode=production"
   },
   "prettier": {
     "trailingComma": "all"
