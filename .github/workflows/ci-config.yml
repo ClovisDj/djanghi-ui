@@ -44,7 +44,7 @@ jobs:
           USERNAME: ${{ secrets.SSH_USER }}
           KEY: ${{ secrets.SSH_KEY }}
           source: "docker-compose.prod.yml,.env"
-          target: "app"
+          target: "app-ui"
       - name: copy nginx folder
         uses: appleboy/scp-action@master
         with:
@@ -52,7 +52,7 @@ jobs:
           USERNAME: ${{ secrets.SSH_USER }}
           KEY: ${{ secrets.SSH_KEY }}
           source: "nginx/*"
-          target: "app"
+          target: "app-ui"
 
       - name: server ssh and run images
         uses: appleboy/ssh-action@master
@@ -61,7 +61,7 @@ jobs:
           USERNAME: ${{ secrets.SSH_USER }}
           KEY: ${{ secrets.SSH_KEY }}
           script: |
-            cd app/
+            cd app-ui/
             docker login ${{ secrets.REGISTRY_HOST }} -u ${{ secrets.REGISTRY_USERNAME }} -p ${{ secrets.PACKAGE_ACCESS_TOKEN }}
             docker pull ${{ secrets.REGISTRY_HOST }}/${{ secrets.REGISTRY_USERNAME }}/${{ secrets.API_IMAGE_NAME }}
             docker pull ${{ secrets.REGISTRY_HOST }}/${{ secrets.REGISTRY_USERNAME }}/${{ secrets.NGINX_IMAGE }}
