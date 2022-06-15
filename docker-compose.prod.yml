@@ -19,7 +19,7 @@ services:
       - web-root:/var/www/html
     ports:
       - "80:80"
-      - "443:443"
+      - "9443:9443"
     depends_on:
       - djanghi-ui
     command: ["nginx", "-g", "daemon off;"]
