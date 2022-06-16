@@ -18,7 +18,7 @@ services:
       - certbot-var:/var/lib/letsencrypt
       - web-root:/var/www/html
     ports:
-      - "88:88"
+      - "88:80"
       - "9443:9443"
     depends_on:
       - djanghi-ui
