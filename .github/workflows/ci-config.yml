@@ -36,7 +36,7 @@ jobs:
       - name: push images to package registry
         run: |
           docker push ${{ secrets.REGISTRY_HOST }}/${{ secrets.REGISTRY_USERNAME }}/${{ secrets.UI_IMAGE_NAME }}
-          docker push ${{ secrets.REGISTRY_HOST }}/${{ secrets.REGISTRY_USERNAME }}/${{ secrets.NGINX_UI_IMAGE }}
+#          docker push ${{ secrets.REGISTRY_HOST }}/${{ secrets.REGISTRY_USERNAME }}/${{ secrets.NGINX_UI_IMAGE }}
 
       - name: copy built artifacts to server
         uses: appleboy/scp-action@master
