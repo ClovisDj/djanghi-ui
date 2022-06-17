@@ -4,7 +4,7 @@ import TokenManager from "./authToken";
 const tokenManager = new TokenManager();
 
 const axiosInstance = axios.create({
-  baseURL: process.env.REACT_APP_API_HOST ? process.env.REACT_APP_API_HOST : "http://localhost:8000"
+  baseURL: process.env.REACT_APP_API_HOST ? process.env.REACT_APP_API_HOST : "https://api.djanghi.com"
 });
 
 axiosInstance.interceptors.request.use((config) => {
