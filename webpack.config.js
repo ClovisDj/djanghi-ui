@@ -1,6 +1,7 @@
 const path = require("path");
 const webpack = require('webpack');
 require('dotenv').config({ path: './.env' });
+const Dotenv = require('dotenv-webpack');
 
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
@@ -64,9 +65,9 @@ module.exports = ({ mode } = { mode: "production" }) => {
             new webpack.ProvidePlugin({
               "React": "react",
            }),
-            new webpack.DefinePlugin({
-              "process.env": JSON.stringify(process.env)
-            }),
+            new Dotenv({
+                path: `./.env`
+              }),
             new webpack.HotModuleReplacementPlugin(),
         ]
     }
