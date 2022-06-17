@@ -39,13 +39,28 @@ jobs:
 #          docker push ${{ secrets.REGISTRY_HOST }}/${{ secrets.REGISTRY_USERNAME }}/${{ secrets.NGINX_UI_IMAGE }}
 
       - name: copy built artifacts to server
-        uses: garygrossgarten/github-action-scp@release
-        with:
-          local: build
-          remote: app/ui
-          host: ${{ secrets.PROD_HOST_IP }}
-          username: ${{ secrets.SSH_USER }}
-          privateKey: ${{ secrets.SSH_KEY }}
+        run: |
+          which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y  )
+          which rsync || ( apt-get update -y && apt-get install rsync -y )
+          eval $(ssh-agent -s)
+          ssh-add <(echo "$SSH_KEY" )
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          ssh-keyscan $HOST_IP >> ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
+          scp -r ./build $USER@$HOST_IP:/app/ui
+      env:
+        USER: ${{ secrets.SSH_USER }}
+        SSH_KEY: ${{ secrets.SSH_KEY }}
+        HOST_IP: ${{ secrets.PROD_HOST_IP }}
+        CI: false
+#        uses: garygrossgarten/github-action-scp@release
+#        with:
+#          local: build
+#          remote: app/ui
+#          host: ${{ secrets.PROD_HOST_IP }}
+#          username: ${{ secrets.SSH_USER }}
+#          privateKey: ${{ secrets.SSH_KEY }}
 #        uses: appleboy/scp-action@master
 #        with:
 #          host: ${{ secrets.PROD_HOST_IP }}
