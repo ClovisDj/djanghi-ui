@@ -7,7 +7,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    command: ["yarn", "dev"]
+    command: yarn ${BUILD_STAGE}
     volumes:
       - '.:/src'
     ports:
