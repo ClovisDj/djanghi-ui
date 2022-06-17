@@ -41,7 +41,7 @@ jobs:
       - name: copy built artifacts to server
         uses: garygrossgarten/github-action-scp@release
         with:
-          local: ./build
+          local: build
           remote: app/ui
           host: ${{ secrets.PROD_HOST_IP }}
           username: ${{ secrets.SSH_USER }}
