@@ -49,11 +49,11 @@ jobs:
           ssh-keyscan $HOST_IP >> ~/.ssh/known_hosts
           chmod 644 ~/.ssh/known_hosts
           scp -r ./build $USER@$HOST_IP:/app/ui
-      env:
-        USER: ${{ secrets.SSH_USER }}
-        SSH_KEY: ${{ secrets.SSH_KEY }}
-        HOST_IP: ${{ secrets.PROD_HOST_IP }}
-        CI: false
+        env:
+          USER: ${{ secrets.SSH_USER }}
+          SSH_KEY: ${{ secrets.SSH_KEY }}
+          HOST_IP: ${{ secrets.PROD_HOST_IP }}
+          CI: false
 #        uses: garygrossgarten/github-action-scp@release
 #        with:
 #          local: build
