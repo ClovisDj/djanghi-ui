@@ -5,38 +5,39 @@ services:
     build:
       context: .
     image: ${REGISTRY_HOST}/${REGISTRY_USERNAME}/${UI_IMAGE_NAME}
+    command: yarn ${BUILD_STAGE}
     volumes:
-      - build:/src/build
+      - '.:/src'
 
-  nginx-ui:
-    build: ./nginx
-    image: ${REGISTRY_HOST}/${REGISTRY_USERNAME}/${NGINX_UI_IMAGE}
-    restart: unless-stopped
-    volumes:
-      - build:/usr/share/nginx/html
-      - certbot-etc:/etc/letsencrypt
-      - certbot-var:/var/lib/letsencrypt
-      - web-root:/var/www/html
-    ports:
-      - "88:88"
-      - "9443:9443"
-    depends_on:
-      - djanghi-ui
-    command: ["nginx", "-g", "daemon off;"]
-
-  certbot:
-    image: certbot/certbot
-    container_name: certbot-ui
-    volumes:
-      - certbot-etc:/etc/letsencrypt
-      - certbot-var:/var/lib/letsencrypt
-      - web-root:/var/www/html
-    depends_on:
-      - nginx-ui
-    command: certonly --webroot --webroot-path=/var/www/html --email ${MAINTAINER_EMAIL} --agree-tos --no-eff-email --staging -d djanghi.com  -d www.djanghi.com
-
-volumes:
-  build:
-  certbot-etc:
-  certbot-var:
-  web-root:
+#  nginx-ui:
+#    build: ./nginx
+#    image: ${REGISTRY_HOST}/${REGISTRY_USERNAME}/${NGINX_UI_IMAGE}
+#    restart: unless-stopped
+#    volumes:
+#      - build:/usr/share/nginx/html
+#      - certbot-etc:/etc/letsencrypt
+#      - certbot-var:/var/lib/letsencrypt
+#      - web-root:/var/www/html
+#    ports:
+#      - "88:88"
+#      - "9443:9443"
+#    depends_on:
+#      - djanghi-ui
+#    command: ["nginx", "-g", "daemon off;"]
+#
+#  certbot:
+#    image: certbot/certbot
+#    container_name: certbot-ui
+#    volumes:
+#      - certbot-etc:/etc/letsencrypt
+#      - certbot-var:/var/lib/letsencrypt
+#      - web-root:/var/www/html
+#    depends_on:
+#      - nginx-ui
+#    command: certonly --webroot --webroot-path=/var/www/html --email ${MAINTAINER_EMAIL} --agree-tos --no-eff-email --staging -d djanghi.com  -d www.djanghi.com
+#
+#volumes:
+#  build:
+#  certbot-etc:
+#  certbot-var:
+#  web-root:
