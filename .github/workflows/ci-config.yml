@@ -48,7 +48,7 @@ jobs:
           chmod 700 ~/.ssh
           ssh-keyscan $HOST_IP >> ~/.ssh/known_hosts
           chmod 644 ~/.ssh/known_hosts
-          scp -r * $USER@$HOST_IP:/app/ui
+          scp -r * $USER@$HOST_IP:/root/app/ui
         env:
           USER: ${{ secrets.SSH_USER }}
           SSH_KEY: ${{ secrets.SSH_KEY }}
