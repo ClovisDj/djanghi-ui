@@ -8,6 +8,7 @@ import Dashboard from "../components/dashboard";
 import MembershipFields from "../components/membershipFields";
 import MembershipPayments from "../components/membershipPayments";
 import Users from "../components/users";
+import ActivationLink from "../components/userActivation";
 
 
 const DjanghiRoutes = () => (
@@ -19,6 +20,7 @@ const DjanghiRoutes = () => (
         <Route path="/membership-payments" element={<MembershipPayments />} />
         <Route path="/users" element={<Users />} />
         <Route path="/" element={<Navigate replace to="/dashboard"/>} />
+        <Route path="/activated" element={<ActivationLink />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
   </BrowserRouter>
