@@ -46,5 +46,5 @@ jobs:
             cd app/
             source .env
             docker pull ${{ secrets.REGISTRY_HOST }}/${{ secrets.REGISTRY_USERNAME }}/${{ secrets.UI_IMAGE_NAME }}
-            doker volume rm -f ui-build
+            doker volume rm -f app_ui-build
             docker-compose -f docker-compose.prod.yml up -d
