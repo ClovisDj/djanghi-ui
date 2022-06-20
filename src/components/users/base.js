@@ -66,8 +66,7 @@ const ConfirmResendRegistrationModal = ({ userDisplayName, userEmail,  showResen
             email: userEmail,
             should_send_activation: true,
         };
-        const resendResponse = await apiClient.post("registrations", resendLinkData);
-        console.log(resendResponse);
+        await apiClient.post("registrations", resendLinkData);
         setShowResendConfirm(false);
     };
 
