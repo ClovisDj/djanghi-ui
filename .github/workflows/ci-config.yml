@@ -1,0 +1,50 @@
+name: Djanghi UI Pipeline
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  deploy:
+    name: Build and deploy images
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master'
+    steps:
+      - uses: actions/checkout@v2
+      - name: Make and populate .env file
+        uses: SpicyPizza/create-envfile@v1.3
+        with:
+          envkey_REGISTRY_HOST: ${{ secrets.REGISTRY_HOST }}
+          envkey_REGISTRY_USERNAME: ${{ secrets.REGISTRY_USERNAME }}
+          envkey_UI_IMAGE_NAME: ${{ secrets.UI_IMAGE_NAME }}
+          envkey_MAINTAINER_EMAIL: ${{ secrets.MAINTAINER_EMAIL }}
+          envkey_BUILD_STAGE: ${{ secrets.BUILD_STAGE }}
+          envkey_REACT_APP_API_HOST: ${{ secrets.API_HOST }}
+          file_name: .env
+          fail_on_empty: true
+      - name: Login to Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ secrets.REGISTRY_HOST }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.PACKAGE_ACCESS_TOKEN }}
+      - name: Build images
+        run: |
+          docker-compose -f docker-compose.prod.yml up --build
+      - name: push images to package registry
+        run: |
+          docker push ${{ secrets.REGISTRY_HOST }}/${{ secrets.REGISTRY_USERNAME }}/${{ secrets.UI_IMAGE_NAME }}
+      - name: server ssh and run images
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.PROD_HOST_IP }}
+          USERNAME: ${{ secrets.SSH_USER }}
+          KEY: ${{ secrets.SSH_KEY }}
+          script: |
+            cd app/
+            source .env
+            docker rmi $(docker images -a -q)
+            docker pull ${{ secrets.REGISTRY_HOST }}/${{ secrets.REGISTRY_USERNAME }}/${{ secrets.UI_IMAGE_NAME }}
+            docker-compose -f docker-compose.prod.yml up -d djanghi-api djanghi-ui nginx

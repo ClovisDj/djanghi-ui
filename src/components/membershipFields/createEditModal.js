@@ -177,13 +177,13 @@ const CreateEditModal = ({ modalType, showModal, setShowModal, contribData, shou
                 </Modal.Body>
                     <Modal.Footer bsPrefix="custom-modal-footer">
                         <Button type="button"
-                                className="btn-sm btn-secondary mr-auto"
+                                className="btn-sm close-button"
                                 onClick={() => handleHideModal()}
                         >
                             Close
                         </Button>
                         <Button
-                            className="btn btn-danger btn-sm"
+                            className="btn btn-sm save-button"
                             onClick={() => handleSave()}
                         >
                             Save

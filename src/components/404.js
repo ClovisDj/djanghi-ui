@@ -1,6 +1,7 @@
 import {Fragment} from "react";
 import {useNavigate} from "react-router-dom";
 
+import notFound from '../../public/images/404.svg';
 
 const NotFoundPage = () => {
     let navigate = useNavigate();
@@ -20,7 +21,7 @@ const NotFoundPage = () => {
                         <h1>404</h1>
                         <h2>The page you are looking for doesn't exist.</h2>
                         <a className="btn" onClick={backHome}>Back to home</a>
-                        <img src={process.env.PUBLIC_URL + "/images/404.svg"} className="img-fluid py-5" alt="Page Not Found" />
+                        <img src={notFound} className="img-fluid py-5" alt="Page Not Found" />
                     </section>
 
                 </div>

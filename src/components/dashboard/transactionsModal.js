@@ -1,4 +1,4 @@
-import {Fragment, useEffect, useState} from "react";
+import {Fragment, useContext, useEffect, useState} from "react";
 import {Button, Modal} from "react-bootstrap";
 
 import {formatValue, toTitle} from "../../utils/utils";
@@ -6,6 +6,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import ReactTooltip from "react-tooltip";
 import ApiClient from "../../utils/apiConfiguration";
 import PageLoader from "../sharedComponents/spinner/pageLoader";
+import {ClickedUserContext} from "../membershipPayments/context";
 
 
 const apiClient = new ApiClient();
@@ -40,6 +41,8 @@ const PaymentRow = ({singlePaymentData}) => {
     )};
 
 const MoreTransactionsModal = ({paymentName, showMorePayments, setShowMorePayments, contributionId, userId}) => {
+    const clickedUserDataContext = useContext(ClickedUserContext);
+
     const [data, setData] = useState([]);
     const [currentPage, setCurrentPage] = useState(0);
     const [selectedUseId, setSelectedUseId] = useState("");
@@ -90,16 +93,23 @@ const MoreTransactionsModal = ({paymentName, showMorePayments, setShowMorePaymen
         setHasMorePayments(false);
     };
 
+    const handleCloseModal = async () => {
+        setShowMorePayments(false);
+        await clickedUserDataContext.setClickedUser({relationships: {user: {}}});
+        await clickedUserDataContext.setClickedUserDisplayName("");
+    };
+
     return (
         <Fragment>
             <Modal
                 className="payment-details-modal"
                 size="lg"
                 show={showMorePayments}
-                onHide={() => setShowMorePayments(false)}
+                onHide={async () => handleCloseModal()}
                 onExit={handleExit}
                 onEntering={handlePreOpen}
                 scrollable={true}
+                centered={true}
                 aria-labelledby="example-modal-sizes-title-sm"
             >
                     <Modal.Header bsPrefix={"custom-modal-header"} closeButton>
@@ -149,8 +159,8 @@ const MoreTransactionsModal = ({paymentName, showMorePayments, setShowMorePaymen
                     </Modal.Body>
                     <Modal.Footer bsPrefix="custom-modal-footer">
                         <Button
-                            className="btn btn-secondary btn-sm"
-                            onClick={() => setShowMorePayments(false)}
+                            className="btn btn-sm close-button"
+                            onClick={async () => handleCloseModal()}
                         >
                             Close
                         </Button>

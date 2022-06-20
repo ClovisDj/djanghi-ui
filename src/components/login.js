@@ -4,6 +4,8 @@ import {useLocation, useNavigate} from "react-router-dom";
 import TokenManager from "../utils/authToken";
 import ApiClient from "../utils/apiConfiguration";
 
+import logo from '../../public/favicon.ico';
+
 
 const apiClient = new ApiClient();
 
@@ -75,7 +77,7 @@ const Login = () => {
 
                                     <div className="d-flex justify-content-center py-4">
                                         <a className="logo d-flex align-items-center w-auto">
-                                            <img src={process.env.PUBLIC_URL + "/favicon.ico"} alt=""></img>
+                                            <img src={logo} alt=""></img>
                                                 <span className="d-none d-lg-block">Djanghi</span>
                                         </a>
                                     </div>

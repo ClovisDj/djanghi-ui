@@ -5,7 +5,7 @@ import AsyncSelect from 'react-select/async'
 
 import ApiClient from "../../utils/apiConfiguration";
 import {blueColor, buildUserDisplayName, preventNonNumeric, redColor, whiteColor} from "../../utils/utils";
-import {ShouldRefreshPaymentsContext} from "./context";
+import {ClickedUserContext, ShouldRefreshPaymentsContext} from "./context";
 
 const apiClient = new ApiClient();
 
@@ -77,6 +77,70 @@ const redCustomStyles = {
     }),
 };
 
+export const AddOrListPaymentsModal = ({ showModalChoice, setShowModalChoice }) => {
+    const clickedUserDataContext = useContext(ClickedUserContext);
+
+    const handleShowPayments = () => {
+        clickedUserDataContext.setShowSelectedUserPayments(true);
+        setShowModalChoice(false);
+    };
+
+    const handleAddUserPayment = () => {
+        clickedUserDataContext.setShowPaymentModal(true);
+        setShowModalChoice(false);
+    };
+
+    return (
+        <Fragment>
+            <Modal contentClassName="add-payments-modal-content"
+                   show={showModalChoice}
+                   onHide={() => setShowModalChoice(false)}
+                   centered={true}
+            >
+                <Modal.Header bsPrefix={"custom-modal-header"} closeButton>
+                    <Modal.Title id="user-payments-list">
+                        <div className="card-title">
+                            {clickedUserDataContext.clickedUserDisplayName}
+                        </div>
+                      </Modal.Title>
+                </Modal.Header>
+                <Modal.Body bsPrefix={"payments-modal-body"}>
+                    <div className="container payment-modal-content">
+                        <div className="row">
+                            <div className="col-6 payment-info-text text-center align-middle">
+                                <Button type="button"
+                                        className="btn-sm btn-secondary"
+                                        onClick={() => handleShowPayments()}
+                                >
+                                        Show Payments
+                                </Button>
+                            </div>
+                            <div className="col-6 payment-info-text text-center align-middle">
+                                <Button type="button"
+                                        className="btn-sm btn-secondary"
+                                        onClick={() => handleAddUserPayment()}
+                                >
+                                        Add Payment
+                                </Button>
+                            </div>
+
+                        </div>
+                    </div>
+                </Modal.Body>
+                <Modal.Footer bsPrefix="custom-modal-footer">
+                        <Button type="button"
+                                className="btn-sm close-button"
+                                onClick={() => setShowModalChoice(false)}
+                        >
+                            Close
+                        </Button>
+
+                    </Modal.Footer>
+            </Modal>
+        </Fragment>
+    );
+};
+
 const AddPaymentsModal = ({ showPaymentModal, setShowPaymentModal, contribInfo }) => {
     const defaultTransactionTypeOptions = [
         {value: "PAYMENT", label: "Credit"},
@@ -84,6 +148,7 @@ const AddPaymentsModal = ({ showPaymentModal, setShowPaymentModal, contribInfo }
     ];
 
     const refreshDataContext = useContext(ShouldRefreshPaymentsContext);
+    const clickedUserDataContext = useContext(ClickedUserContext);
 
     const [isForAllMembers, setIsForAllMembers] = useState(false);
     const [memberOptions, setMemberOptions] = useState([]);
@@ -138,6 +203,8 @@ const AddPaymentsModal = ({ showPaymentModal, setShowPaymentModal, contribInfo }
         setNoteCharactersLeft(250);
         setAmountError("");
         setUsersError("");
+        clickedUserDataContext.setClickedUser({relationships: {user: {}}});
+        clickedUserDataContext.setClickedUserDisplayName("");
     };
 
     const handleCloseModal = async () => {
@@ -214,10 +281,18 @@ const AddPaymentsModal = ({ showPaymentModal, setShowPaymentModal, contribInfo }
         callBack(foundOptions);
     };
 
-    useEffect(async () => {
+    const handleOnEnterModal = async () => {
         const initialOptions = await fetchUsers();
         setMemberOptions(initialOptions);
-    }, []);
+
+        if (clickedUserDataContext.clickedUserDisplayName.length > 0) {
+            let selectedFromContext = [{
+                value: clickedUserDataContext.clickedUser.relationships.user.id,
+                label: clickedUserDataContext.clickedUserDisplayName,
+            }];
+            setSelectedMembers(selectedFromContext);
+        }
+    };
 
     return (
         <Fragment>
@@ -226,7 +301,7 @@ const AddPaymentsModal = ({ showPaymentModal, setShowPaymentModal, contribInfo }
                    show={showPaymentModal}
                    backdrop="static"
                    onHide={handleCloseModal}
-                   scrollable={true}
+                   scrollable={true} onEnter={handleOnEnterModal}
             >
                 <Modal.Header bsPrefix={"custom-modal-header"} closeButton>
                     <Modal.Title id="user-payments-list">
@@ -335,13 +410,13 @@ const AddPaymentsModal = ({ showPaymentModal, setShowPaymentModal, contribInfo }
                     </Modal.Body>
                     <Modal.Footer bsPrefix="custom-modal-footer">
                         <Button type="button"
-                                className="btn-sm btn-secondary mr-auto"
+                                className="btn-sm close-button"
                                 onClick={handleCloseModal}
                         >
                             Close
                         </Button>
                         <Button
-                            className="btn btn-danger btn-sm"
+                            className="btn btn-sm save-button"
                             onClick={() => handleSave()}
                         >
                             Save
