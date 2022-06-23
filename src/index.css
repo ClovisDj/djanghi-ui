@@ -333,11 +333,32 @@ h1, h2, h3, h4, h5, h6 {
   margin-right: 6px;
 }
 .logo span {
-  font-size: 26px;
+  font-size: 32px;
   font-weight: 700;
   color: #012970;
   font-family: "Nunito", sans-serif;
   padding-left: 10px;
+}
+
+.spacer {
+  padding-top: 7px;
+  padding-bottom: 7px;
+}
+
+#login {
+  font-size: 16px;
+  font-weight: 550;
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+
+.login-card-title {
+  font-size: 18px;
+  font-weight: 500;
+  color: #012970;
+  font-family: "Poppins", sans-serif;
+  margin-bottom: 0!important;
+  padding: 15px 0;
 }
 
 .header {

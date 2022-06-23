@@ -73,25 +73,25 @@ const Login = () => {
                         className="section register min-vh-100 d-flex flex-column align-items-center justify-content-center py-4">
                         <div className="container">
                             <div className="row justify-content-center">
-                                <div className="col-xl-3 col-lg-4 col-md-6 d-flex flex-column align-items-center justify-content-center">
+                                <div className="col-lg-4 col-md-6 d-flex flex-column align-items-center justify-content-center">
 
                                     <div className="d-flex justify-content-center py-4">
                                         <a className="logo d-flex align-items-center w-auto">
                                             <img src={logo} alt=""></img>
-                                                <span className="d-none d-lg-block">Djanghi</span>
+                                                <span className="">Djanghi</span>
                                         </a>
                                     </div>
 
                                     <div className="card mb-3">
                                         <div className="card-body">
                                             <div className="pt-4 pb-2">
-                                                <h3 className="card-title text-center pb-0 fs-4">Login to Your
+                                                <h3 className="login-card-title text-center pb-0 fs-4">Login to Your
                                                     Account</h3>
                                             </div>
 
-                                            <form className="row g-3 needs-validation" onSubmit={handleSubmit}>
+                                            <form className="row g-3 needs-validation spacer" onSubmit={handleSubmit}>
 
-                                                <div className="col-12">
+                                                <div className="col-12 spacer">
                                                     <div className="input-group has-validation">
                                                         <input type="text" name="association" className="form-control"
                                                                id="associationLabel" value={loginData.association}
@@ -102,7 +102,7 @@ const Login = () => {
                                                     </div>
                                                 </div>
 
-                                                <div className="col-12">
+                                                <div className="col-12 spacer">
                                                     <div className="input-group has-validation">
                                                         <input type="text" name="username" className="form-control"
                                                                id="yourUsername" value={loginData.email} placeholder="Your email"
@@ -113,7 +113,7 @@ const Login = () => {
                                                     </div>
                                                 </div>
 
-                                                <div className="col-12">
+                                                <div className="col-12 spacer">
                                                     <input type="password" name="password" className="form-control"
                                                            id="yourPassword" required value={loginData.password}
                                                            placeholder="Your Password"
@@ -122,7 +122,7 @@ const Login = () => {
                                                     </div>
                                                 </div>
                                                 <div className="col-12">
-                                                    <input className="btn btn-primary w-100" type="submit" value="Login" />
+                                                    <input className="btn btn-primary w-100" type="submit" value="Login" id="login" />
                                                 </div>
                                                 <div className="col-12 error-display">
                                                     {loginError}
