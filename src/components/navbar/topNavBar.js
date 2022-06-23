@@ -13,15 +13,15 @@ const TopNavBar = ({handleToggleMenu, handleLogOut, user, association}) => {
             <Fragment>
             <header id="header" className="header fixed-top d-flex align-items-center">
                 <div className="d-flex align-items-center justify-content-between">
-                    <a className="logo d-flex align-items-center">
-                        <img src={logo} alt=""/>
-                        {association &&
-                            <span className="d-none d-lg-block">{toTitle(association.attributes.label)}</span>
-                        }
-                    </a>
                     {isMobile &&
                         <i className="bi bi-list toggle-sidebar-btn" onClick={handleToggleMenu} />
                     }
+                    <a className="logo d-flex align-items-center" id='toggle-menu'>
+                        <img src={logo} alt=""/>
+                        {association &&
+                            <span>{toTitle(association.attributes.label)}</span>
+                        }
+                    </a>
 
                 </div>
 

@@ -282,3 +282,16 @@ th, td {
         height: fit-content;
     }
 }
+
+@media (max-width: 575.98px) {
+    #toggle-menu {
+        margin-top: 8px;
+    }
+    #toggle-menu span {
+        font-size: 28px;
+        padding-left: 5px;
+    }
+    #toggle-menu img {
+        padding-left: 10px;
+    }
+}
