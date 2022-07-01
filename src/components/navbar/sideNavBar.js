@@ -12,7 +12,17 @@ const SideNavBar = ({user}) => {
     const sideActiveClass = "side-active";
     const actionsMap = {
         M1: () => {navigate('/dashboard')},
-        M2: () => {navigate('/profile')},
+        M2: () => {
+            navigate(
+                '/my-account',
+                {
+                    state: {
+                        mainLiActiveKey: "M2",
+                        associationMenuShowClass: ""
+                    }
+                }
+            )
+        },
         M3: () => {},
         M4: () => {
             navigate('/membership-fields',
@@ -46,12 +56,12 @@ const SideNavBar = ({user}) => {
         },
     };
     const handleSideNavClick = async (liKey) => {
-      await setMainLiActiveKey(liKey);
-      await actionsMap[liKey]();
+        await setMainLiActiveKey(liKey);
+        await actionsMap[liKey]();
 
-      if (liKey === "M3") {
-          setAssociationMenuShowClass(associationMenuShowClass ? "" : "show");
-      }
+        if (liKey === "M3") {
+            setAssociationMenuShowClass(associationMenuShowClass ? "" : "show");
+        }
     }
 
     const location = useLocation();
@@ -67,7 +77,9 @@ const SideNavBar = ({user}) => {
         <li className="nav-item" style={{cursor: "pointer"}} key="M3">
             <a className={"nav-link collapsed " + (mainLiActiveKey === "M3" ? sideActiveClass : "")}
                data-bs-target="#components-nav" data-bs-toggle="collapse" onClick={() => handleSideNavClick("M3")}>
-                <i className="bi bi-menu-button-wide" /><span>Association Menu</span><i className="bi bi-chevron-down ms-auto" />
+                <i className={"bi bi-menu-button-wide" + (mainLiActiveKey === "M3" ? "-fill" : "")} />
+                <span>Association Menu</span>
+                <i className="bi bi-chevron-down ms-auto" />
             </a>
 
                 <ul id="components-nav" className={"nav-content collapse " + associationMenuShowClass} data-bs-parent="#sidebar-nav">
@@ -75,25 +87,25 @@ const SideNavBar = ({user}) => {
                         <li key="M4">
                             <a className={mainLiActiveKey === "M4"? sideActiveClass: ""}
                                onClick={() => handleSideNavClick("M4")}>
-                                <i className={"bi bi-circle"} />
+                                <i className={"bi bi-circle" + ( mainLiActiveKey === "M4" ? "-fill": "" )} />
                                 <span className="text-capitalize">MemberShip Fields</span>
                             </a>
                         </li>
                     }
                     {(userIsFullAdmin || userIsPaymentAdmin) &&
                         <li key="M5">
-                            <a className={mainLiActiveKey === "M5"? sideActiveClass: ""}
+                            <a className={mainLiActiveKey === "M5" ? sideActiveClass: ""}
                                onClick={() => handleSideNavClick("M5")}>
-                                <i className={"bi bi-circle"} />
+                                <i className={"bi bi-circle" + ( mainLiActiveKey === "M5" ? "-fill": "" )} />
                                 <span className="text-capitalize">MemberShip Payments</span>
                             </a>
                         </li>
                     }
                     {userIsAdmin  &&
                         <li key="M6">
-                            <a className={mainLiActiveKey === "M6"? sideActiveClass: ""}
+                            <a className={mainLiActiveKey === "M6" ? sideActiveClass: ""}
                                onClick={() => handleSideNavClick("M6")}>
-                                <i className={"bi bi-circle"} />
+                                <i className={"bi bi-circle" + ( mainLiActiveKey === "M6" ? "-fill": "" )} />
                                 <span className="text-capitalize">Users</span>
                             </a>
                         </li>
@@ -108,18 +120,18 @@ const SideNavBar = ({user}) => {
             <aside id="sidebar" className="sidebar">
                 <ul className="sidebar-nav" id="sidebar-nav">
                     <li className="nav-item" style={{cursor: "pointer"}} key="M1">
-                        <a className={"nav-link " + (mainLiActiveKey === "M1"? sideActiveClass: "")}
+                        <a className={"nav-link " + ( mainLiActiveKey === "M1" ? sideActiveClass: "" )}
                            onClick={() => handleSideNavClick("M1")}>
-                            <i className="bi bi-grid"/>
+                            <i className={"bi bi-grid" + (mainLiActiveKey === "M1"? "-fill": "")} />
                             <span>Dashboard</span>
                         </a>
                     </li>
 
                     <li className="nav-item" style={{cursor: "pointer"}} key="M2">
-                        <a className={"nav-link collapsed " + (mainLiActiveKey === "M2"? sideActiveClass: "")}
+                        <a className={"nav-link collapsed " + ( mainLiActiveKey === "M2" ? sideActiveClass: "" )}
                            onClick={() => handleSideNavClick("M2")}>
-                            <i className="bi bi-person"/>
-                            <span>Profile</span>
+                            <i className={"bi bi-person" + ( mainLiActiveKey === "M2" ? "-fill": "" )} />
+                            <span>My Account</span>
                         </a>
                     </li>
 

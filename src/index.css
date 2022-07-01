@@ -626,9 +626,6 @@ h1, h2, h3, h4, h5, h6 {
   color: #012970;
   background: #fff;
 }
-.sidebar-nav .nav-link.collapsed i {
-  color: #899bbd;
-}
 .sidebar-nav .nav-link:hover {
   color: #4154f1;
   background: #f6f9ff;
