@@ -69,6 +69,7 @@ const NavBar = ({user, association}) => {
                 />
                 <SideNavBar
                     user={user}
+                    handleLogOut={handleLogOut}
                 />
             </div>
         </Fragment>

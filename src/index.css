@@ -1104,4 +1104,8 @@ h1, h2, h3, h4, h5, h6 {
   color: #ed3c0d;
 }
 
-
+.side-navbar-divider {
+    margin: 1rem 0.7rem;
+    overflow: hidden;
+    border-top: 1px solid rgba(168, 168, 168, 0.25);
+}

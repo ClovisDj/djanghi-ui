@@ -2,7 +2,7 @@ import {Fragment, useEffect, useState} from "react";
 import {useLocation, useNavigate} from "react-router-dom";
 
 
-const SideNavBar = ({user}) => {
+const SideNavBar = ({user, handleLogOut}) => {
     let navigate = useNavigate();
     const userIsAdmin = (user && user.attributes.hasOwnProperty("is_admin")) ? user.attributes.is_admin : false;
     const userIsFullAdmin = (user && user.attributes.hasOwnProperty("is_full_admin")) ? user.attributes.is_full_admin : false;
@@ -136,6 +136,18 @@ const SideNavBar = ({user}) => {
                     </li>
 
                     {associationMenu}
+
+                    <li>
+                        <hr className="side-navbar-divider" />
+                    </li>
+
+                    <li className="nav-item">
+                        <a className="nav-link align-items-center"
+                           onClick={handleLogOut} style={{cursor: "pointer"}}>
+                            <i className="bi bi-box-arrow-right" />
+                            <span> Sign Out</span>
+                        </a>
+                    </li>
 
                 </ul>
             </aside>
