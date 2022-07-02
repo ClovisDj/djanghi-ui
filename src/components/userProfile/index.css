@@ -1,0 +1,74 @@
+
+#user-account {
+    background-color: #ffffff;
+    padding-right: 20px;
+    padding-left: 20px;
+}
+
+.tabs-wrapper {
+    padding: 1.2rem;
+}
+
+.nav-tabs {
+    border-bottom: 1px solid #dee2e6;
+}
+
+.nav-tabs .nav-link {
+    margin-bottom: -1px;
+    background: 0 0;
+    border: 1px solid transparent;
+    border-top-left-radius: 0.25rem;
+    border-top-right-radius: 0.25rem;
+}
+
+.nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
+    color: #012970;
+    background-color: #fff;
+    border-color: #dee2e6 #dee2e6 #fff;
+}
+
+.nav-tabs .nav-link {
+    text-transform: none;
+    font-size: 16px;
+    font-weight: 400;
+    color: #495057;
+    font-family: "Poppins", sans-serif;
+}
+
+.profile-inner-rows {
+    padding-top: 1rem;
+}
+
+.below-row-padding {
+    padding-bottom: 1rem;
+}
+
+.title-padding {
+    padding-left: 20px;
+    padding-top: .3rem;
+}
+
+.PhoneInputInput {
+	flex: 1;
+	min-width: 0;
+    font-size: 16px !important;
+    font-weight: 400;
+    color: #012970 !important;
+    font-family: "Poppins", sans-serif;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #bdbdbd;
+    appearance: none;
+    border-radius: 0.25rem;
+    display: block;
+    width: 100%;
+    padding: 0.3rem 0.75rem;
+    line-height: 1.6;
+}
+
+#save-data {
+  font-size: 16px;
+  font-weight: 550;
+  padding-top: 6px;
+  padding-bottom: 6px;
+}

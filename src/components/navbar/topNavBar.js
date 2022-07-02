@@ -5,7 +5,7 @@ import {toTitle} from "../../utils/utils";
 import logo from '../../../public/favicon.ico';
 
 
-const TopNavBar = ({handleToggleMenu, handleLogOut, user, association}) => {
+const TopNavBar = ({handleToggleMenu, handleLogOut, user, association, handleGoToMyAccount}) => {
     const lastName = user ? user.attributes.last_name.split(" ")[0] : "";
     const firstName = user ? user.attributes.first_name.split(" ")[0] : "";
 
@@ -50,21 +50,10 @@ const TopNavBar = ({handleToggleMenu, handleLogOut, user, association}) => {
                                 <li>
                                     <hr className="dropdown-divider" />
                                 </li>
-
                                 <li>
-                                    <a className="dropdown-item d-flex align-items-center">
+                                    <a className="dropdown-item d-flex align-items-center" onClick={handleGoToMyAccount} style={{cursor: "pointer"}}>
                                         <i className="bi bi-person" />
-                                        <span>My Profile</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <hr className="dropdown-divider" />
-                                </li>
-
-                                <li>
-                                    <a className="dropdown-item d-flex align-items-center">
-                                        <i className="bi bi-gear" />
-                                        <span>Account Settings</span>
+                                        <span>My Account</span>
                                     </a>
                                 </li>
                                 <li>
