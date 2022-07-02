@@ -24,6 +24,19 @@ const NavBar = ({user, association}) => {
         navigate('/login', { replace: true});
     };
 
+    const handleGoToMyAccount = (event) => {
+        event.preventDefault();
+        navigate(
+            '/my-account',
+            {
+                state: {
+                    mainLiActiveKey: "M2",
+                    associationMenuShowClass: ""
+                }
+            }
+        );
+    };
+
     const useOutsideLeftNavBarClick = (ref) => {
         useEffect(() => {
             const handleClickOutside = (event) => {
@@ -52,6 +65,7 @@ const NavBar = ({user, association}) => {
                     handleLogOut={handleLogOut}
                     user={user}
                     association={association}
+                    handleGoToMyAccount={handleGoToMyAccount}
                 />
                 <SideNavBar
                     user={user}
