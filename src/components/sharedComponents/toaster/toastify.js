@@ -17,10 +17,10 @@ const CustomToaster = ({}) => {
 };
 
 export const successToast = (message = "") => {
-    const successMessage = "🎉" + message;
+    const successMessage = "🎉  " + message;
     toast.success(successMessage, {
         position: "top-right",
-        autoClose: 2500,
+        autoClose: 2000,
         hideProgressBar: true,
         closeOnClick: true,
         pauseOnHover: true,
