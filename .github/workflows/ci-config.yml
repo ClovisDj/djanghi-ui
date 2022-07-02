@@ -45,7 +45,7 @@ jobs:
           script: |
             cd app/
             source .env
-            docker rmi $(docker images -a -q)
+            docker system prune -f
             docker pull ${{ secrets.REGISTRY_HOST }}/${{ secrets.REGISTRY_USERNAME }}/${{ secrets.UI_IMAGE_NAME }}
             docker-compose -f docker-compose.prod.yml down
             docker volume rm app_ui-build
