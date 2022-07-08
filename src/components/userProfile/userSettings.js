@@ -1,15 +1,16 @@
-import {Fragment} from "react";
+import {Fragment, useContext} from "react";
 import {Form} from "react-bootstrap";
 
 import {errorToast, successToast} from "../sharedComponents/toaster/toastify";
 import ApiClient from "../../utils/apiConfiguration";
 import TokenManager from "../../utils/authToken";
+import {UserDataContext} from "../../app/contexts";
 
 const apiClient = new ApiClient();
 const tokenManager = new TokenManager();
 
 const UserSettingsComponent = ({ userProfileData, setUserProfileData }) => {
-
+    const userDataContext = useContext(UserDataContext);
     const handlePaymentsNotificationChange = (event) => {
         setUserProfileData({
             ...userProfileData,
@@ -33,6 +34,7 @@ const UserSettingsComponent = ({ userProfileData, setUserProfileData }) => {
             console.warn(`An unexpected error occurred ${data}`);
         } else {
             successToast("Successfully Saved !!!");
+            userProfileData.setUser(data);
         }
 
     };

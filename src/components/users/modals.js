@@ -4,6 +4,7 @@ import {Fragment, useContext, useEffect, useState} from "react";
 import ApiClient from "../../utils/apiConfiguration";
 import {RefreshUsersContext} from "./contexts";
 import TokenManager from "../../utils/authToken";
+import {successToast} from "../sharedComponents/toaster/toastify";
 
 const apiClient = new ApiClient();
 const tokenManager = new TokenManager();
@@ -244,6 +245,7 @@ const UserProfileModalComponent = ({ userData, showModal, setShowModal, isCreate
                 await refreshDataContext.resetPageParams();
                 await refreshDataContext.setShouldRefreshData(true);
                 await handleCloseModal();
+                successToast("Successfully Saved Changes!");
             } else if (userResponseData.errors) {
                 setErrorMessage(userResponseData.errors[0].detail);
             }

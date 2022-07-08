@@ -1,4 +1,4 @@
-import {Fragment, useEffect, useMemo, useState} from "react";
+import {Fragment, useContext, useEffect, useMemo, useState} from "react";
 import countryList from "react-select-country-list";
 import {Form} from "react-bootstrap";
 import PhoneInput from "react-phone-number-input";
@@ -7,12 +7,14 @@ import Select from "react-select";
 import {errorToast, successToast} from "../sharedComponents/toaster/toastify";
 import ApiClient from "../../utils/apiConfiguration";
 import TokenManager from "../../utils/authToken";
+import {UserDataContext} from "../../app/contexts";
 
 
 const apiClient = new ApiClient();
 const tokenManager = new TokenManager();
 
 const UserDataComponent = ({ userProfileData, setUserProfileData }) => {
+    const userDataContext = useContext(UserDataContext);
     const [phoneNumber, setPhoneNumber] = useState("");
     const [female, setFemale] = useState(false);
     const [male, setMale] = useState(false);
@@ -140,6 +142,7 @@ const UserDataComponent = ({ userProfileData, setUserProfileData }) => {
             console.warn(`An unexpected error occurred ${data}`);
         } else {
             successToast("Successfully Saved !!!");
+            userDataContext.setUser(data);
         }
 
     };
