@@ -50,7 +50,10 @@ const BaseHomePage = ({ isLogIn }) => {
 
         } else if (!isLogIn && data.data) {
             successToast("Successfully Sent Password Reset Link !!!");
-            setTimeout(() => navigate("/login"), 3000);
+            setTimeout(
+                () => navigate("/login"),
+                3000
+            );
         }else {
             setLoginError('Account not found, please verify your credentials.');
         }
