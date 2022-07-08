@@ -1,15 +1,18 @@
-import {Fragment, useEffect, useState} from "react";
+import {Fragment, useContext, useEffect, useState} from "react";
 import {useLocation, useNavigate} from "react-router-dom";
+import {UserDataContext} from "../../app/contexts";
 
 
-const SideNavBar = ({user, handleLogOut}) => {
+const SideNavBar = ({handleLogOut}) => {
     let navigate = useNavigate();
-    const userIsAdmin = (user && user.attributes.hasOwnProperty("is_admin")) ? user.attributes.is_admin : false;
-    const userIsFullAdmin = (user && user.attributes.hasOwnProperty("is_full_admin")) ? user.attributes.is_full_admin : false;
-    const userIsPaymentAdmin = (user && user.attributes.hasOwnProperty("is_payment_manager")) ? user.attributes.is_payment_manager : false;
+    const userDataContext = useContext(UserDataContext);
+    const [userIsAdmin, setUserIsAdmin] = useState(false);
+    const [userIsFullAdmin, setUserIsFullAdmin] = useState(false);
+    const [userIsPaymentAdmin, setUserIsPaymentAdmin] = useState(false);
     const [mainLiActiveKey, setMainLiActiveKey] = useState("M1");
     const [associationMenuShowClass, setAssociationMenuShowClass] = useState("");
     const sideActiveClass = "side-active";
+
     const actionsMap = {
         M1: () => {navigate('/dashboard')},
         M2: () => {
@@ -72,6 +75,19 @@ const SideNavBar = ({user, handleLogOut}) => {
             setAssociationMenuShowClass(location.state.associationMenuShowClass);
         }
     }, [location]);
+
+    useEffect(() => {
+        if (userDataContext.user) {
+            const attributes = userDataContext.user.data.attributes;
+            setUserIsAdmin(attributes.hasOwnProperty("is_admin") ? attributes.is_admin : false);
+            setUserIsFullAdmin(
+                attributes.hasOwnProperty("is_full_admin") ? attributes.is_full_admin : false
+            );
+            setUserIsPaymentAdmin(
+                attributes.hasOwnProperty("is_payment_manager") ? attributes.is_payment_manager : false
+            );
+        }
+    }, [userDataContext.user]);
 
     const associationMenu = (userIsAdmin &&
         <li className="nav-item" style={{cursor: "pointer"}} key="M3">

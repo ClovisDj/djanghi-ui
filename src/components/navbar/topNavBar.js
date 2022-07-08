@@ -1,13 +1,26 @@
-import React, {Fragment} from 'react';
+import React, {Fragment, useContext, useEffect, useState} from 'react';
 import {isMobile} from "react-device-detect";
 import {toTitle} from "../../utils/utils";
 
 import logo from '../../../public/favicon.ico';
+import {UserDataContext} from "../../app/contexts";
 
 
-const TopNavBar = ({handleToggleMenu, handleLogOut, user, association, handleGoToMyAccount}) => {
-    const lastName = user ? user.attributes.last_name.split(" ")[0] : "";
-    const firstName = user ? user.attributes.first_name.split(" ")[0] : "";
+const TopNavBar = ({handleToggleMenu, handleLogOut, handleGoToMyAccount}) => {
+    const [user, setUser] = useState();
+    const [association, setAssociation] = useState();
+    const [lastName, setLastName] = useState("");
+    const [firstName, setFirstName] = useState("");
+    const userDataContext = useContext(UserDataContext);
+
+    useEffect(() => {
+        if (userDataContext.user) {
+            setUser(userDataContext.user);
+            setAssociation(userDataContext.user.included[0]);
+            setLastName(userDataContext.user.data.attributes.last_name.split(" ")[0]);
+            setFirstName(userDataContext.user.data.attributes.first_name.split(" ")[0]);
+        }
+    }, [userDataContext.user]);
 
     return (
             <Fragment>

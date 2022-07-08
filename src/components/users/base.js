@@ -1,4 +1,5 @@
-import {Fragment, useEffect, useState} from "react";
+import {Fragment, useContext, useEffect, useState} from "react";
+import {v4 as uuidv4} from "uuid";
 
 import FloatingButton from "../sharedComponents/floatingButton/floatingButton";
 import SecondaryNavBar from "../sharedComponents/secondaryNavBar";
@@ -6,7 +7,6 @@ import ApiClient from "../../utils/apiConfiguration";
 import DataParser from "../../utils/dataParser";
 import {buildUserDisplayName} from "../../utils/utils";
 import PageLoader from "../sharedComponents/spinner/pageLoader";
-import {v4 as uuidv4} from "uuid";
 import {Button, Modal} from "react-bootstrap";
 import TokenManager from "../../utils/authToken";
 import UserProfileModalComponent, {AdminRolesModal} from "./modals";
@@ -14,18 +14,20 @@ import {RefreshUsersContext} from "./contexts";
 import {isMobile} from "react-device-detect";
 import ReactTooltip from "react-tooltip";
 import InfiniteScroll from "react-infinite-scroll-component";
-import {useLocation} from "react-router-dom";
+import {UserDataContext} from "../../app/contexts";
 
 
 const apiClient = new ApiClient();
-const tokenManager = new TokenManager();
 
 const ListUsersHeaderComponent = ({}) => {
     const [authUser, setAuthUser] = useState();
+    const userDataContext = useContext(UserDataContext);
 
     useEffect(async () => {
-       await setAuthUser(tokenManager.getAuthUser().data);
-    }, []);
+        if (userDataContext.user) {
+            setAuthUser(userDataContext.user.data);
+        }
+    }, [userDataContext.user]);
 
     return (
         <Fragment>
@@ -136,6 +138,7 @@ const ConfirmResendRegistrationModal = ({ userDisplayName, userEmail,  showResen
 
 
 const SingleUserComponent = ({ userData }) => {
+    const userDataContext = useContext(UserDataContext);
     const editAdminTip = "Modify this admin roles";
     const addAdminTip = "Make this user admin";
     const resendTip = "Resend user registration link";
@@ -173,14 +176,15 @@ const SingleUserComponent = ({ userData }) => {
         // This is just to prevent the user profile modal to open when this disabled button is clicked
         event.stopPropagation();
     };
-    const location = useLocation();
-
-    useEffect(() => {
-        setAuthUser(location.state.user);
-    }, [location.state.user]);
 
     useEffect(async () => {
-        await setAuthUser(tokenManager.getAuthUser().data);
+        if (userDataContext.user) {
+            setAuthUser(userDataContext.user.data);
+        }
+    }, [userDataContext.user]);
+
+
+    useEffect(async () => {
         if (userData && userData.attributes) {
             const attributes = userData.attributes;
             const firstName = attributes.first_name;

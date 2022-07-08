@@ -102,7 +102,10 @@ class TokenManager {
     }
 
     isAuthenticated = () => {
-        return (this.getStoredAuthToken() && !this.tokenIsExpired(this.getStoredAuthToken())) || this.canRefreshAuthToken();
+        return (
+            (this.getStoredAuthToken() && !this.tokenIsExpired(this.getStoredAuthToken())) ||
+            this.canRefreshAuthToken()
+        );
     }
 }
 
