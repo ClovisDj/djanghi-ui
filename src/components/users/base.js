@@ -14,6 +14,7 @@ import {RefreshUsersContext} from "./contexts";
 import {isMobile} from "react-device-detect";
 import ReactTooltip from "react-tooltip";
 import InfiniteScroll from "react-infinite-scroll-component";
+import {useLocation} from "react-router-dom";
 
 
 const apiClient = new ApiClient();
@@ -172,6 +173,11 @@ const SingleUserComponent = ({ userData }) => {
         // This is just to prevent the user profile modal to open when this disabled button is clicked
         event.stopPropagation();
     };
+    const location = useLocation();
+
+    useEffect(() => {
+        setAuthUser(location.state.user);
+    }, [location.state.user]);
 
     useEffect(async () => {
         await setAuthUser(tokenManager.getAuthUser().data);

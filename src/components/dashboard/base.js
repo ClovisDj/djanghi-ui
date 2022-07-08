@@ -1,7 +1,7 @@
 import {Fragment, useEffect, useState} from "react";
 
 import NavBar from "../navbar/navbar";
-import {useNavigate} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import TokenManager from "../../utils/authToken";
 
 
@@ -9,7 +9,15 @@ const BaseDashboard = ({ ComponentToRender }) => {
     const [user, setUser] = useState(null);
     const [association, setAssociation] = useState(null);
     const tokenManager = new TokenManager();
-    let navigate = useNavigate();
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    useEffect(() => {
+        if (location.state && location.state.user) {
+            setUser(location.state.user);
+            console.log(location.state.user);
+        }
+    }, [location.state]);
 
     useEffect(async () => {
         if (!tokenManager.isAuthenticated()) {
