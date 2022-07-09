@@ -54,7 +54,7 @@ class TokenManager {
 
     getAuthUser = () => {
         // Don't know why but this object needs to be deserialized twice
-        return JSON.parse(JSON.parse(localStorage.getItem(this.#authUser)));
+        return JSON.parse(localStorage.getItem(this.#authUser));
     }
 
     decodeToken = (token) => {

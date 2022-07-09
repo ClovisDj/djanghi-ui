@@ -12,15 +12,14 @@ const NavBar = ({}) => {
     let navigate = useNavigate();
     const toggleMenuClass = 'toggle-sidebar';
     const [className, setClassName ] = useState('');
-
     const handleToggleMenuClick = (e) => {
         (className === toggleMenuClass)? setClassName('') : setClassName(toggleMenuClass);
         e.preventDefault();
     };
 
-    const handleLogOut = (event) => {
+    const handleLogOut = async (event) => {
         event.preventDefault();
-        tokenManager.logOut();
+        await tokenManager.logOut();
         navigate('/login', { replace: true});
     };
 

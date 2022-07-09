@@ -45,9 +45,12 @@ const BaseHomePage = ({ isLogIn }) => {
         if (isLogIn && data.data) {
             await tokenManager.storeTokens(data.data);
             const userData = await apiClient.get(`users/${tokenManager.getUserId()}`);
-            userDataContext.setUser(userData);
-            navigate("/dashboard", {replace: true});
-
+            if (userData.data) {
+                tokenManager.storeAuthUser(userData);
+                navigate("/dashboard", {replace: true});
+            } else {
+                setLoginError('An unexpected error occurred, please try again later.');
+            }
         } else if (!isLogIn && data.data) {
             successToast("Successfully Sent Password Reset Link !!!");
             setTimeout(
