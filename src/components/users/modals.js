@@ -159,7 +159,6 @@ const UserProfileModalComponent = ({ userData, showModal, setShowModal, isCreate
 
         useEffect(() => {
         if (userDataContext.user) {
-            console.log("is fired:", userDataContext.user);
             tokenManager.storeAuthUser(userDataContext.user);
         }
     }, [userDataContext.user]);

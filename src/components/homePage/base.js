@@ -1,11 +1,10 @@
-import React, {Fragment, useContext, useEffect, useState} from "react";
+import React, {Fragment, useEffect, useState} from "react";
 import {useLocation, useNavigate} from "react-router-dom";
 
 import TokenManager from "../../utils/authToken";
 import ApiClient from "../../utils/apiConfiguration";
 import logo from '../../../public/favicon.ico';
 import CustomToaster, {successToast} from "../sharedComponents/toaster/toastify";
-import {UserDataContext} from "../../app/contexts";
 
 
 const apiClient = new ApiClient();
@@ -18,7 +17,6 @@ const BaseHomePage = ({ isLogIn }) => {
         email: "",
         password: ""
     });
-    const userDataContext = useContext(UserDataContext);
     const navigate = useNavigate();
     const location = useLocation();
     const loginTitle = isLogIn ? "Login to Your Account" : "Password Reset";
