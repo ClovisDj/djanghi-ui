@@ -5,13 +5,15 @@ import {isMobile} from "react-device-detect";
 import ReactTooltip from "react-tooltip";
 import {Button} from "react-bootstrap";
 
-import UserProfileModalComponent, {AdminRolesModal} from "./modals";
 import ConfirmResendRegistrationModal from "./confirmResendRegistration";
 import {buildUserDisplayName} from "../../utils/utils";
+import {UserProfileContext} from "./contexts";
+import {AdminRolesModal} from "./modals";
 
 
 const SingleUserComponent = ({ userData }) => {
     const userDataContext = useContext(UserDataContext);
+    const userProfileContext = useContext(UserProfileContext);
     const editAdminTip = "Modify this admin roles";
     const addAdminTip = "Make this user admin";
     const resendTip = "Resend user registration link";
@@ -26,12 +28,12 @@ const SingleUserComponent = ({ userData }) => {
     const [isRegistered, setIsRegistered] = useState(true);
     const [userIsAdmin, setUserIsAdmin] = useState(false);
     const [userIsFullAdmin, setUserIsFullAdmin] = useState(false);
-    const [openProfileModal, setOpenProfileModal] = useState(false);
     const [showAdminModal, setShowAdminModal] = useState(false);
     const [showResendConfirm, setShowResendConfirm] = useState(false);
 
     const handleUserClick = () => {
-        setOpenProfileModal(true);
+        userProfileContext.setUserProfileData(userData);
+        userProfileContext.setIsNewUser(false);
     };
 
     const handleResendRegistration = async (event) => {
@@ -49,6 +51,12 @@ const SingleUserComponent = ({ userData }) => {
         // This is just to prevent the user profile modal to open when this disabled button is clicked
         event.stopPropagation();
     };
+
+    useEffect( () => {
+        if (userData && userProfileContext.userProfileData === userData) {
+            userProfileContext.setShowRegistrationModal(true);
+        }
+    }, [userProfileContext.userProfileData]);
 
     useEffect(async () => {
         if (userDataContext.user) {
@@ -173,10 +181,6 @@ const SingleUserComponent = ({ userData }) => {
                     </Fragment>
                 }
             </tr>
-            <UserProfileModalComponent userData={userData}
-                                       setShowModal={setOpenProfileModal}
-                                       showModal={openProfileModal}
-            />
             <AdminRolesModal userData={userData}
                              displayName={displayName}
                              showModal={showAdminModal}

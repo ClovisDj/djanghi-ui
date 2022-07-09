@@ -153,10 +153,10 @@ const UserProfileModalComponent = ({ userData, showModal, setShowModal, isCreate
             setUnspecified(attributes.sex === "U");
 
         }
-    }, []);
+    }, [userData]);
 
     const handleCloseModal = async () => {
-        await setShowModal(false);
+        setShowModal(false);
         await clearModalContent();
 
     };
@@ -233,6 +233,7 @@ const UserProfileModalComponent = ({ userData, showModal, setShowModal, isCreate
     };
 
     const handleSave = async () => {
+        const toastMessage = isCreate ? "Successfully Sent Registration!" : "Successfully Saved Changes!";
         const requestMethod = isCreate ? "post" : "patch";
         const requestEndPoint = isCreate ? "registrations" : `users/${userData.id}`;
         const requestData = await buildRequestPayload();
@@ -245,7 +246,7 @@ const UserProfileModalComponent = ({ userData, showModal, setShowModal, isCreate
                 await refreshDataContext.resetPageParams();
                 await refreshDataContext.setShouldRefreshData(true);
                 await handleCloseModal();
-                successToast("Successfully Saved Changes!");
+                successToast(toastMessage);
             } else if (userResponseData.errors) {
                 setErrorMessage(userResponseData.errors[0].detail);
             }
