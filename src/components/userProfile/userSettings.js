@@ -1,4 +1,4 @@
-import {Fragment, useContext} from "react";
+import {Fragment, useContext, useEffect} from "react";
 import {Form} from "react-bootstrap";
 
 import {errorToast, successToast} from "../sharedComponents/toaster/toastify";
@@ -34,10 +34,15 @@ const UserSettingsComponent = ({ userProfileData, setUserProfileData }) => {
             console.warn(`An unexpected error occurred ${data}`);
         } else {
             successToast("Successfully Saved !!!");
-            userProfileData.setUser(data);
+            userDataContext.setUser(data);
         }
-
     };
+
+    useEffect(() => {
+        if (userDataContext.user) {
+            tokenManager.storeAuthUser(userDataContext.user);
+        }
+    }, [userDataContext.user]);
 
     return (
         <Fragment>

@@ -5,6 +5,7 @@ import ApiClient from "../../utils/apiConfiguration";
 import {RefreshUsersContext} from "./contexts";
 import TokenManager from "../../utils/authToken";
 import {successToast} from "../sharedComponents/toaster/toastify";
+import {UserDataContext} from "../../app/contexts";
 
 const apiClient = new ApiClient();
 const tokenManager = new TokenManager();
@@ -117,6 +118,7 @@ export const AdminRolesModal = ({ displayName, userData, showModal, setShowModal
 
 const UserProfileModalComponent = ({ userData, showModal, setShowModal, isCreate= false }) => {
     const refreshDataContext = useContext(RefreshUsersContext);
+    const userDataContext = useContext(UserDataContext);
 
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
@@ -154,6 +156,13 @@ const UserProfileModalComponent = ({ userData, showModal, setShowModal, isCreate
 
         }
     }, [userData]);
+
+        useEffect(() => {
+        if (userDataContext.user) {
+            console.log("is fired:", userDataContext.user);
+            tokenManager.storeAuthUser(userDataContext.user);
+        }
+    }, [userDataContext.user]);
 
     const handleCloseModal = async () => {
         setShowModal(false);
@@ -236,6 +245,7 @@ const UserProfileModalComponent = ({ userData, showModal, setShowModal, isCreate
         const toastMessage = isCreate ? "Successfully Sent Registration!" : "Successfully Saved Changes!";
         const requestMethod = isCreate ? "post" : "patch";
         const requestEndPoint = isCreate ? "registrations" : `users/${userData.id}`;
+        const authorIsUser = tokenManager.getUserId() === userData.id;
         const requestData = await buildRequestPayload();
 
         const dataIsValid = await validateData();
@@ -245,6 +255,9 @@ const UserProfileModalComponent = ({ userData, showModal, setShowModal, isCreate
             if (userResponseData.data) {
                 await refreshDataContext.resetPageParams();
                 await refreshDataContext.setShouldRefreshData(true);
+                if (authorIsUser) {
+                    userDataContext.setUser(userResponseData);
+                }
                 await handleCloseModal();
                 successToast(toastMessage);
             } else if (userResponseData.errors) {

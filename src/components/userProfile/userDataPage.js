@@ -117,6 +117,12 @@ const UserDataComponent = ({ userProfileData, setUserProfileData }) => {
         }
     }, [userProfileData]);
 
+    useEffect(() => {
+        if (userDataContext.user) {
+            tokenManager.storeAuthUser(userDataContext.user);
+        }
+    }, [userDataContext.user]);
+
     const constructUserProfileObject = () => {
         let localUser = { ...userProfileData };
         [[female, "F"], [male, "M"], [unspecified, "U"]].forEach((sexOption) => {
@@ -144,7 +150,6 @@ const UserDataComponent = ({ userProfileData, setUserProfileData }) => {
             successToast("Successfully Saved !!!");
             userDataContext.setUser(data);
         }
-
     };
 
     return (
