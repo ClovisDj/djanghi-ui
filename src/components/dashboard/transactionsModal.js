@@ -2,10 +2,10 @@ import {Fragment, useContext, useEffect, useState} from "react";
 import {Button, Modal} from "react-bootstrap";
 import {v4 as uuidv4} from "uuid";
 import {isMobile} from "react-device-detect";
-
-import {formatValue, toTitle} from "../../utils/utils";
 import InfiniteScroll from "react-infinite-scroll-component";
 import ReactTooltip from "react-tooltip";
+
+import {formatValue, toTitle} from "../../utils/utils";
 import ApiClient from "../../utils/apiConfiguration";
 import PageLoader from "../sharedComponents/spinner/pageLoader";
 import {ClickedUserContext} from "../membershipPayments/context";
@@ -66,10 +66,8 @@ const MoreTransactionsModal = ({paymentName, showMorePayments, setShowMorePaymen
                     page: currentPage + 1
                 }
             );
-            // console.log(paymentData);
             const dataParser = new DataParser(paymentData);
             paymentData = dataParser.data;
-            console.log(paymentData);
             if (paymentData) {
                 setData(currentData.concat(paymentData.data));
                 setCurrentPage(paymentData.meta.pagination.page);

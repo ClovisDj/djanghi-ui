@@ -56,6 +56,7 @@ const RowUserPaymentStatusDisplay = ({ userContribStatus, handleClick }) => {
     const firstName = userContribStatus.relationships.user.attributes.first_name;
     const lastName = userContribStatus.relationships.user.attributes.last_name;
     const email = userContribStatus.relationships.user.attributes.email;
+    const tooltipId = uuidv4();
     const [displayName, setDisplayName] = useState("");
     const [displayBalance, setDisplayBalance] = useState(0);
     const [unpaidAmount, setUnpaidAmount] = useState(0);
@@ -106,7 +107,7 @@ const RowUserPaymentStatusDisplay = ({ userContribStatus, handleClick }) => {
 
     return (
         <Fragment>
-            <tr className="user-payment-status-row d-flex" onClick={handleClick} data-tip={tooltipMessage}>
+            <tr className="user-payment-status-row d-flex" onClick={handleClick} data-tip={tooltipMessage} data-for={tooltipId}>
                 <td className={"user-name-display col-6 " + (isMobile ? "overflow-scroll" : "")} scope="col">
                    {displayName}
                 </td>
@@ -115,7 +116,7 @@ const RowUserPaymentStatusDisplay = ({ userContribStatus, handleClick }) => {
                 </td>
                 <td className={"text-end col-3 " + balanceClassDisplay + (isMobile ? " overflow-scroll" : "")} scope="col">
                     {tooltipMessage &&
-                        <ReactTooltip className="custom-tooltip" />
+                        <ReactTooltip className="custom-tooltip" id={tooltipId} effect="solid" place="top" />
                     }
                     {formatValue(displayBalance)}
                 </td>
