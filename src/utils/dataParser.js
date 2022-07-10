@@ -18,7 +18,6 @@ export default class DataParser {
                     for (const [relationKey, relationshipValue] of Object.entries(dataObject.relationships)) {
                         if (includedItem.id === this.getRelationshipId(relationshipValue)) {
                             this.#parsedData.data[index].relationships[relationKey] = includedItem;
-                            break;
                         }
                     }
                     return this.#parsedData;
