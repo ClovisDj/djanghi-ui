@@ -244,7 +244,7 @@ const UserProfileModalComponent = ({ userData, showModal, setShowModal, isCreate
         const toastMessage = isCreate ? "Successfully Sent Registration!" : "Successfully Saved Changes!";
         const requestMethod = isCreate ? "post" : "patch";
         const requestEndPoint = isCreate ? "registrations" : `users/${userData.id}`;
-        const authorIsUser = tokenManager.getUserId() === userData.id;
+        const authorIsUser = userData && tokenManager.getUserId() === userData.id;
         const requestData = await buildRequestPayload();
 
         const dataIsValid = await validateData();
