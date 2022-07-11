@@ -1,22 +1,29 @@
 import {Fragment, useContext, useEffect, useState} from "react";
 import {Button, Modal} from "react-bootstrap";
-
-import {formatValue, toTitle} from "../../utils/utils";
+import {v4 as uuidv4} from "uuid";
+import {isMobile} from "react-device-detect";
 import InfiniteScroll from "react-infinite-scroll-component";
 import ReactTooltip from "react-tooltip";
+
+import {formatValue, toTitle} from "../../utils/utils";
 import ApiClient from "../../utils/apiConfiguration";
 import PageLoader from "../sharedComponents/spinner/pageLoader";
 import {ClickedUserContext} from "../membershipPayments/context";
+import DataParser from "../../utils/dataParser";
 
 
 const apiClient = new ApiClient();
 
 const PaymentRow = ({singlePaymentData}) => {
     const transactionType = singlePaymentData.attributes.payment_type === "PAYMENT" ? "Credit" : "Debit";
+    const authorFirstName = singlePaymentData.relationships.author.attributes.first_name;
+    const authorLastName = singlePaymentData.relationships.author.attributes.last_name;
+    const authorName = `${toTitle(authorFirstName)} ${toTitle(authorLastName)}`;
     const transactionDate = new Date(singlePaymentData.attributes.created_at).toLocaleDateString()
     const amount = singlePaymentData.attributes.amount;
     const note = singlePaymentData.attributes.note;
     const rowClass = transactionType === "Credit" ? "credit-payment" : "debit-payment";
+    const tooltipId = uuidv4();
 
     return (
         <Fragment>
@@ -24,18 +31,16 @@ const PaymentRow = ({singlePaymentData}) => {
                 <td>{transactionDate}</td>
                 <td>{formatValue(amount)}</td>
                 <td>{transactionType}</td>
-                <td>
+                <td className={isMobile ? "text-center" : ""}>
                     {note && note.length > 0 &&
-                        <a data-tip={note}>
-                            <ReactTooltip html={true} className="custom-tooltip" />
-                            <button type="button"
-                                    className="btn btn-sm btn-secondary"
-                            >
-                                Click Here!
-                            </button>
-                        </a>
+                        <Fragment>
+                            <ReactTooltip html={true} className="custom-tooltip" id={tooltipId} effect="solid" place="top" />
+                            <i className="fas fa-info-circle note-icon" data-tip={note} data-for={tooltipId}></i>
+                        </Fragment>
+
                     }
                 </td>
+                <td>{authorName}</td>
             </tr>
        </Fragment>
     )};
@@ -54,13 +59,15 @@ const MoreTransactionsModal = ({paymentName, showMorePayments, setShowMorePaymen
         if ((user || selectedUseId) && selectedContributionId) {
             let currentData = data;
             setIsFetchingData(true);
-            const paymentData = await apiClient.get(
+            let paymentData = await apiClient.get(
                 `users/${user? user: selectedUseId}/membership_payments`,
                 {
                     contribution_id: selectedContributionId,
                     page: currentPage + 1
                 }
             );
+            const dataParser = new DataParser(paymentData);
+            paymentData = dataParser.data;
             if (paymentData) {
                 setData(currentData.concat(paymentData.data));
                 setCurrentPage(paymentData.meta.pagination.page);
@@ -139,6 +146,7 @@ const MoreTransactionsModal = ({paymentName, showMorePayments, setShowMorePaymen
                                           <th scope="col">Amount</th>
                                           <th scope="col">Type</th>
                                           <th scope="col">Note</th>
+                                          <th scope="col">Author</th>
                                         </tr>
                                    </thead>
                                     <tbody>

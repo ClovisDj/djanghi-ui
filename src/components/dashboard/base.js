@@ -1,43 +1,37 @@
-import {Fragment, useEffect, useState} from "react";
+import {Fragment, useState, useEffect} from "react";
 
 import NavBar from "../navbar/navbar";
 import {useNavigate} from "react-router-dom";
 import TokenManager from "../../utils/authToken";
 
+import {UserDataContext} from "../../app/contexts";
+
 
 const BaseDashboard = ({ ComponentToRender }) => {
-    const [user, setUser] = useState(null);
-    const [association, setAssociation] = useState(null);
     const tokenManager = new TokenManager();
-    let navigate = useNavigate();
+    const navigate = useNavigate();
+    const [user, setUser] = useState();
 
     useEffect(async () => {
         if (!tokenManager.isAuthenticated()) {
-            tokenManager.logOut();
+            await tokenManager.logOut();
             navigate('/login', { replace: true});
         } else {
-            const authUser = tokenManager.getAuthUser();
-            if (authUser) {
-                await setUser(authUser.data);
-                await setAssociation(authUser.included[0]);
-            } else {
-                navigate('/login', { replace: true});
-            }
+            setUser(tokenManager.getAuthUser());
         }
     }, []);
 
     return (
-        <Fragment>
-            <NavBar
-                user={user}
-                association={association}
-            />
-            <main id="main" className="main">
-                <section className="section">
-                    { <ComponentToRender /> }
-                </section>
-            </main>
-        </Fragment>
+        <UserDataContext.Provider value={{ user: user, setUser: setUser}}>
+            <Fragment>
+                <NavBar />
+                <main id="main" className="main">
+                    <section className="section">
+                        { <ComponentToRender /> }
+                    </section>
+                </main>
+            </Fragment>
+        </UserDataContext.Provider>
     );
 };
 

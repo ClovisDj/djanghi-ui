@@ -1,9 +1,9 @@
 import {Fragment, useEffect, useState} from "react";
 import AnimatedNumber from "animated-number-react";
 import ReactTooltip from "react-tooltip";
+import {v4 as uuidv4} from "uuid";
 
 import MoreTransactionsModal from "./transactionsModal";
-
 import DataParser from "../../utils/dataParser";
 import {formatValue} from "../../utils/utils";
 import ApiClient from "../../utils/apiConfiguration";
@@ -14,7 +14,7 @@ const apiClient = new ApiClient();
 const tokenManager = new TokenManager();
 
 const PaymentSummary = ({requiredAmount, contributionId, currentValue, paymentName}) => {
-    const unpaidValue = requiredAmount ? - (requiredAmount - currentValue ): 0;
+    const unpaidValue = (requiredAmount && requiredAmount > 0) ? Math.abs(requiredAmount - currentValue ): 0;
     const displayCurrentAmount = currentValue;
     const [latestAmountDisplay, setLatestAmountDisplay] = useState(0);
     const [hasAtLeastOnePayment, setHasAtLeastOnePayment] = useState(false);
@@ -22,13 +22,9 @@ const PaymentSummary = ({requiredAmount, contributionId, currentValue, paymentNa
     const [transactionDate, setTransactionDate] = useState(null);
     const [showMorePayments, setShowMorePayments] = useState(false);
     const [paymentNote, setPaymentNote] = useState("");
+    const noteTooltipId = uuidv4();
 
     useEffect(async () => {
-        if (requiredAmount && requiredAmount > 0 && currentValue) {
-            if (currentValue > requiredAmount) {
-
-            }
-        }
         const paymentData = await apiClient.get(
             `users/${tokenManager.getUserId()}/membership_payments`,
             {
@@ -83,7 +79,7 @@ const PaymentSummary = ({requiredAmount, contributionId, currentValue, paymentNa
                                                         <td className="text-end">
                                                             <AnimatedNumber value={displayCurrentAmount}
                                                                             formatValue={formatValue}
-                                                                            className={displayCurrentAmount >= requiredAmount ? "no-payment-due" : "need-more-payment"}
+                                                                            className={displayCurrentAmount > 0 ? "no-payment-due" : "need-more-payment"}
                                                             />
                                                         </td>
                                                     </tr>
@@ -190,12 +186,16 @@ const PaymentSummary = ({requiredAmount, contributionId, currentValue, paymentNa
                                                             <td className="text-end payment-info-text">
                                                                 {paymentNote.length > 0 &&
                                                                     <a data-tip={paymentNote}>
-                                                                        <ReactTooltip html={true} className="custom-tooltip" />
-                                                                        <button type="button"
-                                                                                className="btn btn-sm btn-secondary"
-                                                                        >
-                                                                            Click Here!
-                                                                        </button>
+                                                                        <ReactTooltip html={true}
+                                                                                      className="custom-tooltip"
+                                                                                      id={noteTooltipId}
+                                                                                      effect="solid"
+                                                                                      place="top"
+                                                                        />
+                                                                        <i className="fas fa-info-circle note-icon"
+                                                                           data-tip={paymentNote}
+                                                                           data-for={noteTooltipId}
+                                                                        />
                                                                     </a>
                                                                 }
                                                             </td>

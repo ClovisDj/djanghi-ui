@@ -277,6 +277,11 @@ th, td {
     background-color: #656565 !important;
 }
 
+.note-icon {
+    font-size: 20px;
+    /*font-weight: 600;*/
+}
+
 @media (max-width: 767.98px) {
     .card-chart {
         height: fit-content;

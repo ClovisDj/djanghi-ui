@@ -1,26 +1,25 @@
 import React, {Fragment, useEffect, useState, useRef} from 'react';
+import {useNavigate} from "react-router-dom";
+import {isMobile} from "react-device-detect";
 
 import TopNavBar from "./topNavBar";
 import SideNavBar from "./sideNavBar";
 import TokenManager from "../../utils/authToken";
-import {useNavigate} from "react-router-dom";
-import {isMobile} from "react-device-detect";
 
 
-const NavBar = ({user, association}) => {
+const NavBar = ({}) => {
     const tokenManager = new TokenManager();
     let navigate = useNavigate();
     const toggleMenuClass = 'toggle-sidebar';
     const [className, setClassName ] = useState('');
-
     const handleToggleMenuClick = (e) => {
         (className === toggleMenuClass)? setClassName('') : setClassName(toggleMenuClass);
         e.preventDefault();
     };
 
-    const handleLogOut = (event) => {
+    const handleLogOut = async (event) => {
         event.preventDefault();
-        tokenManager.logOut();
+        await tokenManager.logOut();
         navigate('/login', { replace: true});
     };
 
@@ -63,12 +62,9 @@ const NavBar = ({user, association}) => {
                 <TopNavBar
                     handleToggleMenu={handleToggleMenuClick}
                     handleLogOut={handleLogOut}
-                    user={user}
-                    association={association}
                     handleGoToMyAccount={handleGoToMyAccount}
                 />
                 <SideNavBar
-                    user={user}
                     handleLogOut={handleLogOut}
                 />
             </div>

@@ -22,7 +22,7 @@ const ActivationLink = () => {
         if (tokenManager.isAuthenticated()) {
             try {
                 const userData = await apiClient.get(`users/${tokenManager.getUserId()}`);
-                await tokenManager.storeAuthUser(JSON.stringify(userData));
+                await tokenManager.storeAuthUser(userData);
                 navigate("/dashboard", { replace: true });
             } catch (error) {
                 console.warn(`An unexpected error occurred: ${error}`);
