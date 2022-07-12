@@ -27,8 +27,7 @@ const ConfirmResendRegistrationModal = ({ userDisplayName, userEmail,  showResen
 
     return (
         <Fragment>
-            <Modal contentClassName="add-payments-modal-content"
-                   show={showResendConfirm}
+            <Modal show={showResendConfirm}
                    onHide={() => setShowResendConfirm(false)}
                    centered={true}
             >
