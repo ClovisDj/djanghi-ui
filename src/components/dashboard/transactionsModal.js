@@ -14,7 +14,7 @@ import DataParser from "../../utils/dataParser";
 
 const apiClient = new ApiClient();
 
-const PaymentRow = ({singlePaymentData}) => {
+const PaymentRow = ({singlePaymentData, tooltipId}) => {
     const transactionType = singlePaymentData.attributes.payment_type === "PAYMENT" ? "Credit" : "Debit";
     const authorFirstName = singlePaymentData.relationships.author.attributes.first_name;
     const authorLastName = singlePaymentData.relationships.author.attributes.last_name;
@@ -23,7 +23,12 @@ const PaymentRow = ({singlePaymentData}) => {
     const amount = singlePaymentData.attributes.amount;
     const note = singlePaymentData.attributes.note;
     const rowClass = transactionType === "Credit" ? "credit-payment" : "debit-payment";
-    const tooltipId = uuidv4();
+
+    useEffect(() => {
+        if (note && note.length > 0) {
+            ReactTooltip.rebuild();
+        }
+    }, []);
 
     return (
         <Fragment>
@@ -33,11 +38,7 @@ const PaymentRow = ({singlePaymentData}) => {
                 <td>{transactionType}</td>
                 <td className={isMobile ? "text-center" : ""}>
                     {note && note.length > 0 &&
-                        <Fragment>
-                            <ReactTooltip html={true} className="custom-tooltip" id={tooltipId} effect="solid" place="top" />
-                            <i className="fas fa-info-circle note-icon" data-tip={note} data-for={tooltipId}></i>
-                        </Fragment>
-
+                        <i className="fas fa-info-circle note-icon" data-tip={note} data-for={tooltipId}></i>
                     }
                 </td>
                 <td>{authorName}</td>
@@ -45,7 +46,7 @@ const PaymentRow = ({singlePaymentData}) => {
        </Fragment>
     )};
 
-const MoreTransactionsModal = ({paymentName, showMorePayments, setShowMorePayments, contributionId, userId}) => {
+const MoreTransactionsModal = ({paymentName, showMorePayments, setShowMorePayments, contributionId, userId, tooltipId}) => {
     const clickedUserDataContext = useContext(ClickedUserContext);
 
     const [data, setData] = useState([]);
@@ -152,7 +153,7 @@ const MoreTransactionsModal = ({paymentName, showMorePayments, setShowMorePaymen
                                     <tbody>
                                         {data.length > 0 && data.map((payment) => (
                                                 <Fragment key={payment.id}>
-                                                  <PaymentRow singlePaymentData={payment} />
+                                                  <PaymentRow singlePaymentData={payment} tooltipId={tooltipId} />
                                                 </Fragment>
                                             ))
                                         }

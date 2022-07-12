@@ -92,8 +92,7 @@ export const AddOrListPaymentsModal = ({ showModalChoice, setShowModalChoice }) 
 
     return (
         <Fragment>
-            <Modal contentClassName="add-payments-modal-content"
-                   show={showModalChoice}
+            <Modal show={showModalChoice}
                    onHide={() => setShowModalChoice(false)}
                    centered={true}
             >
@@ -296,8 +295,7 @@ const AddPaymentsModal = ({ showPaymentModal, setShowPaymentModal, contribInfo }
 
     return (
         <Fragment>
-            <Modal contentClassName="add-payments-modal-content"
-                   dialogClassName = "add-payments-modal-dialog"
+            <Modal dialogClassName = "add-payments-modal-dialog"
                    show={showPaymentModal}
                    backdrop="static"
                    onHide={handleCloseModal}

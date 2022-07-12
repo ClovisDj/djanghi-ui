@@ -61,6 +61,7 @@ const RowUserPaymentStatusDisplay = ({ userContribStatus, handleClick }) => {
     const [displayBalance, setDisplayBalance] = useState(0);
     const [unpaidAmount, setUnpaidAmount] = useState(0);
     const [balanceClassDisplay, setBalanceClassDisplay] = useState("no-payment-due");
+    const [unpaidClassDisplay, setUnpaidClassDisplay] = useState("no-payment-due");
     const [tooltipMessage, setTooltipMessage] = useState("");
 
     useEffect(async () => {
@@ -82,7 +83,7 @@ const RowUserPaymentStatusDisplay = ({ userContribStatus, handleClick }) => {
             if (requiredAmount > 0) {
                 if (requiredAmount > currentValue) {
                     setUnpaidAmount(requiredAmount - currentValue);
-                    setBalanceClassDisplay("need-more-payment");
+                    setUnpaidClassDisplay("need-more-payment");
                 } else if (currentValue > requiredAmount) {
                     setUnpaidAmount(currentValue - requiredAmount);
                     setBalanceClassDisplay("overpaid-display-payment");
@@ -93,13 +94,14 @@ const RowUserPaymentStatusDisplay = ({ userContribStatus, handleClick }) => {
             } else {
                 if (currentValue < 0) {
                     setUnpaidAmount(-1 * currentValue);
+                    setUnpaidClassDisplay("need-more-payment");
                 } else if (currentValue > 0) {
-                    setUnpaidAmount(currentValue);
                     setBalanceClassDisplay("overpaid-display-payment");
+                    setUnpaidClassDisplay("overpaid-display-payment");
                     setTooltipMessage(`This member is overpaying $ ${currentValue}`);
                 } else {
-                   setUnpaidAmount(currentValue);
                    setBalanceClassDisplay("no-payment-due");
+                   setUnpaidClassDisplay("no-payment-due");
                 }
             }
         }
@@ -111,11 +113,11 @@ const RowUserPaymentStatusDisplay = ({ userContribStatus, handleClick }) => {
                 <td className={"user-name-display col-6 " + (isMobile ? "overflow-scroll" : "")} scope="col">
                    {displayName}
                 </td>
-                <td className={"text-end col-3 " + balanceClassDisplay + (isMobile ? " overflow-scroll" : "")} scope="col">
+                <td className={"text-end col-3 " + unpaidClassDisplay + (isMobile ? " overflow-scroll" : "")} scope="col">
                     {formatValue(unpaidAmount)}
                 </td>
                 <td className={"text-end col-3 " + balanceClassDisplay + (isMobile ? " overflow-scroll" : "")} scope="col">
-                    {tooltipMessage &&
+                    {tooltipMessage && !isMobile &&
                         <ReactTooltip className="custom-tooltip" id={tooltipId} effect="solid" place="top" />
                     }
                     {formatValue(displayBalance)}
@@ -145,6 +147,7 @@ const BaseMembershipPayments = () => {
     const [shouldEmptyUsersList, setShouldEmptyUsersList] = useState(false);
     // The below param is to force re-render the table component once a payment added
     const [tableKey, setTableKey] = useState(uuidv4());
+    const tooltipId = uuidv4();
 
     const fetchContribFields = async () => {
         const data = await apiClient.get("contribution_fields");
@@ -359,11 +362,13 @@ const BaseMembershipPayments = () => {
                             </div>
                         </InfiniteScroll>
 
+                        <ReactTooltip html={true} className="custom-tooltip" id={tooltipId} effect="solid" place="top" />
                         <MoreTransactionsModal paymentName={clickedUserDisplayName ? clickedUserDisplayName : ""}
                                                userId={clickedUserPaymentStatus.relationships.user.id}
                                                contributionId={selectConfig.selected.value}
                                                showMorePayments={showSelectedUserPayments}
                                                setShowMorePayments={setShowSelectedUserPayments}
+                                               tooltipId={tooltipId}
                         />
 
                         <AddOrListPaymentsModal showModalChoice={showModalChoice}

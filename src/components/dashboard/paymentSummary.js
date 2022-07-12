@@ -23,6 +23,7 @@ const PaymentSummary = ({requiredAmount, contributionId, currentValue, paymentNa
     const [showMorePayments, setShowMorePayments] = useState(false);
     const [paymentNote, setPaymentNote] = useState("");
     const noteTooltipId = uuidv4();
+    const tooltipId = uuidv4();
 
     useEffect(async () => {
         const paymentData = await apiClient.get(
@@ -90,7 +91,8 @@ const PaymentSummary = ({requiredAmount, contributionId, currentValue, paymentNa
                                                         <td className="text-end">
                                                             <AnimatedNumber value={unpaidValue}
                                                                             formatValue={formatValue}
-                                                                            className={currentValue >= requiredAmount ? "overpaid-display-payment" : "need-more-payment"}
+                                                                            className={currentValue > requiredAmount ? "overpaid-display-payment" :
+                                                                                (currentValue === requiredAmount ? "no-payment-due": "need-more-payment")}
                                                             />
                                                         </td>
                                                     </tr>
@@ -219,13 +221,14 @@ const PaymentSummary = ({requiredAmount, contributionId, currentValue, paymentNa
                                             </button>
                                         </div>
                                     </div>
-
+                                    <ReactTooltip html={true} className="custom-tooltip" id={tooltipId} effect="solid" place="top" />
                                     <MoreTransactionsModal
                                         paymentName={paymentName}
                                         contributionId={contributionId}
                                         showMorePayments={showMorePayments}
                                         setShowMorePayments={setShowMorePayments}
                                         userId={tokenManager.getUserId()}
+                                        tooltipId={tooltipId}
                                     />
                                 </Fragment>
                             }

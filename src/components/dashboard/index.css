@@ -239,6 +239,12 @@ th, td {
     margin: 0;
 }
 
+.__react_component_tooltip {
+    /*We customize this so that react tooltip on mobile will always be positioned
+    in front of the modal and do not display in wrong position*/
+    z-index: 1200 !important;
+}
+
 .custom-tooltip :hover {
     visibility: visible !important;
     opacity: 1 !important;
