@@ -5,11 +5,14 @@ import {isMobile} from "react-device-detect";
 import TopNavBar from "./topNavBar";
 import SideNavBar from "./sideNavBar";
 import TokenManager from "../../utils/authToken";
+import {NavBarContext} from "./context";
 
 
 const NavBar = ({}) => {
+    const [associationMenuShowClass, setAssociationMenuShowClass] = useState("");
+    const [mainLiActiveKey, setMainLiActiveKey] = useState("M1");
     const tokenManager = new TokenManager();
-    let navigate = useNavigate();
+    const navigate = useNavigate();
     const toggleMenuClass = 'toggle-sidebar';
     const [className, setClassName ] = useState('');
     const handleToggleMenuClick = (e) => {
@@ -25,15 +28,8 @@ const NavBar = ({}) => {
 
     const handleGoToMyAccount = (event) => {
         event.preventDefault();
-        navigate(
-            '/my-account',
-            {
-                state: {
-                    mainLiActiveKey: "M2",
-                    associationMenuShowClass: ""
-                }
-            }
-        );
+        navigate('/my-account');
+        setMainLiActiveKey("M2");
     };
 
     const useOutsideLeftNavBarClick = (ref) => {
@@ -56,18 +52,24 @@ const NavBar = ({}) => {
     const wrapperRef = isMobile ? useRef(null) : () => {};
     useOutsideLeftNavBarClick(wrapperRef);
 
-    return (
+    const navBarContextData = {
+        associationMenuShowClass: associationMenuShowClass,
+        setAssociationMenuShowClass: setAssociationMenuShowClass,
+        mainLiActiveKey: mainLiActiveKey,
+        setMainLiActiveKey: setMainLiActiveKey,
+    };
+
+    return (tokenManager.isAuthenticated() &&
         <Fragment>
-            <div className={className}  ref={wrapperRef}>
-                <TopNavBar
-                    handleToggleMenu={handleToggleMenuClick}
-                    handleLogOut={handleLogOut}
-                    handleGoToMyAccount={handleGoToMyAccount}
-                />
-                <SideNavBar
-                    handleLogOut={handleLogOut}
-                />
-            </div>
+            <NavBarContext.Provider value={navBarContextData}>
+                <div className={className}  ref={wrapperRef}>
+                    <TopNavBar handleToggleMenu={handleToggleMenuClick}
+                               handleLogOut={handleLogOut}
+                               handleGoToMyAccount={handleGoToMyAccount}
+                    />
+                    <SideNavBar handleLogOut={handleLogOut} />
+                </div>
+            </NavBarContext.Provider>
         </Fragment>
     );
 }
