@@ -4,6 +4,7 @@ import {toast, ToastContainer} from "react-toastify";
 const CustomToaster = ({}) => {
     return (
         <ToastContainer position="top-right"
+                        className="toast-position"
                         autoClose={2000}
                         hideProgressBar
                         newestOnTop={false}
@@ -32,7 +33,7 @@ export const successToast = (message = "") => {
 export const errorToast = (message = "An unexpected error occurred !") => {
     toast.error(message, {
         position: "top-right",
-        autoClose: 2500,
+        autoClose: 2000,
         hideProgressBar: true,
         closeOnClick: true,
         pauseOnHover: true,

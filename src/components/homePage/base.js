@@ -1,10 +1,11 @@
-import React, {Fragment, useEffect, useState} from "react";
+import React, {Fragment, useEffect, useState, useContext} from "react";
 import {useLocation, useNavigate} from "react-router-dom";
 
 import TokenManager from "../../utils/authToken";
 import ApiClient from "../../utils/apiConfiguration";
 import logo from '../../../public/favicon.ico';
 import CustomToaster, {successToast} from "../sharedComponents/toaster/toastify";
+import {UserDataContext} from "../../app/contexts";
 
 
 const apiClient = new ApiClient();
@@ -19,6 +20,7 @@ const BaseHomePage = ({ isLogIn }) => {
     });
     const navigate = useNavigate();
     const location = useLocation();
+    const userDataContext = useContext(UserDataContext);
     const loginTitle = isLogIn ? "Login to Your Account" : "Password Reset";
     const submitValue = isLogIn ? "Login" : "Send Password Reset Link";
 
@@ -44,6 +46,7 @@ const BaseHomePage = ({ isLogIn }) => {
             await tokenManager.storeTokens(data.data);
             const userData = await apiClient.get(`users/${tokenManager.getUserId()}`);
             if (userData.data) {
+                userDataContext.setUser(userData);
                 tokenManager.storeAuthUser(userData);
                 navigate("/dashboard", {replace: true});
             } else {

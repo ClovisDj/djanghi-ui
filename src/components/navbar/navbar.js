@@ -9,12 +9,14 @@ import {NavBarContext} from "./context";
 
 
 const NavBar = ({}) => {
+    const defaultMainActive = "M1";
     const [associationMenuShowClass, setAssociationMenuShowClass] = useState("");
-    const [mainLiActiveKey, setMainLiActiveKey] = useState("M1");
+    const [mainLiActiveKey, setMainLiActiveKey] = useState(defaultMainActive);
     const tokenManager = new TokenManager();
     const navigate = useNavigate();
     const toggleMenuClass = 'toggle-sidebar';
     const [className, setClassName ] = useState('');
+
     const handleToggleMenuClick = (e) => {
         (className === toggleMenuClass)? setClassName('') : setClassName(toggleMenuClass);
         e.preventDefault();
@@ -22,6 +24,8 @@ const NavBar = ({}) => {
 
     const handleLogOut = async (event) => {
         event.preventDefault();
+        setMainLiActiveKey(defaultMainActive);
+        setClassName("");
         await tokenManager.logOut();
         navigate('/login', { replace: true});
     };
@@ -30,6 +34,7 @@ const NavBar = ({}) => {
         event.preventDefault();
         navigate('/my-account');
         setMainLiActiveKey("M2");
+        setClassName("");
     };
 
     const useOutsideLeftNavBarClick = (ref) => {
@@ -67,7 +72,9 @@ const NavBar = ({}) => {
                                handleLogOut={handleLogOut}
                                handleGoToMyAccount={handleGoToMyAccount}
                     />
-                    <SideNavBar handleLogOut={handleLogOut} />
+                    <SideNavBar handleLogOut={handleLogOut}
+                                setClassName={setClassName}
+                    />
                 </div>
             </NavBarContext.Provider>
         </Fragment>

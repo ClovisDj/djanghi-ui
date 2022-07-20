@@ -1109,3 +1109,7 @@ h1, h2, h3, h4, h5, h6 {
     overflow: hidden;
     border-top: 1px solid rgba(168, 168, 168, 0.25);
 }
+
+.toast-position {
+  top: 63px !important;
+}

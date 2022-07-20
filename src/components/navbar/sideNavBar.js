@@ -2,9 +2,13 @@ import {Fragment, useContext, useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {UserDataContext} from "../../app/contexts";
 import {NavBarContext} from "./context";
+import {isMobile} from "react-device-detect";
+import TokenManager from "../../utils/authToken";
 
 
-const SideNavBar = ({handleLogOut}) => {
+const tokenManager = new TokenManager();
+
+const SideNavBar = ({handleLogOut, setClassName}) => {
     let navigate = useNavigate();
     const userDataContext = useContext(UserDataContext);
     const navBarContext = useContext(NavBarContext);
@@ -25,7 +29,18 @@ const SideNavBar = ({handleLogOut}) => {
     const handleSideNavClick = async (liKey) => {
         await navBarContext.setMainLiActiveKey(liKey);
         await actionsMap[liKey]();
+
+        if (isMobile && liKey !== "M3") {
+            setClassName("");
+        }
     }
+
+    useEffect(() => {
+        const storedUser = tokenManager.getAuthUser();
+        if (storedUser) {
+            userDataContext.setUser(storedUser);
+        }
+    }, []);
 
     useEffect(() => {
         if (userDataContext.user) {
