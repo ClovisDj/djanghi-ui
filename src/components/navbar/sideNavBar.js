@@ -1,7 +1,6 @@
 import {Fragment, useContext, useEffect, useState} from "react";
-import {useNavigate} from "react-router-dom";
+import {useNavigate, useLocation} from "react-router-dom";
 import {UserDataContext} from "../../app/contexts";
-import {NavBarContext} from "./context";
 import {isMobile} from "react-device-detect";
 import TokenManager from "../../utils/authToken";
 
@@ -9,31 +8,84 @@ import TokenManager from "../../utils/authToken";
 const tokenManager = new TokenManager();
 
 const SideNavBar = ({handleLogOut, setClassName}) => {
-    let navigate = useNavigate();
+    const navigate = useNavigate();
+    const location = useLocation();
     const userDataContext = useContext(UserDataContext);
-    const navBarContext = useContext(NavBarContext);
     const [userIsAdmin, setUserIsAdmin] = useState(false);
     const [userIsFullAdmin, setUserIsFullAdmin] = useState(false);
     const [userIsPaymentAdmin, setUserIsPaymentAdmin] = useState(false);
+    const [mainLiActiveKey, setMainLiActiveKey] = useState("M1");
+    const [associationMenuShowClass, setAssociationMenuShowClass] = useState("");
     const sideActiveClass = "side-active";
 
     const actionsMap = {
-        M1: () => navigate('/dashboard'),
-        M2: () => navigate('/my-account'),
+        M1: () => navigate(
+            '/dashboard',
+            {
+                state: {
+                    mainLiActiveKey: "M1",
+                    associationMenuShowClass: ""
+                }
+            }
+            ),
+        M2: () => navigate(
+            '/my-account',
+            {
+                state: {
+                    mainLiActiveKey: "M2",
+                    associationMenuShowClass: ""
+                }
+            }
+        ),
         M3: () => {},
-        M4: () => navigate('/membership-fields'),
-        M5: () => navigate('/membership-payments'),
-        M6: () => navigate('/users'),
+        M4: () => navigate(
+            '/membership-fields',
+            {
+                state: {
+                    mainLiActiveKey: "M4",
+                    associationMenuShowClass: associationMenuShowClass
+                }
+            }
+        ),
+        M5: () => navigate(
+            '/membership-payments',
+            {
+                state: {
+                    mainLiActiveKey: "M5",
+                    associationMenuShowClass: associationMenuShowClass
+                }
+            }
+        ),
+        M6: () => navigate(
+            '/users',
+            {
+                state: {
+                    mainLiActiveKey: "M6",
+                    associationMenuShowClass: associationMenuShowClass
+                }
+            }
+        ),
     };
 
     const handleSideNavClick = async (liKey) => {
-        await navBarContext.setMainLiActiveKey(liKey);
+        await setMainLiActiveKey(liKey);
         await actionsMap[liKey]();
 
         if (isMobile && liKey !== "M3") {
             setClassName("");
         }
+        if (liKey === "M3") {
+            setAssociationMenuShowClass("show");
+        }
     }
+
+    useEffect(async () => {
+        if (location.state) {
+            setMainLiActiveKey(location.state.mainLiActiveKey);
+            setAssociationMenuShowClass(location.state.associationMenuShowClass);
+        }
+    }, [location]);
+
 
     useEffect(() => {
         const storedUser = tokenManager.getAuthUser();
@@ -57,37 +109,37 @@ const SideNavBar = ({handleLogOut, setClassName}) => {
 
     const associationMenu = (userIsAdmin &&
         <li className="nav-item" style={{cursor: "pointer"}} key="M3">
-            <a className={"nav-link collapsed " + (navBarContext.mainLiActiveKey === "M3" ? sideActiveClass : "")}
+            <a className={"nav-link collapsed " + (mainLiActiveKey === "M3" ? sideActiveClass : "")}
                data-bs-target="#components-nav" data-bs-toggle="collapse" onClick={() => handleSideNavClick("M3")}>
-                <i className={"bi bi-menu-button-wide" + (navBarContext.mainLiActiveKey === "M3" ? "-fill" : "")} />
+                <i className={"bi bi-menu-button-wide" + (mainLiActiveKey === "M3" ? "-fill" : "")} />
                 <span>Association Menu</span>
                 <i className="bi bi-chevron-down ms-auto" />
             </a>
 
-                <ul id="components-nav" className={"nav-content collapse " + navBarContext.associationMenuShowClass} data-bs-parent="#sidebar-nav">
+                <ul id="components-nav" className={"nav-content collapse " + associationMenuShowClass} data-bs-parent="#sidebar-nav">
                     {userIsFullAdmin &&
                         <li key="M4">
-                            <a className={navBarContext.mainLiActiveKey === "M4"? sideActiveClass: ""}
+                            <a className={mainLiActiveKey === "M4"? sideActiveClass: ""}
                                onClick={() => handleSideNavClick("M4")}>
-                                <i className={"bi bi-circle" + ( navBarContext.mainLiActiveKey === "M4" ? "-fill": "" )} />
+                                <i className={"bi bi-circle" + (mainLiActiveKey === "M4" ? "-fill": "" )} />
                                 <span className="text-capitalize">MemberShip Fields</span>
                             </a>
                         </li>
                     }
                     {(userIsFullAdmin || userIsPaymentAdmin) &&
                         <li key="M5">
-                            <a className={navBarContext.mainLiActiveKey === "M5" ? sideActiveClass: ""}
+                            <a className={mainLiActiveKey === "M5" ? sideActiveClass: ""}
                                onClick={() => handleSideNavClick("M5")}>
-                                <i className={"bi bi-circle" + ( navBarContext.mainLiActiveKey === "M5" ? "-fill": "" )} />
+                                <i className={"bi bi-circle" + (mainLiActiveKey === "M5" ? "-fill": "" )} />
                                 <span className="text-capitalize">MemberShip Payments</span>
                             </a>
                         </li>
                     }
                     {userIsAdmin  &&
                         <li key="M6">
-                            <a className={navBarContext.mainLiActiveKey === "M6" ? sideActiveClass: ""}
+                            <a className={mainLiActiveKey === "M6" ? sideActiveClass: ""}
                                onClick={() => handleSideNavClick("M6")}>
-                                <i className={"bi bi-circle" + ( navBarContext.mainLiActiveKey === "M6" ? "-fill": "" )} />
+                                <i className={"bi bi-circle" + (mainLiActiveKey === "M6" ? "-fill": "" )} />
                                 <span className="text-capitalize">Users</span>
                             </a>
                         </li>
@@ -102,17 +154,17 @@ const SideNavBar = ({handleLogOut, setClassName}) => {
             <aside id="sidebar" className="sidebar">
                 <ul className="sidebar-nav" id="sidebar-nav">
                     <li className="nav-item" style={{cursor: "pointer"}} key="M1">
-                        <a className={"nav-link " + ( navBarContext.mainLiActiveKey === "M1" ? sideActiveClass: "" )}
+                        <a className={"nav-link " + ( mainLiActiveKey === "M1" ? sideActiveClass: "" )}
                            onClick={() => handleSideNavClick("M1")}>
-                            <i className={"bi bi-grid" + (navBarContext.mainLiActiveKey === "M1"? "-fill": "")} />
+                            <i className={"bi bi-grid" + (mainLiActiveKey === "M1"? "-fill": "")} />
                             <span>Dashboard</span>
                         </a>
                     </li>
 
                     <li className="nav-item" style={{cursor: "pointer"}} key="M2">
-                        <a className={"nav-link collapsed " + ( navBarContext.mainLiActiveKey === "M2" ? sideActiveClass: "" )}
+                        <a className={"nav-link collapsed " + (mainLiActiveKey === "M2" ? sideActiveClass: "" )}
                            onClick={() => handleSideNavClick("M2")}>
-                            <i className={"bi bi-person" + ( navBarContext.mainLiActiveKey === "M2" ? "-fill": "" )} />
+                            <i className={"bi bi-person" + (mainLiActiveKey === "M2" ? "-fill": "" )} />
                             <span>My Account</span>
                         </a>
                     </li>
