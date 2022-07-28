@@ -85,8 +85,9 @@ const RowUserPaymentStatusDisplay = ({ userContribStatus, handleClick }) => {
                     setUnpaidAmount(requiredAmount - currentValue);
                     setUnpaidClassDisplay("need-more-payment");
                 } else if (currentValue > requiredAmount) {
-                    setUnpaidAmount(currentValue - requiredAmount);
+                    setUnpaidAmount(0);
                     setBalanceClassDisplay("overpaid-display-payment");
+                    setUnpaidClassDisplay("overpaid-display-payment");
                     setTooltipMessage(`This member is overpaying $ ${currentValue - requiredAmount}`);
                 } else {
                     setBalanceClassDisplay("no-payment-due");
