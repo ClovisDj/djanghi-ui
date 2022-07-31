@@ -1,4 +1,5 @@
 import {Fragment, useEffect, useState} from "react";
+import ReactTooltip from "react-tooltip";
 import {v4 as uuidv4} from "uuid";
 
 import ApiClient from "../../utils/apiConfiguration";
@@ -7,7 +8,7 @@ import CustomToaster from "../sharedComponents/toaster/toastify";
 import UserSettingsComponent from "./userSettings";
 import UserDataComponent from "./userDataPage";
 import MembershipOptInComponent from "./membershipOptIn";
-import ReactTooltip from "react-tooltip";
+import {RefreshOptInDataContext} from "./contexts";
 
 const apiClient = new ApiClient();
 const tokenManager = new TokenManager();
@@ -73,8 +74,10 @@ const BaseUserProfile = () => {
     const [showProfile, setShowProfile] = useState(true);
     const [showSettings, setShowSettings] = useState(false);
     const [showOptInSettings, setShowOptInSettings] = useState(false);
+    const [shouldRefreshOptInData, setShouldRefreshOptInData] = useState(false);
     const [userProfileData, setUserProfileData] = useState({});
     const [contribOptInFields, setContribOptInFields] = useState([]);
+    const [tableKey, setTableKey] = useState(uuidv4());
 
     const fetchUserData = async () => {
         const data = await apiClient.get(`users/${tokenManager.getUserId()}`);
@@ -117,35 +120,53 @@ const BaseUserProfile = () => {
         await fetchContribData();
     }, []);
 
+    useEffect(async () => {
+        if (shouldRefreshOptInData) {
+            await fetchContribData();
+            setShouldRefreshOptInData(false);
+        }
+    }, [shouldRefreshOptInData]);
+
+    useEffect(() => {
+        setTableKey(uuidv4());
+    }, [contribOptInFields]);
+
+    const optInRefreshContext = {
+        shouldRefreshOptInData: shouldRefreshOptInData,
+        setShouldRefreshOptInData: setShouldRefreshOptInData
+    };
 
     return(
-        <Fragment>
-            <div className="container card" id="user-account">
-                <NavigationTabs setShowProfile={setShowProfile}
-                                setShowSettings={setShowSettings}
-                                setShowOptInSettings={setShowOptInSettings}
-                />
-
-                {showProfile &&
-                    <UserDataComponent setUserProfileData={setUserProfileData}
-                                       userProfileData={userProfileData}
+        <RefreshOptInDataContext.Provider value={optInRefreshContext}>
+            <Fragment>
+                <div className="container card" id="user-account">
+                    <NavigationTabs setShowProfile={setShowProfile}
+                                    setShowSettings={setShowSettings}
+                                    setShowOptInSettings={setShowOptInSettings}
                     />
-                }
 
-                {showSettings &&
-                    <UserSettingsComponent setUserProfileData={setUserProfileData}
+                    {showProfile &&
+                        <UserDataComponent setUserProfileData={setUserProfileData}
                                            userProfileData={userProfileData}
-                    />
-                }
+                        />
+                    }
 
-                {showOptInSettings &&
-                    <MembershipOptInComponent contribOptInFields={contribOptInFields}
-                    />
-                }
+                    {showSettings &&
+                        <UserSettingsComponent setUserProfileData={setUserProfileData}
+                                               userProfileData={userProfileData}
+                        />
+                    }
 
-                <CustomToaster />
-            </div>
-        </Fragment>
+                    {showOptInSettings &&
+                        <MembershipOptInComponent contribOptInFields={contribOptInFields}
+                                                  tableKey={tableKey}
+                        />
+                    }
+
+                    <CustomToaster />
+                </div>
+            </Fragment>
+        </RefreshOptInDataContext.Provider>
     );
 };
 

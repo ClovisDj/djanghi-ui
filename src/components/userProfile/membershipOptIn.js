@@ -5,6 +5,7 @@ import {Button} from "react-bootstrap";
 import {v4 as uuidv4} from "uuid";
 
 import {formatValue} from "../../utils/utils";
+import {ConfirmOptInModal} from "./modals";
 
 
 const overflowOnMobile = isMobile ? "overflow-scroll" : "";
@@ -48,8 +49,8 @@ const OptInContribFieldRow = ({ userContribFieldData, handleOptInRequest }) => {
     const tooltipMap = {
         "PROCESSING": "Your Admins are processing your request.",
         "REQUESTED": "Your Admins have been notified about your request. You will be notified once it's approved.",
-        "APPROVED": "Your request have been approved.",
-        "DECLINED": "Your request have been declined by your Admins.",
+        "APPROVED": "Your request has been approved.",
+        "DECLINED": "Your request has been declined by your Admins.",
     };
 
     useEffect(() => {
@@ -65,7 +66,7 @@ const OptInContribFieldRow = ({ userContribFieldData, handleOptInRequest }) => {
 
     const localHandleClick = () => {
         if (optInStatus === "Opt In") {
-            handleOptInRequest(userContribFieldData.id);
+            handleOptInRequest(userContribFieldData);
         }
     };
 
@@ -100,10 +101,13 @@ const OptInContribFieldRow = ({ userContribFieldData, handleOptInRequest }) => {
     );
 };
 
-const MembershipOptInComponent = ({ contribOptInFields }) => {
+const MembershipOptInComponent = ({ contribOptInFields, tableKey }) => {
+    const [selectedContribField, setSelectedContribField] = useState();
+    const [showConfirmModal, setShowConfirmModal] = useState(false);
 
-    console.log(contribOptInFields);
-    const handleOptInRequest = (contribFieldId) => {
+    const handleOptInRequest = (selectedContribFieldObj) => {
+        setSelectedContribField(selectedContribFieldObj);
+        setShowConfirmModal(true);
 
     };
 
@@ -111,7 +115,7 @@ const MembershipOptInComponent = ({ contribOptInFields }) => {
         <Fragment>
             <OptInTableHead />
             <div className="table-responsive-md">
-                <table className="table">
+                <table key={tableKey} className="table">
                     <tbody>
                         {contribOptInFields && contribOptInFields.length > 0 &&
                             contribOptInFields.map(
@@ -123,6 +127,9 @@ const MembershipOptInComponent = ({ contribOptInFields }) => {
                     </tbody>
                 </table>
             </div>
+            <ConfirmOptInModal selectedContribField={selectedContribField}
+                               showConfirmModal={showConfirmModal}
+                               setShowConfirmModal={setShowConfirmModal} />
         </Fragment>
     );
 };

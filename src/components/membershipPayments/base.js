@@ -404,7 +404,9 @@ const BaseMembershipPayments = () => {
                             </div>
                         </InfiniteScroll>
 
-                        {usersStatusData.length === 0 && !isLoading && !usersParams.search.length > 0 && noDataToShow()}
+                        {usersStatusData.length === 0 && !isLoading && !usersParams.search.length > 0 &&
+                            noDataToShow()
+                        }
 
                         <ReactTooltip html={true} className="custom-tooltip" id={tooltipId} effect="solid" place="top" />
                         <MoreTransactionsModal paymentName={clickedUserDisplayName ? clickedUserDisplayName : ""}
