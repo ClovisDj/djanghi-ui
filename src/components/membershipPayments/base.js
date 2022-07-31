@@ -180,6 +180,15 @@ const BaseMembershipPayments = () => {
         }
     };
 
+    const selectedContribFieldIsOptIn = () => {
+        for (const contribField of contribData) {
+            if (contribField && contribField.id === selectConfig.selected.value) {
+                return contribField.attributes.member_can_opt_in;
+            }
+        }
+        return false;
+    };
+
     const fetchMembersContribStatus = async (searchParams = {}) => {
         setIsLoading(true);
 
@@ -254,6 +263,19 @@ const BaseMembershipPayments = () => {
         await fetchContribFields();
     }, []);
 
+    useEffect( () => {
+         if (selectedContribFieldIsOptIn()) {
+             setUsersParams({
+                 ... usersParams,
+                 contribution_id: selectConfig.selected.value,
+             });
+         } else {
+             let localUserParams = {... usersParams};
+             delete localUserParams.contribution_id;
+             setUsersParams(localUserParams);
+         }
+    }, [selectConfig]);
+
     useEffect(async () => {
         if (adminContribStatusParams.contribution_id) {
             await fetchMembersContribStatus();
@@ -325,6 +347,25 @@ const BaseMembershipPayments = () => {
 
     };
 
+    const noDataToShow = () => {
+        const messageToShow = (
+            selectedContribFieldIsOptIn()
+            ? "No opted-in user to show!"
+            : "No user to display, please add users to you association!"
+        );
+
+        return (
+            <div className="table-responsive-md admin-payment-status-container">
+            <table className="table">
+                <tbody>
+                    <tr className="user-opt-in-status-row d-flex">
+                        <td className="user-name-display col-12 text-center" scope="col">{messageToShow}</td>
+                    </tr>
+                </tbody>
+            </table></div>
+        );
+    }
+
     return (
         <ContribSelectContext.Provider value={selectConfig}>
             <ShouldRefreshPaymentsContext.Provider value={refreshDataContextData}>
@@ -362,6 +403,8 @@ const BaseMembershipPayments = () => {
                                 </table>
                             </div>
                         </InfiniteScroll>
+
+                        {usersStatusData.length === 0 && !isLoading && !usersParams.search.length > 0 && noDataToShow()}
 
                         <ReactTooltip html={true} className="custom-tooltip" id={tooltipId} effect="solid" place="top" />
                         <MoreTransactionsModal paymentName={clickedUserDisplayName ? clickedUserDisplayName : ""}
