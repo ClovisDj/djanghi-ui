@@ -75,7 +75,7 @@ const UserPaymentStatus = () => {
     const location = useLocation();
 
     useEffect(async () => {
-        let paymentData = await apiClient.get(`users/${tokenManager.getUserId()}/payments_status`);
+        let paymentData = await apiClient.get(`users/${tokenManager.getUserId()}/payments_status?user_has_access=true`);
         const contribData = await apiClient.get("contribution_fields?has_access=true");
         if (paymentData) {
             const dataParser = new DataParser(paymentData);

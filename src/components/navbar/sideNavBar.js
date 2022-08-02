@@ -65,6 +65,15 @@ const SideNavBar = ({handleLogOut, setClassName}) => {
                 }
             }
         ),
+        M7: () => navigate(
+            '/opt-in-payments',
+            {
+                state: {
+                    mainLiActiveKey: "M7",
+                    associationMenuShowClass: associationMenuShowClass
+                }
+            }
+        ),
     };
 
     const handleSideNavClick = async (liKey) => {
@@ -118,13 +127,24 @@ const SideNavBar = ({handleLogOut, setClassName}) => {
 
                 <ul id="components-nav" className={"nav-content collapse " + associationMenuShowClass} data-bs-parent="#sidebar-nav">
                     {userIsFullAdmin &&
-                        <li key="M4">
-                            <a className={mainLiActiveKey === "M4"? sideActiveClass: ""}
-                               onClick={() => handleSideNavClick("M4")}>
-                                <i className={"bi bi-circle" + (mainLiActiveKey === "M4" ? "-fill": "" )} />
-                                <span className="text-capitalize">MemberShip Fields</span>
-                            </a>
-                        </li>
+                        <Fragment>
+                            <li key="M4">
+                                <a className={mainLiActiveKey === "M4"? sideActiveClass: ""}
+                                   onClick={() => handleSideNavClick("M4")}>
+                                    <i className={"bi bi-circle" + (mainLiActiveKey === "M4" ? "-fill": "" )} />
+                                    <span className="text-capitalize">MemberShip Fields</span>
+                                </a>
+                            </li>
+
+                            <li key="M7">
+                                <a className={mainLiActiveKey === "M7"? sideActiveClass: ""}
+                                   onClick={() => handleSideNavClick("M7")}>
+                                    <i className={"bi bi-circle" + (mainLiActiveKey === "M7" ? "-fill": "" )} />
+                                    <span className="text-capitalize">Opt-in Payments</span>
+                                </a>
+                            </li>
+                        </Fragment>
+
                     }
                     {(userIsFullAdmin || userIsPaymentAdmin) &&
                         <li key="M5">

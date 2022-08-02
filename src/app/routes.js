@@ -14,6 +14,7 @@ import PasswordReset from "../components/homePage/passwordReset";
 import NavBar from "../components/navbar/navbar";
 import {UserDataContext} from "./contexts";
 import TokenManager from "../utils/authToken";
+import MembershipPaymentsOptIn from "../components/optInPayments";
 
 const tokenManager = new TokenManager();
 
@@ -43,6 +44,9 @@ const DjanghiRoutes = () => {
                   <Route path="/login" element={<Login />} />
                   <Route path="/membership-fields"
                          element={<ProtectedRoute children={<MembershipFields />} />}
+                  />
+                  <Route path="/opt-in-payments"
+                         element={<ProtectedRoute children={<MembershipPaymentsOptIn />} />}
                   />
                   <Route path="/membership-payments"
                          element={<ProtectedRoute children={<MembershipPayments />} />}
