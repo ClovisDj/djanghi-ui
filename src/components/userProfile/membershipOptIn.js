@@ -43,7 +43,7 @@ const OptInContribFieldRow = ({ userContribFieldData, handleOptInRequest }) => {
         "PROCESSING": "warning",
         "REQUESTED": "warning",
         "APPROVED": "success",
-        "DECLINED": "dander",
+        "DECLINED": "danger",
     };
 
     const tooltipMap = {
