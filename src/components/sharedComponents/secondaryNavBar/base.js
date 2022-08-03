@@ -1,10 +1,10 @@
 import {Fragment} from "react";
 import Select from "react-select";
-import {ContribSelectContext} from "../../membershipPayments/context";
+
 import {blueColor, whiteColor} from "../../../utils/utils";
 
 
-const BaseSecondaryNavBar = ({ searchValue, handleSearch, handleSelect, TableHeaderComponent }) => {
+const BaseSecondaryNavBar = ({ searchValue, handleSearch, handleSelect, selectedItem, TableHeaderComponent }) => {
     const customStyles = {
         color: whiteColor,
         option: (base, state) => ({
@@ -42,18 +42,14 @@ const BaseSecondaryNavBar = ({ searchValue, handleSearch, handleSelect, TableHea
                         </span>
                     </form>
                     {handleSelect &&
-                        <ContribSelectContext.Consumer>
-                            {({ contribOptions, selected }) => (
-                                <div className="container-xxl d-flex dropdown-contrib">
-                                    <Select className={"select-contrib"}
-                                            styles={customStyles}
-                                            onChange={handleSelect}
-                                            options={contribOptions}
-                                            value={selected ? selected: {label: "", value: ""}}
-                                    />
-                                </div>
-                            )}
-                        </ContribSelectContext.Consumer>
+                        <div className="container-xxl d-flex dropdown-contrib">
+                            <Select className={"select-contrib"}
+                                    styles={customStyles}
+                                    onChange={handleSelect}
+                                    options={selectedItem.contribOptions}
+                                    value={selectedItem.selected ? selectedItem.selected : {label: "", value: ""}}
+                            />
+                        </div>
                     }
                 </div>
 
